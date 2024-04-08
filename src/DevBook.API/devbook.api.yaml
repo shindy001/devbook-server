@@ -1,0 +1,888 @@
+openapi: 3.0.1
+info:
+  title: 'DevBook.API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null'
+  version: '1.0'
+paths:
+  /identity/register:
+    post:
+      tags:
+        - Identity
+      operationId: Identity.Register
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        '200':
+          description: Success
+        '400':
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/HttpValidationProblemDetails'
+  /identity/login:
+    post:
+      tags:
+        - Identity
+      operationId: Identity.Login
+      parameters:
+        - name: useCookies
+          in: query
+          style: form
+          schema:
+            type: boolean
+        - name: useSessionCookies
+          in: query
+          style: form
+          schema:
+            type: boolean
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccessTokenResponse'
+  /identity/refresh:
+    post:
+      tags:
+        - Identity
+      operationId: Identity.Refresh
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/RefreshRequest'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccessTokenResponse'
+  /identity/confirmEmail:
+    get:
+      tags:
+        - Identity
+      operationId: Identity.ConfirmEmail
+      parameters:
+        - name: userId
+          in: query
+          style: form
+          schema:
+            type: string
+        - name: code
+          in: query
+          style: form
+          schema:
+            type: string
+        - name: changedEmail
+          in: query
+          style: form
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+  /identity/resendConfirmationEmail:
+    post:
+      tags:
+        - Identity
+      operationId: Identity.ResendConfirmationEmail
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/ResendConfirmationEmailRequest'
+      responses:
+        '200':
+          description: Success
+  /identity/forgotPassword:
+    post:
+      tags:
+        - Identity
+      operationId: Identity.ForgotPassword
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/ForgotPasswordRequest'
+      responses:
+        '200':
+          description: Success
+        '400':
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/HttpValidationProblemDetails'
+  /identity/resetPassword:
+    post:
+      tags:
+        - Identity
+      operationId: Identity.ResetPassword
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/ResetPasswordRequest'
+      responses:
+        '200':
+          description: Success
+        '400':
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/HttpValidationProblemDetails'
+  /identity/manage/2fa:
+    post:
+      tags:
+        - Identity
+      operationId: Identity.Manage2fa
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/TwoFactorRequest'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TwoFactorResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/HttpValidationProblemDetails'
+        '404':
+          description: Not Found
+  /identity/manage/info:
+    get:
+      tags:
+        - Identity
+      operationId: Identity.ManageInfo
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InfoResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/HttpValidationProblemDetails'
+        '404':
+          description: Not Found
+    post:
+      tags:
+        - Identity
+      operationId: Identity.ManageInfo
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/InfoRequest'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InfoResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/HttpValidationProblemDetails'
+        '404':
+          description: Not Found
+  /sudoku:
+    get:
+      tags:
+        - SudokuModule_SudokuEndpoints
+      operationId: Sudoku.Board
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BoardData'
+  /projects:
+    get:
+      tags:
+        - TimeTrackingModule_ProjectEndpoints
+      operationId: Projects.GetAll
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProjectDto'
+    post:
+      tags:
+        - TimeTrackingModule_ProjectEndpoints
+      operationId: Projects.Create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/CreateProjectCommand'
+        required: true
+      responses:
+        '201':
+          description: Created
+  '/projects/{id}':
+    get:
+      tags:
+        - TimeTrackingModule_ProjectEndpoints
+      operationId: Projects.GetById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          style: simple
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectDto'
+        '404':
+          description: Not Found
+    put:
+      tags:
+        - TimeTrackingModule_ProjectEndpoints
+      operationId: Projects.Update
+      parameters:
+        - name: id
+          in: path
+          required: true
+          style: simple
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/UpdateProjectCommandDto'
+        required: true
+      responses:
+        '204':
+          description: No Content
+        '404':
+          description: Not Found
+    patch:
+      tags:
+        - TimeTrackingModule_ProjectEndpoints
+      operationId: Projects.Patch
+      parameters:
+        - name: id
+          in: path
+          required: true
+          style: simple
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/PatchProjectCommandDto'
+        required: true
+      responses:
+        '204':
+          description: No Content
+        '404':
+          description: Not Found
+    delete:
+      tags:
+        - TimeTrackingModule_ProjectEndpoints
+      operationId: Projects.Delete
+      parameters:
+        - name: id
+          in: path
+          required: true
+          style: simple
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: No Content
+  /tasks:
+    get:
+      tags:
+        - TimeTrackingModule_WorkTaskEndpoints
+      operationId: WorkTasks.List
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkTaskListResponse'
+    post:
+      tags:
+        - TimeTrackingModule_WorkTaskEndpoints
+      operationId: WorkTasks.Create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/CreateWorkTaskCommand'
+        required: true
+      responses:
+        '201':
+          description: Created
+  /tasks/start:
+    post:
+      tags:
+        - TimeTrackingModule_WorkTaskEndpoints
+      operationId: WorkTasks.Start
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/StartWorkTaskCommand'
+        required: true
+      responses:
+        '201':
+          description: Created
+  '/tasks/{id}':
+    get:
+      tags:
+        - TimeTrackingModule_WorkTaskEndpoints
+      operationId: WorkTasks.GetById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          style: simple
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkTaskDto'
+        '404':
+          description: Not Found
+    put:
+      tags:
+        - TimeTrackingModule_WorkTaskEndpoints
+      operationId: WorkTasks.Update
+      parameters:
+        - name: id
+          in: path
+          required: true
+          style: simple
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/UpdateWorkTaskCommandDto'
+        required: true
+      responses:
+        '204':
+          description: No Content
+        '404':
+          description: Not Found
+    patch:
+      tags:
+        - TimeTrackingModule_WorkTaskEndpoints
+      operationId: WorkTasks.Patch
+      parameters:
+        - name: id
+          in: path
+          required: true
+          style: simple
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/PatchWorkTaskCommandDto'
+        required: true
+      responses:
+        '204':
+          description: No Content
+        '404':
+          description: Not Found
+    delete:
+      tags:
+        - TimeTrackingModule_WorkTaskEndpoints
+      operationId: WorkTasks.Delete
+      parameters:
+        - name: id
+          in: path
+          required: true
+          style: simple
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: No Content
+components:
+  schemas:
+    AccessTokenResponse:
+      type: object
+      properties:
+        tokenType:
+          type: string
+          nullable: true
+          readOnly: true
+        accessToken:
+          type: string
+          nullable: true
+        expiresIn:
+          type: integer
+          format: int64
+        refreshToken:
+          type: string
+          nullable: true
+      additionalProperties: false
+    BoardData:
+      required:
+        - gridNumbers
+        - solutionNumbers
+      type: object
+      properties:
+        gridNumbers:
+          type: array
+          items:
+            type: array
+            items:
+              type: integer
+              format: int32
+        solutionNumbers:
+          type: array
+          items:
+            type: array
+            items:
+              type: integer
+              format: int32
+      additionalProperties: false
+    CreateProjectCommand:
+      required:
+        - name
+      type: object
+      properties:
+        name:
+          minLength: 1
+          type: string
+        details:
+          type: string
+          nullable: true
+        hourlyRate:
+          type: integer
+          format: int32
+          nullable: true
+        currency:
+          type: string
+          nullable: true
+        hexColor:
+          type: string
+          nullable: true
+      additionalProperties: false
+    CreateWorkTaskCommand:
+      type: object
+      properties:
+        projectId:
+          type: string
+          format: uuid
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        details:
+          type: string
+          nullable: true
+        date:
+          type: string
+          format: date-time
+        start:
+          type: string
+          format: time
+        end:
+          type: string
+          format: time
+      additionalProperties: false
+    ForgotPasswordRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          nullable: true
+      additionalProperties: false
+    HttpValidationProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          nullable: true
+        title:
+          type: string
+          nullable: true
+        status:
+          type: integer
+          format: int32
+          nullable: true
+        detail:
+          type: string
+          nullable: true
+        instance:
+          type: string
+          nullable: true
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          nullable: true
+      additionalProperties: { }
+    InfoRequest:
+      type: object
+      properties:
+        newEmail:
+          type: string
+          nullable: true
+        newPassword:
+          type: string
+          nullable: true
+        oldPassword:
+          type: string
+          nullable: true
+      additionalProperties: false
+    InfoResponse:
+      type: object
+      properties:
+        email:
+          type: string
+          nullable: true
+        isEmailConfirmed:
+          type: boolean
+      additionalProperties: false
+    LoginRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          nullable: true
+        password:
+          type: string
+          nullable: true
+        twoFactorCode:
+          type: string
+          nullable: true
+        twoFactorRecoveryCode:
+          type: string
+          nullable: true
+      additionalProperties: false
+    PatchProjectCommandDto:
+      type: object
+      properties:
+        name:
+          type: string
+          nullable: true
+        details:
+          type: string
+          nullable: true
+        hourlyRate:
+          type: integer
+          format: int32
+          nullable: true
+        currency:
+          type: string
+          nullable: true
+        hexColor:
+          type: string
+          nullable: true
+      additionalProperties: false
+    PatchWorkTaskCommandDto:
+      type: object
+      properties:
+        projectId:
+          type: string
+          format: uuid
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        details:
+          type: string
+          nullable: true
+        date:
+          type: string
+          format: date-time
+          nullable: true
+        start:
+          type: string
+          format: time
+          nullable: true
+        end:
+          type: string
+          format: time
+          nullable: true
+      additionalProperties: false
+    ProjectDto:
+      required:
+        - id
+        - name
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          minLength: 1
+          type: string
+        details:
+          type: string
+          nullable: true
+        hourlyRate:
+          type: integer
+          format: int32
+          nullable: true
+        currency:
+          type: string
+          nullable: true
+        hexColor:
+          type: string
+          nullable: true
+      additionalProperties: false
+    RefreshRequest:
+      type: object
+      properties:
+        refreshToken:
+          type: string
+          nullable: true
+      additionalProperties: false
+    RegisterRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          nullable: true
+        password:
+          type: string
+          nullable: true
+      additionalProperties: false
+    ResendConfirmationEmailRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          nullable: true
+      additionalProperties: false
+    ResetPasswordRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          nullable: true
+        resetCode:
+          type: string
+          nullable: true
+        newPassword:
+          type: string
+          nullable: true
+      additionalProperties: false
+    StartWorkTaskCommand:
+      type: object
+      properties:
+        description:
+          type: string
+          nullable: true
+        date:
+          type: string
+          format: date-time
+        start:
+          type: string
+          format: time
+      additionalProperties: false
+    TwoFactorRequest:
+      type: object
+      properties:
+        enable:
+          type: boolean
+          nullable: true
+        twoFactorCode:
+          type: string
+          nullable: true
+        resetSharedKey:
+          type: boolean
+        resetRecoveryCodes:
+          type: boolean
+        forgetMachine:
+          type: boolean
+      additionalProperties: false
+    TwoFactorResponse:
+      type: object
+      properties:
+        sharedKey:
+          type: string
+          nullable: true
+        recoveryCodesLeft:
+          type: integer
+          format: int32
+        recoveryCodes:
+          type: array
+          items:
+            type: string
+          nullable: true
+        isTwoFactorEnabled:
+          type: boolean
+        isMachineRemembered:
+          type: boolean
+      additionalProperties: false
+    UpdateProjectCommandDto:
+      required:
+        - name
+      type: object
+      properties:
+        name:
+          minLength: 1
+          type: string
+        details:
+          type: string
+          nullable: true
+        hourlyRate:
+          type: integer
+          format: int32
+          nullable: true
+        currency:
+          type: string
+          nullable: true
+        hexColor:
+          type: string
+          nullable: true
+      additionalProperties: false
+    UpdateWorkTaskCommandDto:
+      required:
+        - date
+        - end
+        - start
+      type: object
+      properties:
+        projectId:
+          type: string
+          format: uuid
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        details:
+          type: string
+          nullable: true
+        date:
+          type: string
+          format: date-time
+        start:
+          type: string
+          format: time
+        end:
+          type: string
+          format: time
+      additionalProperties: false
+    WorkTaskDto:
+      required:
+        - date
+        - id
+        - start
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        project:
+          allOf:
+            - $ref: '#/components/schemas/ProjectDto'
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        details:
+          type: string
+          nullable: true
+        date:
+          type: string
+          format: date-time
+        start:
+          type: string
+          format: time
+        end:
+          type: string
+          format: time
+          nullable: true
+      additionalProperties: false
+    WorkTaskListResponse:
+      type: object
+      properties:
+        activeWorkTask:
+          allOf:
+            - $ref: '#/components/schemas/WorkTaskDto'
+          nullable: true
+        workTasksInDay:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/WorkTaskDto'
+          nullable: true
+      additionalProperties: false
+  securitySchemes:
+    Bearer:
+      type: http
+      description: Please enter token.
+      scheme: bearer
+security:
+  - Bearer: [ ]
