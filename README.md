@@ -1,4 +1,4 @@
-![ApiService Deploy](https://github.com/shindy001/DevBookServer/actions/workflows/deploy-devbook-server.yml/badge.svg)
+![ApiService Deploy](https://github.com/shindy001/devbook-server/actions/workflows/deploy-devbook-server.yml/badge.svg)
 
 # DevBook Server
 
