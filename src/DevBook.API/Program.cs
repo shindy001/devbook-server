@@ -27,6 +27,10 @@ builder.Services.AddCors(options =>
 
 builder.Services.RegisterFeatureModules([typeof(Program).Assembly]);
 
+builder.Services
+	.AddGraphQLServer()
+	.AddQueryType<ProjectsQuery>();
+
 var app = builder.Build();
 
 // Create DB if not exist or migrate if not up to date
@@ -60,5 +64,8 @@ app.MapGroup("/identity")
 	.WithTags($"Identity");
 
 app.MapFeatureModulesEndpoints();
+
+app.MapGraphQL()
+	.RequireAuthorization();
 
 app.Run();

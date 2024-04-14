@@ -7,7 +7,7 @@
 /// <param name="options"></param>
 /// <param name="httpContextAccessor"></param>
 /// <exception cref="UnauthorizedAccessException">Will throw when httpContextAccessor does not contain user.</exception>
-internal sealed class DevBookDbContext(DbContextOptions<DevBookDbContext> options, IHttpContextAccessor httpContextAccessor) : IdentityDbContext<DevBookUser>(options)
+public sealed class DevBookDbContext(DbContextOptions<DevBookDbContext> options, IHttpContextAccessor httpContextAccessor) : IdentityDbContext<DevBookUser>(options)
 {
 	public DbSet<Project> Projects { get; set; }
 	public DbSet<WorkTask> Tasks { get; set; }

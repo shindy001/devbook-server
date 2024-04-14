@@ -1,3 +1,3 @@
 ﻿namespace DevBook.API.Identity;
 
-internal sealed class DevBookUser : IdentityUser;
+public sealed class DevBookUser : IdentityUser;

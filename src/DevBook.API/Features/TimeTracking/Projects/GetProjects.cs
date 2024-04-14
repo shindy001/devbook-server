@@ -10,3 +10,12 @@ internal sealed class GetProjectsQueryHandler(DevBookDbContext dbContext) : IQue
 		return await dbContext.Projects.ToListAsync(cancellationToken);
 	}
 }
+
+public sealed class ProjectsQuery
+{
+	public async Task<IEnumerable<ProjectDto>> GetProjects([Service] DevBookDbContext dbContext, CancellationToken cancellationToken)
+	{
+		var projects = await dbContext.Projects.ToListAsync(cancellationToken);
+		return projects.Select(x => x.ToDto());
+	}
+}

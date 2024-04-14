@@ -41,7 +41,7 @@ public static class ServiceDefaults
 		Log.Logger = new LoggerConfiguration()
 			.WriteTo.Console(outputTemplate: outputTemplate)
 			.WriteTo.File(
-				path: Path.Combine(appDir, "logs", logFileName),
+				path: System.IO.Path.Combine(appDir, "logs", logFileName),
 				rollingInterval: RollingInterval.Day,
 				outputTemplate: outputTemplate)
 			.CreateLogger();

@@ -43,11 +43,11 @@ internal static class DependencyInjection
 
 	private static string GetSqliteConnectionString()
 	{
-		var dbPath = Path.Combine(AppContext.BaseDirectory, "data", $"DevBook.db");
+		var dbPath = System.IO.Path.Combine(AppContext.BaseDirectory, "data", $"DevBook.db");
 
 		if (!Directory.Exists(dbPath))
 		{
-			Directory.CreateDirectory(Path.GetDirectoryName(dbPath)!);
+			Directory.CreateDirectory(System.IO.Path.GetDirectoryName(dbPath)!);
 		}
 
 		return $"Data Source={dbPath}";
