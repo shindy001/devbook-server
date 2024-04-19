@@ -25,7 +25,8 @@ builder.Services.AddCors(options =>
 
 builder.Services
 	.AddGraphQLServer()
-	.AddQueryType<ProjectsQuery>();
+	.AddAuthorization()
+	.AddAPITypes();
 
 var app = builder.Build();
 

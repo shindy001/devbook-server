@@ -11,6 +11,7 @@ internal sealed class GetProjectsQueryHandler(DevBookDbContext dbContext) : IQue
 	}
 }
 
+[QueryType]
 public sealed class ProjectsQuery
 {
 	public async Task<IEnumerable<ProjectDto>> GetProjects([Service] DevBookDbContext dbContext, CancellationToken cancellationToken)
