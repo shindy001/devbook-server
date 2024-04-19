@@ -3,17 +3,15 @@ var builder = WebApplication.CreateBuilder(args);
 var DevBookClientOrigin = builder.Configuration.GetValue<string>("DevBookClientOrigin")!;
 
 builder.AddServiceDefaults();
-builder.Services.AddInfrastructure();
+builder.Services.RegisterDB();
+builder.Services.RegisterRequestPipelines();
+builder.Services.RegisterAuthentication();
+builder.Services.RegisterFeatureModules([typeof(Program).Assembly]);
+
 builder.Services.AddSwaggerGen(SwaggerOptions.WithDevBookOptions());
 builder.Services.AddEndpointsApiExplorer()
 	.ConfigureHttpJsonOptions(opt
 		=> opt.SerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull);
-
-builder.Services.AddAuthentication().AddBearerToken(IdentityConstants.BearerScheme, opt => opt.BearerTokenExpiration = TimeSpan.FromMinutes(30));
-builder.Services.AddAuthorizationBuilder();
-builder.Services.AddIdentityCore<DevBookUser>()
-	.AddEntityFrameworkStores<DevBookDbContext>()
-	.AddApiEndpoints();
 
 builder.Services.AddCors(options =>
 {
@@ -24,8 +22,6 @@ builder.Services.AddCors(options =>
 		.AllowAnyHeader()
 		.AllowCredentials());
 });
-
-builder.Services.RegisterFeatureModules([typeof(Program).Assembly]);
 
 builder.Services
 	.AddGraphQLServer()
