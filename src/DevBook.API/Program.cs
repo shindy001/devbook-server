@@ -1,6 +1,7 @@
 var builder = WebApplication.CreateBuilder(args);
 
-var DevBookClientOrigin = builder.Configuration.GetValue<string>("DevBookClientOrigin")!;
+var devBookClientOrigin = builder.Configuration.GetSection("DevBookClientOrigins").Get<string[]>()!;
+var devBookCorsPolicyName = "DevBookCorsPolicy";
 
 builder.AddServiceDefaults();
 builder.Services.RegisterDB();
@@ -15,18 +16,21 @@ builder.Services.AddEndpointsApiExplorer()
 
 builder.Services.AddCors(options =>
 {
-	options.AddPolicy("DevBookClient", 
-		p => p.WithOrigins(DevBookClientOrigin)
-		.AllowAnyMethod()
-		.SetIsOriginAllowed(isAllowed => true)
-		.AllowAnyHeader()
-		.AllowCredentials());
+	options.AddPolicy(
+		devBookCorsPolicyName, 
+		p => p.WithOrigins(devBookClientOrigin)
+			.AllowAnyMethod()
+			.SetIsOriginAllowed(isAllowed => true)
+			.AllowAnyHeader()
+			.AllowCredentials());
 });
 
+builder.Services.AddAutoMapper(typeof(Program).Assembly);
 builder.Services
 	.AddGraphQLServer()
 	.AddAuthorization()
-	.AddAPITypes();
+	.AddAPITypes()
+	.AddProjections();
 
 var app = builder.Build();
 
@@ -46,7 +50,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
 
-app.UseCors("DevBookClient");
+app.UseCors(devBookCorsPolicyName);
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -63,6 +67,6 @@ app.MapGroup("/identity")
 app.MapFeatureModulesEndpoints();
 
 app.MapGraphQL()
-	.RequireAuthorization();
+	.RequireCors(devBookCorsPolicyName);
 
 app.Run();
