@@ -14,5 +14,14 @@ public sealed record Project()
 
 public static class ProjectExtensions
 {
-	public static ProjectDto ToDto(this Project project) => new(project.Id, project.Name, project.Details, project.HourlyRate, project.Currency, project.HexColor);
+	public static ProjectDto ToDto(this Project project) =>
+		new()
+		{
+			Id = project.Id,
+			Name = project.Name,
+			Details = project.Details,
+			HourlyRate = project.HourlyRate,
+			Currency = project.Currency,
+			HexColor = project.HexColor
+		};
 }

@@ -1,4 +1,6 @@
-﻿namespace DevBook.API.Features.TimeTracking.Projects;
+﻿using HotChocolate.Resolvers;
+
+namespace DevBook.API.Features.TimeTracking.Projects;
 
 internal sealed record GetProjectsQuery : IQuery<IEnumerable<Project>>;
 
@@ -14,9 +16,10 @@ internal sealed class GetProjectsQueryHandler(DevBookDbContext dbContext) : IQue
 [QueryType]
 public sealed class ProjectsQuery
 {
-	public async Task<IEnumerable<ProjectDto>> GetProjects([Service] DevBookDbContext dbContext, CancellationToken cancellationToken)
+	[UseProjection]
+	public IQueryable<ProjectDto> GetProjects([Service] DevBookDbContext dbContext, IResolverContext resolverContext, CancellationToken cancellationToken)
 	{
-		var projects = await dbContext.Projects.ToListAsync(cancellationToken);
-		return projects.Select(x => x.ToDto());
+		return dbContext.Projects
+			.ProjectTo<Project, ProjectDto>(resolverContext);
 	}
 }
