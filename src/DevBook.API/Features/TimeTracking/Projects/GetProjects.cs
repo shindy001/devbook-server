@@ -2,14 +2,14 @@
 
 namespace DevBook.API.Features.TimeTracking.Projects;
 
-internal sealed record GetProjectsQuery : IQuery<IEnumerable<Project>>;
+internal sealed record GetProjectsQuery : IQuery<IQueryable<Project>>;
 
-internal sealed class GetProjectsQueryHandler(DevBookDbContext dbContext) : IQueryHandler<GetProjectsQuery, IEnumerable<Project>>
+internal sealed class GetProjectsQueryHandler(DevBookDbContext dbContext) : IQueryHandler<GetProjectsQuery, IQueryable<Project>>
 {
-	public async Task<IEnumerable<Project>> Handle(GetProjectsQuery request, CancellationToken cancellationToken)
+	public Task<IQueryable<Project>> Handle(GetProjectsQuery request, CancellationToken cancellationToken)
 	{
 		// TODO - implement paging
-		return await dbContext.Projects.ToListAsync(cancellationToken);
+		return Task.FromResult(dbContext.Projects.AsQueryable());
 	}
 }
 
@@ -17,9 +17,9 @@ internal sealed class GetProjectsQueryHandler(DevBookDbContext dbContext) : IQue
 internal sealed class ProjectsQuery
 {
 	[UseProjection]
-	public IQueryable<ProjectDto> GetProjects(DevBookDbContext dbContext, IResolverContext resolverContext)
+	public async Task<IQueryable<ProjectDto>> GetProjects(IExecutor executor, IMapper mapper, IResolverContext resolverContext, CancellationToken cancellationToken)
 	{
-		return dbContext.Projects
-			.ProjectTo<Project, ProjectDto>(resolverContext);
+		var result = await executor.ExecuteQuery(new GetProjectsQuery(), cancellationToken);
+		return result.ProjectTo<Project, ProjectDto>(resolverContext);
 	}
 }

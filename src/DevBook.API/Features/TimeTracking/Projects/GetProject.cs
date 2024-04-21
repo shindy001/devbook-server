@@ -17,12 +17,12 @@ internal class GetProjectQueryHandler(DevBookDbContext dbContext) : IQueryHandle
 [QueryType]
 internal sealed class ProjectQuery
 {
-	public async Task<FieldResult<ProjectDto, NotFoundError>> GetProject(Guid id, DevBookDbContext dbContext, IMapper mapper, CancellationToken cancellationToken)
+	public async Task<FieldResult<ProjectDto, NotFoundError>> GetProject(Guid id, IExecutor executor, IMapper mapper, CancellationToken cancellationToken)
 	{
-		var project = await dbContext.Projects.FindAsync([id], cancellationToken: cancellationToken);
+		var result = await executor.ExecuteQuery(new GetProjectQuery(id), cancellationToken);
 
-		return project is null
-			? new NotFoundError { Id = id }
-			: mapper.Map<ProjectDto>(project);
+		return result.Match<FieldResult<ProjectDto, NotFoundError>>(
+			project => mapper.Map<ProjectDto>(project),
+			notFound => new NotFoundError { Id = id });
 	}
 }
