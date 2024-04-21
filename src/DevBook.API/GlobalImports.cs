@@ -15,6 +15,7 @@ global using OneOf.Types;
 global using FluentValidation;
 global using FluentValidation.Results;
 global using MediatR;
+global using AutoMapper;
 
 global using DevBook.API;
 global using DevBook.API.Exceptions;
