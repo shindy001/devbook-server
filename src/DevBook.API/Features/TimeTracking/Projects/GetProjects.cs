@@ -14,10 +14,10 @@ internal sealed class GetProjectsQueryHandler(DevBookDbContext dbContext) : IQue
 }
 
 [QueryType]
-public sealed class ProjectsQuery
+internal sealed class ProjectsQuery
 {
 	[UseProjection]
-	public IQueryable<ProjectDto> GetProjects([Service] DevBookDbContext dbContext, IResolverContext resolverContext, CancellationToken cancellationToken)
+	public IQueryable<ProjectDto> GetProjects(DevBookDbContext dbContext, IResolverContext resolverContext)
 	{
 		return dbContext.Projects
 			.ProjectTo<Project, ProjectDto>(resolverContext);
