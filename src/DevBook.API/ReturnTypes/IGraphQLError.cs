@@ -1,4 +1,4 @@
-﻿namespace DevBook.API.Errors;
+﻿namespace DevBook.API.ReturnTypes;
 
 internal interface IGraphQLError
 {

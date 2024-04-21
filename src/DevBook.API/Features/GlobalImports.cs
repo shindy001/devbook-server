@@ -1,2 +1,2 @@
 ﻿global using DevBook.API.Features.Shared;
-global using DevBook.API.Errors;
+global using DevBook.API.ReturnTypes;

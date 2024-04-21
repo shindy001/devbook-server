@@ -1,6 +1,6 @@
-﻿namespace DevBook.API.Errors;
+﻿namespace DevBook.API.ReturnTypes;
 
-internal sealed record NotFoundError : IGraphQLError
+public sealed record NotFoundError : IGraphQLError
 {
 	public required Guid Id { get; init; }
 
