@@ -31,7 +31,8 @@ builder.Services
 	.AddAuthorization()
 	.AddProjections()
 	.AddAPITypes()
-	.AddQueryConventions();
+	.AddQueryConventions()
+	.AddMutationConventions();
 
 var app = builder.Build();
 

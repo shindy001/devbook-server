@@ -1,6 +1,6 @@
 ﻿namespace DevBook.API.Features.TimeTracking.Projects;
 
-public sealed record CreateProjectCommand : ICommand<Guid>
+public sealed record CreateProjectCommand : ICommand<Project>
 {
 	[Required]
 	public required string Name { get; init; }
@@ -18,13 +18,23 @@ public sealed class CreateProjectCommandValidator : AbstractValidator<CreateProj
 	}
 }
 
-internal sealed class CreateProjectCommandHandler(DevBookDbContext dbContext) : ICommandHandler<CreateProjectCommand, Guid>
+internal sealed class CreateProjectCommandHandler(DevBookDbContext dbContext) : ICommandHandler<CreateProjectCommand, Project>
 {
-	public async Task<Guid> Handle(CreateProjectCommand request, CancellationToken cancellationToken)
+	public async Task<Project> Handle(CreateProjectCommand request, CancellationToken cancellationToken)
 	{
 		var newItem = new Project { Name = request.Name, Details = request.Details, HourlyRate = request.HourlyRate, Currency = request.Currency, HexColor = request.HexColor };
 		await dbContext.Projects.AddAsync(newItem, cancellationToken);
 		await dbContext.SaveChangesAsync(cancellationToken);
-		return newItem.Id;
+		return newItem;
+	}
+}
+
+[MutationType]
+internal sealed class CreateProjectMutation
+{
+	public async Task<ProjectDto> CreateProject(CreateProjectCommand payload, IExecutor executor, IMapper mapper, CancellationToken cancellationToken)
+	{
+		var result = await executor.ExecuteCommand(payload, cancellationToken);
+		return mapper.Map<ProjectDto>(result);
 	}
 }
