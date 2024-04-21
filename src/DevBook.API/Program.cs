@@ -4,7 +4,7 @@ var devBookClientOrigin = builder.Configuration.GetSection("DevBookClientOrigins
 var devBookCorsPolicyName = "DevBookCorsPolicy";
 
 builder.AddServiceDefaults();
-builder.Services.RegisterDB();
+builder.Services.RegisterDevBookDbContext();
 builder.Services.RegisterRequestPipelines();
 builder.Services.RegisterAuthentication();
 builder.Services.RegisterFeatureModules([typeof(Program).Assembly]);
@@ -29,8 +29,9 @@ builder.Services.AddAutoMapper(typeof(Program).Assembly);
 builder.Services
 	.AddGraphQLServer()
 	.AddAuthorization()
+	.AddProjections()
 	.AddAPITypes()
-	.AddProjections();
+	.AddQueryConventions();
 
 var app = builder.Build();
 

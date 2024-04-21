@@ -35,7 +35,7 @@ internal static class DependencyInjection
 		return services;
 	}
 
-	internal static IServiceCollection RegisterDB(this IServiceCollection services)
+	internal static IServiceCollection RegisterDevBookDbContext(this IServiceCollection services)
 	{
 		services.AddDbContextPool<DevBookDbContext>(
 			opt => opt.UseSqlite(
