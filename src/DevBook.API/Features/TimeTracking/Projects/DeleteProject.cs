@@ -15,3 +15,13 @@ internal class DeleteProjectCommandHandler(DevBookDbContext dbContext) : IComman
 		}
 	}
 }
+
+[MutationType]
+internal sealed class DeleteProjectMutation
+{
+	public async Task<FieldResult<SuccessResult>> DeleteProject(Guid id, IExecutor executor, CancellationToken cancellationToken)
+	{
+		await executor.ExecuteCommand(new DeleteProjectCommand(id), cancellationToken);
+		return new SuccessResult();
+	}
+}
