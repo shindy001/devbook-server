@@ -16,14 +16,16 @@ internal sealed class ListWorkTasksQueryHandler(DevBookDbContext dbContext) : IQ
 			: [];
 
 		var taskDtos = tasks.Select(
-			task => new WorkTaskDto(
-				id: task.Id,
-				project: task.ProjectId is not null && projects.TryGetValue(task.ProjectId.Value, out var project) ? project.ToDto() : null,
-				description: task.Description,
-				details: task.Details,
-				date: task.Date,
-				start: task.Start,
-				end: task.End));
+			task => new WorkTaskDto
+			{
+				Id = task.Id,
+				Project = task.ProjectId is not null && projects.TryGetValue(task.ProjectId.Value, out var project) ? project.ToDto() : null,
+				Description = task.Description,
+				Details = task.Details,
+				Date = task.Date,
+				Start = task.Start,
+				End = task.End
+			});
 
 		var tasksInDays = new Dictionary<DateOnly, IEnumerable<WorkTaskDto>>();
 		var dayGroups = taskDtos
@@ -40,5 +42,14 @@ internal sealed class ListWorkTasksQueryHandler(DevBookDbContext dbContext) : IQ
 			ActiveWorkTask = taskDtos.FirstOrDefault(x => x.End == null),
 			WorkTasksInDay = tasksInDays
 		};
+	}
+}
+
+[QueryType]
+internal sealed class WorkTaskListQuery
+{
+	public async Task<WorkTaskListResponse> GetWorkTaskList(IExecutor executor, IMapper mapper, CancellationToken cancellationToken)
+	{
+		return await executor.ExecuteQuery(new ListWorkTasksQuery(), cancellationToken);
 	}
 }
