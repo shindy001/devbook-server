@@ -1,6 +1,4 @@
-﻿using DevBook.API.Features.Shared;
-
-namespace DevBook.API.Features.TimeTracking.Shared;
+﻿namespace DevBook.API.Features.TimeTracking.Shared;
 
 public sealed record Project()
 	: Entity(Guid.NewGuid())

@@ -1,6 +1,4 @@
-﻿using DevBook.API.Mapping;
-
-namespace DevBook.API.Features.TimeTracking.Shared;
+﻿namespace DevBook.API.Features.TimeTracking.Shared;
 
 public sealed record ProjectDto : IMappebleTo<Project>
 {
