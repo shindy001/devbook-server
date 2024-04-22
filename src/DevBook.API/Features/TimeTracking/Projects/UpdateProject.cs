@@ -1,4 +1,6 @@
-﻿namespace DevBook.API.Features.TimeTracking.Projects;
+﻿using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+
+namespace DevBook.API.Features.TimeTracking.Projects;
 
 public record UpdateProjectCommandDto
 {
@@ -52,5 +54,33 @@ internal sealed class UpdateProjectCommandHandler(DevBookDbContext dbContext) : 
 			await dbContext.SaveChangesAsync(cancellationToken);
 			return new Success();
 		}
+	}
+}
+
+[MutationType]
+internal sealed class UpdateProjectMutation
+{
+	public async Task<FieldResult<ProjectDto, NotFoundError>> UpdateProject(UpdateProjectCommand payload, IExecutor executor, IMapper mapper, CancellationToken cancellationToken)
+	{
+		var result = await executor.ExecuteCommand(
+			new UpdateProjectCommand(
+				Id: payload.Id,
+				Name: payload.Name,
+				Details: payload.Details,
+				HourlyRate: payload.HourlyRate,
+				Currency: payload.Currency,
+				HexColor: payload.HexColor),
+			cancellationToken);
+
+		if (result.IsT1)
+		{
+			return new NotFoundError { Id = payload.Id };
+		}
+
+		var item = await executor.ExecuteQuery(new GetProjectQuery(payload.Id), cancellationToken);
+
+		return item.Match<FieldResult<ProjectDto, NotFoundError>>(
+			project => mapper.Map<ProjectDto>(project),
+			notFound => new NotFoundError { Id = payload.Id });
 	}
 }
