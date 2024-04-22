@@ -68,7 +68,17 @@ app.MapGroup("/identity")
 
 app.MapFeatureModulesEndpoints();
 
-app.MapGraphQL()
+app.MapGraphQLHttp("/graphql")
+	.RequireAuthorization()
 	.RequireCors(devBookCorsPolicyName);
+
+app.MapGraphQLSchema("/graphql/schema")
+	.RequireAuthorization()
+	.RequireCors(devBookCorsPolicyName);
+
+if (app.Environment.IsDevelopment())
+{
+	app.MapBananaCakePop("/graphql/ui");
+}
 
 app.Run();
