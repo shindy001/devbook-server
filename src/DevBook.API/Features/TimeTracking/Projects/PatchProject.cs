@@ -50,3 +50,31 @@ internal sealed class PatchProjectCommandHandler(DevBookDbContext dbContext) : I
 		}
 	}
 }
+
+[MutationType]
+internal sealed class PatchProjectMutation
+{
+	public async Task<FieldResult<ProjectDto, NotFoundError>> PatchProject(PatchProjectCommand payload, IExecutor executor, IMapper mapper, CancellationToken cancellationToken)
+	{
+		var result = await executor.ExecuteCommand(
+			new PatchProjectCommand(
+				Id: payload.Id,
+				Name: payload.Name,
+				Details: payload.Details,
+				HourlyRate: payload.HourlyRate,
+				Currency: payload.Currency,
+				HexColor: payload.HexColor),
+		cancellationToken);
+
+		if (result.IsT1)
+		{
+			return new NotFoundError { Id = payload.Id };
+		}
+
+		var item = await executor.ExecuteQuery(new GetProjectQuery(payload.Id), cancellationToken);
+
+		return item.Match<FieldResult<ProjectDto, NotFoundError>>(
+			project => mapper.Map<ProjectDto>(project),
+			notFound => new NotFoundError { Id = payload.Id });
+	}
+}
