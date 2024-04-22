@@ -1,15 +1,15 @@
 ﻿namespace DevBook.API.Features.TimeTracking.Tasks;
 
-internal sealed record StartWorkTaskCommand : ICommand<Guid>
+public sealed record StartWorkTaskCommand : ICommand<OneOf<WorkTask, DevBookValidationException>>
 {
 	public string? Description { get; init; }
 	public required DateTimeOffset Date { get; init; }
 	public required TimeOnly Start { get; init; }
 }
 
-internal sealed class StartTaskCommandHandler(DevBookDbContext dbContext) : ICommandHandler<StartWorkTaskCommand, Guid>
+internal sealed class StartTaskCommandHandler(DevBookDbContext dbContext) : ICommandHandler<StartWorkTaskCommand, OneOf<WorkTask, DevBookValidationException>>
 {
-	public async Task<Guid> Handle(StartWorkTaskCommand request, CancellationToken cancellationToken)
+	public async Task<OneOf<WorkTask, DevBookValidationException>> Handle(StartWorkTaskCommand request, CancellationToken cancellationToken)
 	{
 		if (await dbContext.Tasks.AnyAsync(x => x.End == null, cancellationToken: cancellationToken))
 		{
@@ -26,6 +26,19 @@ internal sealed class StartTaskCommandHandler(DevBookDbContext dbContext) : ICom
 
 		await dbContext.Tasks.AddAsync(newItem, cancellationToken);
 		await dbContext.SaveChangesAsync(cancellationToken);
-		return newItem.Id;
+		return newItem;
+	}
+}
+
+[MutationType]
+internal sealed class StartWorkTaskMutation
+{
+	public async Task<WorkTaskDto> StartWorkTask(StartWorkTaskCommand payload, IExecutor executor, IMapper mapper, CancellationToken cancellationToken)
+	{
+		var result = await executor.ExecuteCommand(payload, cancellationToken);
+
+		return result.Match(
+			mapper.Map<WorkTaskDto>,
+			validationException => throw new GraphQLException(validationException.Message));
 	}
 }

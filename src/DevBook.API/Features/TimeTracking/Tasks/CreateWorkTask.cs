@@ -1,6 +1,6 @@
 ﻿namespace DevBook.API.Features.TimeTracking.Tasks;
 
-public sealed record CreateWorkTaskCommand : ICommand<Guid>
+public sealed record CreateWorkTaskCommand : ICommand<WorkTask>
 {
 	public Guid? ProjectId { get; init; }
 	public string? Description { get; init; }
@@ -19,9 +19,9 @@ public sealed class CreateWorkTaskCommandValidator : AbstractValidator<CreateWor
 	}
 }
 
-internal sealed class CreateTaskCommandHandler(DevBookDbContext dbContext) : ICommandHandler<CreateWorkTaskCommand, Guid>
+internal sealed class CreateTaskCommandHandler(DevBookDbContext dbContext) : ICommandHandler<CreateWorkTaskCommand, WorkTask>
 {
-	public async Task<Guid> Handle(CreateWorkTaskCommand request, CancellationToken cancellationToken)
+	public async Task<WorkTask> Handle(CreateWorkTaskCommand request, CancellationToken cancellationToken)
 	{
 		if (request.ProjectId is not null && !(await dbContext.Projects.AnyAsync(x => x.Id.Equals(request.ProjectId), cancellationToken: cancellationToken)))
 		{
@@ -38,6 +38,16 @@ internal sealed class CreateTaskCommandHandler(DevBookDbContext dbContext) : ICo
 
 		await dbContext.Tasks.AddAsync(newItem, cancellationToken);
 		await dbContext.SaveChangesAsync(cancellationToken);
-		return newItem.Id;
+		return newItem;
+	}
+}
+
+[MutationType]
+internal sealed class CreateWorkTaskMutation
+{
+	public async Task<WorkTaskDto> CreateWorkTask(CreateWorkTaskCommand payload, IExecutor executor, IMapper mapper, CancellationToken cancellationToken)
+	{
+		var result = await executor.ExecuteCommand(payload, cancellationToken);
+		return mapper.Map<WorkTaskDto>(result);
 	}
 }

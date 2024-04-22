@@ -50,13 +50,16 @@ internal static class WorkTaskEndpoints
 	private static async Task<IResult> CreateWorkTask(CreateWorkTaskCommand command, IExecutor executor, CancellationToken cancellationToken)
 	{
 		var result = await executor.ExecuteCommand(command, cancellationToken);
-		return TypedResults.CreatedAtRoute($"{OperationIdPrefix}{GetByIdRoute}", new { id = result });
+		return TypedResults.CreatedAtRoute($"{OperationIdPrefix}{GetByIdRoute}", new { id = result.Id });
 	}
 
 	private static async Task<IResult> StartWorkTask(StartWorkTaskCommand command, IExecutor executor, CancellationToken cancellationToken)
 	{
 		var result = await executor.ExecuteCommand(command, cancellationToken);
-		return TypedResults.CreatedAtRoute($"{OperationIdPrefix}{GetByIdRoute}", new { id = result });
+
+		return result.Match<IResult>(
+			workTask => TypedResults.CreatedAtRoute($"{OperationIdPrefix}{GetByIdRoute}", new { id = result }),
+			validationException => TypedResults.BadRequest(validationException.Message));
 	}
 
 	private static async Task<IResult> GetWorkTaskById(Guid id, IExecutor executor, CancellationToken cancellationToken)

@@ -1,6 +1,6 @@
 ﻿namespace DevBook.API.Features.TimeTracking.Tasks;
 
-public sealed record WorkTaskDto
+public sealed record WorkTaskDto : IMappebleTo<WorkTask>
 {
 	[Required]
 	public Guid Id { get; init; }
@@ -14,15 +14,4 @@ public sealed record WorkTaskDto
 	[Required]
 	public TimeOnly Start { get; init; }
 	public TimeOnly? End { get; init; }
-
-	public WorkTaskDto(Guid id, ProjectDto? project, string? description, string? details, DateTimeOffset date, TimeOnly start, TimeOnly? end)
-	{
-		Id = id;
-		Project = project;
-		Description = description;
-		Details = details;
-		Date = date;
-		Start = start;
-		End = end;
-	}
 }
