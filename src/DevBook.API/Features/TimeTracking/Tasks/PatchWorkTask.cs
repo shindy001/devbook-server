@@ -56,3 +56,23 @@ internal sealed class PatchProjectCommandHandler(DevBookDbContext dbContext) : I
 		}
 	}
 }
+
+[MutationType]
+internal sealed class PatchWorkTaskMutation
+{
+	public async Task<FieldResult<WorkTaskDto, NotFoundError>> PatchWorkTask(PatchWorkTaskCommand payload, IExecutor executor, IMapper mapper, CancellationToken cancellationToken)
+	{
+		var result = await executor.ExecuteCommand(payload, cancellationToken);
+
+		if (result.IsT1)
+		{
+			return new NotFoundError { Id = payload.Id };
+		}
+
+		var item = await executor.ExecuteQuery(new GetWorkTaskQuery(payload.Id), cancellationToken);
+
+		return item.Match<FieldResult<WorkTaskDto, NotFoundError>>(
+			workTask => mapper.Map<WorkTaskDto>(workTask),
+			notFound => new NotFoundError { Id = payload.Id });
+	}
+}

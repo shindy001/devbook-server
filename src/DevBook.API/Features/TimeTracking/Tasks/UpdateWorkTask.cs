@@ -61,3 +61,23 @@ internal sealed class UpdateUpdateWorkTaskCommandHandler(DevBookDbContext dbCont
 		}
 	}
 }
+
+[MutationType]
+internal sealed class UpdateWorkTaskMutation
+{
+	public async Task<FieldResult<WorkTaskDto, NotFoundError>> UpdateWorkTask(UpdateWorkTaskCommand payload, IExecutor executor, IMapper mapper, CancellationToken cancellationToken)
+	{
+		var result = await executor.ExecuteCommand(payload, cancellationToken);
+
+		if (result.IsT1)
+		{
+			return new NotFoundError { Id = payload.Id };
+		}
+
+		var item = await executor.ExecuteQuery(new GetWorkTaskQuery(payload.Id), cancellationToken);
+
+		return item.Match<FieldResult<WorkTaskDto, NotFoundError>>(
+			workTask => mapper.Map<WorkTaskDto>(workTask),
+			notFound => new NotFoundError { Id = payload.Id });
+	}
+}
