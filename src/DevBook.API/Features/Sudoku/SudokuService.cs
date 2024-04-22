@@ -25,8 +25,10 @@ internal sealed class SudokuService(HttpClient httpClient) : ISudokuService
 		var gridNumbers = grids.GetProperty("value").Deserialize<int[][]>();
 		var solutionNumbers = grids.GetProperty("solution").Deserialize<int[][]>();
 
-		return new (
-			gridNumbers: gridNumbers ?? [],
-			solutionNumbers: solutionNumbers ?? []);
+		return new BoardData
+		{
+			GridNumbers = gridNumbers ?? [],
+			SolutionNumbers = solutionNumbers ?? []
+		};
 	}
 }

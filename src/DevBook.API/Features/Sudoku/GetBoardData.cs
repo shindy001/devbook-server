@@ -9,3 +9,12 @@ internal sealed class GetBoardDataQueryHandler(ISudokuService sudokuService) : I
 		return await sudokuService.GetBoardData(cancellationToken);
 	}
 }
+
+[QueryType]
+internal sealed class BoardDataQuery
+{
+	public async Task<BoardData> GetBoardData(IExecutor executor, CancellationToken cancellationToken)
+	{
+		return await executor.ExecuteQuery(new GetBoardDataQuery(), cancellationToken);
+	}
+}
