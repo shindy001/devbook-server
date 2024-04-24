@@ -1,12 +1,13 @@
 var builder = WebApplication.CreateBuilder(args);
 
 var devBookClientOrigin = builder.Configuration.GetSection("DevBookClientOrigins").Get<string[]>()!;
+var authTokenTTLInMinutes = builder.Configuration.GetSection("AuthTokenTTLInMinutes").Get<int>()!;
 var devBookCorsPolicyName = "DevBookCorsPolicy";
 
 builder.AddServiceDefaults();
 builder.Services.RegisterDevBookDbContext();
 builder.Services.RegisterRequestPipelines();
-builder.Services.RegisterAuthentication();
+builder.Services.RegisterAuthentication(tokenTTLinMinutes: authTokenTTLInMinutes);
 builder.Services.RegisterFeatureModules([typeof(Program).Assembly]);
 
 builder.Services.AddSwaggerGen(SwaggerOptions.WithDevBookOptions());

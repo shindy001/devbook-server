@@ -24,9 +24,9 @@ internal static class DependencyInjection
 		return services;
 	}
 
-	internal static IServiceCollection RegisterAuthentication(this IServiceCollection services)
+	internal static IServiceCollection RegisterAuthentication(this IServiceCollection services, int tokenTTLinMinutes = 30)
 	{
-		services.AddAuthentication().AddBearerToken(IdentityConstants.BearerScheme, opt => opt.BearerTokenExpiration = TimeSpan.FromMinutes(30));
+		services.AddAuthentication().AddBearerToken(IdentityConstants.BearerScheme, opt => opt.BearerTokenExpiration = TimeSpan.FromMinutes(tokenTTLinMinutes));
 		services.AddAuthorizationBuilder();
 		services.AddIdentityCore<DevBookUser>()
 			.AddEntityFrameworkStores<DevBookDbContext>()
