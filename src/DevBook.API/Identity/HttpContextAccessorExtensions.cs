@@ -2,6 +2,17 @@
 
 public static class HttpContextAccessorExtensions
 {
+	internal static IServiceCollection RegisterAuthentication(this IServiceCollection services, int tokenTTLinMinutes = 30)
+	{
+		services.AddAuthentication().AddBearerToken(IdentityConstants.BearerScheme, opt => opt.BearerTokenExpiration = TimeSpan.FromMinutes(tokenTTLinMinutes));
+		services.AddAuthorizationBuilder();
+		services.AddIdentityCore<DevBookUser>()
+			.AddEntityFrameworkStores<DevBookDbContext>()
+			.AddApiEndpoints();
+
+		return services;
+	}
+
 	/// <summary>
 	/// Gets userId from HttpContext in HttpContextAccessor
 	/// </summary>

@@ -53,12 +53,12 @@ if (app.Environment.IsDevelopment())
 
 app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
 
+app.UseHttpsRedirection();
+app.UseStaticFiles();
+
 app.UseCors(devBookCorsPolicyName);
 app.UseAuthentication();
 app.UseAuthorization();
-
-app.UseHttpsRedirection();
-app.UseStaticFiles();
 
 // Health check + Alive
 app.MapDefaultEndpoints();
