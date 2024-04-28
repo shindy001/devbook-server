@@ -19,9 +19,9 @@ internal class DeleteWorkTaskCommandHandler(DevBookDbContext dbContext) : IComma
 [MutationType]
 internal sealed class DeleteWorkTaskMutation
 {
-	public async Task<FieldResult<SuccessResult>> DeleteWorkTask(DeleteWorkTaskCommand payload, IExecutor executor, CancellationToken cancellationToken)
+	public async Task<FieldResult<SuccessResult>> DeleteWorkTask(DeleteWorkTaskCommand input, IExecutor executor, CancellationToken cancellationToken)
 	{
-		await executor.ExecuteCommand(payload, cancellationToken);
+		await executor.ExecuteCommand(input, cancellationToken);
 		return new SuccessResult();
 	}
 }

@@ -33,9 +33,9 @@ internal sealed class StartTaskCommandHandler(DevBookDbContext dbContext) : ICom
 [MutationType]
 internal sealed class StartWorkTaskMutation
 {
-	public async Task<WorkTaskDto> StartWorkTask(StartWorkTaskCommand payload, IExecutor executor, IMapper mapper, CancellationToken cancellationToken)
+	public async Task<WorkTaskDto> StartWorkTask(StartWorkTaskCommand input, IExecutor executor, IMapper mapper, CancellationToken cancellationToken)
 	{
-		var result = await executor.ExecuteCommand(payload, cancellationToken);
+		var result = await executor.ExecuteCommand(input, cancellationToken);
 
 		return result.Match(
 			mapper.Map<WorkTaskDto>,

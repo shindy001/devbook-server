@@ -45,9 +45,9 @@ internal sealed class CreateTaskCommandHandler(DevBookDbContext dbContext) : ICo
 [MutationType]
 internal sealed class CreateWorkTaskMutation
 {
-	public async Task<WorkTaskDto> CreateWorkTask(CreateWorkTaskCommand payload, IExecutor executor, IMapper mapper, CancellationToken cancellationToken)
+	public async Task<WorkTaskDto> CreateWorkTask(CreateWorkTaskCommand input, IExecutor executor, IMapper mapper, CancellationToken cancellationToken)
 	{
-		var result = await executor.ExecuteCommand(payload, cancellationToken);
+		var result = await executor.ExecuteCommand(input, cancellationToken);
 		return mapper.Map<WorkTaskDto>(result);
 	}
 }

@@ -1,6 +1,4 @@
-﻿using static System.Runtime.InteropServices.JavaScript.JSType;
-
-namespace DevBook.API.Features.TimeTracking.Tasks;
+﻿namespace DevBook.API.Features.TimeTracking.Tasks;
 
 public sealed record GetWorkTaskQuery(Guid Id) : IQuery<OneOf<WorkTaskDto, NotFound>>;
 
@@ -31,12 +29,12 @@ internal class GetWorkTaskQueryHandler(DevBookDbContext dbContext) : IQueryHandl
 [QueryType]
 internal sealed class WorkTaskQuery
 {
-	public async Task<FieldResult<WorkTaskDto, NotFoundError>> GetWorkTask(Guid id, IExecutor executor, IMapper mapper, CancellationToken cancellationToken)
+	public async Task<FieldResult<WorkTaskDto, NotFoundError>> GetWorkTask(GetWorkTaskQuery input, IExecutor executor, IMapper mapper, CancellationToken cancellationToken)
 	{
-		var result = await executor.ExecuteQuery(new GetWorkTaskQuery(id), cancellationToken);
+		var result = await executor.ExecuteQuery(input, cancellationToken);
 
 		return result.Match<FieldResult<WorkTaskDto, NotFoundError>>(
 			workTask => mapper.Map<WorkTaskDto>(workTask),
-			notFound => new NotFoundError { Id = id });
+			notFound => new NotFoundError { Id = input.Id });
 	}
 }
