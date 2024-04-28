@@ -32,9 +32,9 @@ internal sealed class CreateProjectCommandHandler(DevBookDbContext dbContext) : 
 [MutationType]
 internal sealed class CreateProjectMutation
 {
-	public async Task<ProjectDto> CreateProject(CreateProjectCommand payload, IExecutor executor, IMapper mapper, CancellationToken cancellationToken)
+	public async Task<ProjectDto> CreateProject(CreateProjectCommand input, IExecutor executor, IMapper mapper, CancellationToken cancellationToken)
 	{
-		var result = await executor.ExecuteCommand(payload, cancellationToken);
+		var result = await executor.ExecuteCommand(input, cancellationToken);
 		return mapper.Map<ProjectDto>(result);
 	}
 }

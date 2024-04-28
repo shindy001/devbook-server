@@ -17,7 +17,7 @@ internal sealed class GetProjectsQueryHandler(DevBookDbContext dbContext) : IQue
 internal sealed class ProjectsQuery
 {
 	[UseProjection]
-	public async Task<IQueryable<ProjectDto>> GetProjects(IExecutor executor, IMapper mapper, IResolverContext resolverContext, CancellationToken cancellationToken)
+	public async Task<IQueryable<ProjectDto>> GetProjects(IExecutor executor, IResolverContext resolverContext, CancellationToken cancellationToken)
 	{
 		var result = await executor.ExecuteQuery(new GetProjectsQuery(), cancellationToken);
 		return result.ProjectTo<Project, ProjectDto>(resolverContext);

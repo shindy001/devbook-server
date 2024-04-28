@@ -1,6 +1,4 @@
-﻿using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
-
-namespace DevBook.API.Features.TimeTracking.Projects;
+﻿namespace DevBook.API.Features.TimeTracking.Projects;
 
 public record UpdateProjectCommandDto
 {

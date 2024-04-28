@@ -48,7 +48,7 @@ internal sealed class ListWorkTasksQueryHandler(DevBookDbContext dbContext) : IQ
 [QueryType]
 internal sealed class WorkTaskListQuery
 {
-	public async Task<WorkTaskListResponse> GetWorkTaskList(IExecutor executor, IMapper mapper, CancellationToken cancellationToken)
+	public async Task<WorkTaskListResponse> GetWorkTaskList(IExecutor executor, CancellationToken cancellationToken)
 	{
 		return await executor.ExecuteQuery(new ListWorkTasksQuery(), cancellationToken);
 	}
