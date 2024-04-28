@@ -2,6 +2,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 var devBookClientOrigin = builder.Configuration.GetSection("DevBookClientOrigins").Get<string[]>()!;
 var authTokenTTLInMinutes = builder.Configuration.GetSection("AuthTokenTTLInMinutes").Get<int>()!;
+var graphQLIntrospectionAllowed = builder.Configuration.GetSection("GraphQLIntrospectionAllowed").Get<bool>()!;
 var devBookCorsPolicyName = "DevBookCorsPolicy";
 
 builder.AddServiceDefaults();
@@ -30,6 +31,7 @@ builder.Services.AddAutoMapper(typeof(Program).Assembly);
 builder.Services
 	.AddGraphQLServer()
 	.AddAuthorization()
+	.AllowIntrospection(allow: graphQLIntrospectionAllowed)
 	.AddProjections()
 	.AddAPITypes()
 	.AddQueryConventions()
@@ -70,12 +72,11 @@ app.MapGroup("/identity")
 app.MapFeatureModulesEndpoints();
 
 app.MapGraphQLHttp("/graphql")
-	.RequireAuthorization()
 	.RequireCors(devBookCorsPolicyName);
 
 app.MapGraphQLSchema("/graphql/schema")
-	.RequireAuthorization()
-	.RequireCors(devBookCorsPolicyName);
+	.RequireCors(devBookCorsPolicyName)
+	.RequireAuthorization();
 
 if (app.Environment.IsDevelopment())
 {
