@@ -1,6 +1,6 @@
 ﻿namespace DevBook.API.Features.TimeTracking.Projects;
 
-internal record DeleteProjectCommand(Guid Id) : ICommand;
+public sealed record DeleteProjectCommand(Guid Id) : ICommand;
 
 internal class DeleteProjectCommandHandler(DevBookDbContext dbContext) : ICommandHandler<DeleteProjectCommand>
 {

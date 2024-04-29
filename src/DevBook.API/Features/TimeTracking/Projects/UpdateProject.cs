@@ -1,6 +1,6 @@
 ﻿namespace DevBook.API.Features.TimeTracking.Projects;
 
-public record UpdateProjectCommandDto
+public sealed record UpdateProjectCommandDto
 {
 	[Required]
 	public required string Name { get; init; }
@@ -10,7 +10,7 @@ public record UpdateProjectCommandDto
 	public string? HexColor { get; init; }
 }
 
-public record UpdateProjectCommand(
+public sealed record UpdateProjectCommand(
 	Guid Id,
 	string Name,
 	string? Details,

@@ -1,6 +1,6 @@
 ﻿namespace DevBook.API.Features.TimeTracking.Projects;
 
-internal record GetProjectQuery(Guid Id) : IQuery<OneOf<Project, NotFound>>;
+public sealed record GetProjectQuery(Guid Id) : IQuery<OneOf<Project, NotFound>>;
 
 internal class GetProjectQueryHandler(DevBookDbContext dbContext) : IQueryHandler<GetProjectQuery, OneOf<Project, NotFound>>
 {
