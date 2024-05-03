@@ -47,13 +47,13 @@ internal static class WorkTaskEndpoints
 		return TypedResults.Ok(result);
 	}
 
-	private static async Task<IResult> CreateWorkTask(CreateWorkTaskCommand command, IExecutor executor, CancellationToken cancellationToken)
+	private static async Task<IResult> CreateWorkTask(CreateWorkTaskInput command, IExecutor executor, CancellationToken cancellationToken)
 	{
 		var result = await executor.ExecuteCommand(command, cancellationToken);
 		return TypedResults.CreatedAtRoute($"{OperationIdPrefix}{GetByIdRoute}", new { id = result.Id });
 	}
 
-	private static async Task<IResult> StartWorkTask(StartWorkTaskCommand command, IExecutor executor, CancellationToken cancellationToken)
+	private static async Task<IResult> StartWorkTask(StartWorkTaskInput command, IExecutor executor, CancellationToken cancellationToken)
 	{
 		var result = await executor.ExecuteCommand(command, cancellationToken);
 
@@ -64,7 +64,7 @@ internal static class WorkTaskEndpoints
 
 	private static async Task<IResult> GetWorkTaskById(Guid id, IExecutor executor, CancellationToken cancellationToken)
 	{
-		var result = await executor.ExecuteQuery(new GetWorkTaskQuery(id), cancellationToken);
+		var result = await executor.ExecuteQuery(new WorkTaskInput(id), cancellationToken);
 		return result.Match<IResult>(
 			workTask => TypedResults.Ok(workTask),
 			notFound => TypedResults.NotFound(id));
@@ -73,7 +73,7 @@ internal static class WorkTaskEndpoints
 	private static async Task<IResult> UpdateWorkTask([FromRoute] Guid id, UpdateWorkTaskCommandDto command, IExecutor executor, CancellationToken cancellationToken)
 	{
 		var result = await executor.ExecuteCommand(
-			new UpdateWorkTaskCommand(
+			new UpdateWorkTaskInput(
 				Id: id,
 				ProjectId: command.ProjectId,
 				Description: command.Description,
@@ -91,7 +91,7 @@ internal static class WorkTaskEndpoints
 	private static async Task<IResult> PatchWorkTask([FromRoute] Guid id, PatchWorkTaskCommandDto command, IExecutor executor, CancellationToken cancellationToken)
 	{
 		var result = await executor.ExecuteCommand(
-			new PatchWorkTaskCommand(
+			new PatchWorkTaskInput(
 				Id: id,
 				ProjectId: command.ProjectId,
 				Description: command.Description,
@@ -108,7 +108,7 @@ internal static class WorkTaskEndpoints
 
 	private static async Task<IResult> DeleteWorkTask([FromRoute] Guid id, IExecutor executor, CancellationToken cancellationToken)
 	{
-		await executor.ExecuteCommand(new DeleteWorkTaskCommand(id), cancellationToken);
+		await executor.ExecuteCommand(new DeleteWorkTaskInput(id), cancellationToken);
 		return TypedResults.NoContent();
 	}
 }

@@ -7,7 +7,7 @@ public record PatchProjectCommandDto(
 	string? Currency,
 	string? HexColor);
 
-public record PatchProjectCommand(
+public record PatchProjectInput(
 	Guid Id,
 	string? Name,
 	string? Details,
@@ -16,7 +16,7 @@ public record PatchProjectCommand(
 	string? HexColor)
 	: ICommand<OneOf<Success, NotFound>>;
 
-public sealed class PatchProjectCommandValidator : AbstractValidator<PatchProjectCommand>
+public sealed class PatchProjectCommandValidator : AbstractValidator<PatchProjectInput>
 {
 	public PatchProjectCommandValidator()
 	{
@@ -24,9 +24,9 @@ public sealed class PatchProjectCommandValidator : AbstractValidator<PatchProjec
 	}
 }
 
-internal sealed class PatchProjectCommandHandler(DevBookDbContext dbContext) : ICommandHandler<PatchProjectCommand, OneOf<Success, NotFound>>
+internal sealed class PatchProjectCommandHandler(DevBookDbContext dbContext) : ICommandHandler<PatchProjectInput, OneOf<Success, NotFound>>
 {
-	public async Task<OneOf<Success, NotFound>> Handle(PatchProjectCommand command, CancellationToken cancellationToken)
+	public async Task<OneOf<Success, NotFound>> Handle(PatchProjectInput command, CancellationToken cancellationToken)
 	{
 		var project = await dbContext.Projects.FindAsync([command.Id], cancellationToken);
 		if (project is null)
@@ -54,7 +54,7 @@ internal sealed class PatchProjectCommandHandler(DevBookDbContext dbContext) : I
 [MutationType]
 internal sealed class PatchProjectMutation
 {
-	public async Task<FieldResult<ProjectDto, NotFoundError>> PatchProject(PatchProjectCommand input, IExecutor executor, IMapper mapper, CancellationToken cancellationToken)
+	public async Task<FieldResult<ProjectDto, NotFoundError>> PatchProject(PatchProjectInput input, IExecutor executor, IMapper mapper, CancellationToken cancellationToken)
 	{
 		var result = await executor.ExecuteCommand(input, cancellationToken);
 
@@ -63,7 +63,7 @@ internal sealed class PatchProjectMutation
 			return new NotFoundError { Id = input.Id };
 		}
 
-		var item = await executor.ExecuteQuery(new GetProjectQuery(input.Id), cancellationToken);
+		var item = await executor.ExecuteQuery(new GetProjectInput(input.Id), cancellationToken);
 
 		return item.Match<FieldResult<ProjectDto, NotFoundError>>(
 			project => mapper.Map<ProjectDto>(project),

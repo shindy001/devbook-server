@@ -1,10 +1,10 @@
 ﻿namespace DevBook.API.Features.TimeTracking.Tasks;
 
-public sealed record GetWorkTaskQuery(Guid Id) : IQuery<OneOf<WorkTaskDto, NotFound>>;
+public sealed record WorkTaskInput(Guid Id) : IQuery<OneOf<WorkTaskDto, NotFound>>;
 
-internal class GetWorkTaskQueryHandler(DevBookDbContext dbContext) : IQueryHandler<GetWorkTaskQuery, OneOf<WorkTaskDto, NotFound>>
+internal class GetWorkTaskQueryHandler(DevBookDbContext dbContext) : IQueryHandler<WorkTaskInput, OneOf<WorkTaskDto, NotFound>>
 {
-	public async Task<OneOf<WorkTaskDto, NotFound>> Handle(GetWorkTaskQuery request, CancellationToken cancellationToken)
+	public async Task<OneOf<WorkTaskDto, NotFound>> Handle(WorkTaskInput request, CancellationToken cancellationToken)
 	{
 		var workTask = await dbContext.Tasks.FindAsync([request.Id], cancellationToken);
 		Project? project = workTask?.ProjectId is not null
@@ -29,7 +29,7 @@ internal class GetWorkTaskQueryHandler(DevBookDbContext dbContext) : IQueryHandl
 [QueryType]
 internal sealed class WorkTaskQuery
 {
-	public async Task<FieldResult<WorkTaskDto, NotFoundError>> GetWorkTask(GetWorkTaskQuery input, IExecutor executor, IMapper mapper, CancellationToken cancellationToken)
+	public async Task<FieldResult<WorkTaskDto, NotFoundError>> GetWorkTask(WorkTaskInput input, IExecutor executor, IMapper mapper, CancellationToken cancellationToken)
 	{
 		var result = await executor.ExecuteQuery(input, cancellationToken);
 

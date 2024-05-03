@@ -1,10 +1,10 @@
 ﻿namespace DevBook.API.Features.TimeTracking.Projects;
 
-public sealed record DeleteProjectCommand(Guid Id) : ICommand;
+public sealed record DeleteProjectInput(Guid Id) : ICommand;
 
-internal class DeleteProjectCommandHandler(DevBookDbContext dbContext) : ICommandHandler<DeleteProjectCommand>
+internal class DeleteProjectCommandHandler(DevBookDbContext dbContext) : ICommandHandler<DeleteProjectInput>
 {
-	public async Task Handle(DeleteProjectCommand command, CancellationToken cancellationToken)
+	public async Task Handle(DeleteProjectInput command, CancellationToken cancellationToken)
 	{
 		var project = await dbContext.Projects.FindAsync([command.Id], cancellationToken);
 
@@ -19,7 +19,7 @@ internal class DeleteProjectCommandHandler(DevBookDbContext dbContext) : IComman
 [MutationType]
 internal sealed class DeleteProjectMutation
 {
-	public async Task<FieldResult<SuccessResult>> DeleteProject(DeleteProjectCommand input, IExecutor executor, CancellationToken cancellationToken)
+	public async Task<FieldResult<SuccessResult>> DeleteProject(DeleteProjectInput input, IExecutor executor, CancellationToken cancellationToken)
 	{
 		await executor.ExecuteCommand(input, cancellationToken);
 		return new SuccessResult();

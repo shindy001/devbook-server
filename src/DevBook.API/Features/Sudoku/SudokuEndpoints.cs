@@ -15,7 +15,7 @@ internal static class SudokuEndpoints
 
 	private static async Task<IResult> GetBoard(IExecutor executor, CancellationToken cancellationToken)
 	{
-		var result = await executor.ExecuteQuery(new GetBoardDataQuery(), cancellationToken);
+		var result = await executor.ExecuteQuery(new GetBoardDataQueryInput(), cancellationToken);
 		return TypedResults.Ok(result);
 	}
 }

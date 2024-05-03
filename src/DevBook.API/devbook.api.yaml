@@ -254,7 +254,7 @@ paths:
           application/json:
             schema:
               allOf:
-                - $ref: '#/components/schemas/CreateProjectCommand'
+                - $ref: '#/components/schemas/CreateProjectInput'
         required: true
       responses:
         '201':
@@ -365,7 +365,7 @@ paths:
           application/json:
             schema:
               allOf:
-                - $ref: '#/components/schemas/CreateWorkTaskCommand'
+                - $ref: '#/components/schemas/CreateWorkTaskInput'
         required: true
       responses:
         '201':
@@ -380,7 +380,7 @@ paths:
           application/json:
             schema:
               allOf:
-                - $ref: '#/components/schemas/StartWorkTaskCommand'
+                - $ref: '#/components/schemas/StartWorkTaskInput'
         required: true
       responses:
         '201':
@@ -510,7 +510,7 @@ components:
               type: integer
               format: int32
       additionalProperties: false
-    CreateProjectCommand:
+    CreateProjectInput:
       required:
         - name
       type: object
@@ -532,7 +532,7 @@ components:
           type: string
           nullable: true
       additionalProperties: false
-    CreateWorkTaskCommand:
+    CreateWorkTaskInput:
       type: object
       properties:
         projectId:
@@ -736,7 +736,7 @@ components:
           type: string
           nullable: true
       additionalProperties: false
-    StartWorkTaskCommand:
+    StartWorkTaskInput:
       type: object
       properties:
         description:

@@ -1,6 +1,6 @@
 ﻿namespace DevBook.API.Features.TimeTracking.Projects;
 
-public sealed record CreateProjectCommand : ICommand<Project>
+public sealed record CreateProjectInput : ICommand<Project>
 {
 	[Required]
 	public required string Name { get; init; }
@@ -10,7 +10,7 @@ public sealed record CreateProjectCommand : ICommand<Project>
 	public string? HexColor { get; init; }
 }
 
-public sealed class CreateProjectCommandValidator : AbstractValidator<CreateProjectCommand>
+public sealed class CreateProjectCommandValidator : AbstractValidator<CreateProjectInput>
 {
 	public CreateProjectCommandValidator()
 	{
@@ -18,9 +18,9 @@ public sealed class CreateProjectCommandValidator : AbstractValidator<CreateProj
 	}
 }
 
-internal sealed class CreateProjectCommandHandler(DevBookDbContext dbContext) : ICommandHandler<CreateProjectCommand, Project>
+internal sealed class CreateProjectCommandHandler(DevBookDbContext dbContext) : ICommandHandler<CreateProjectInput, Project>
 {
-	public async Task<Project> Handle(CreateProjectCommand request, CancellationToken cancellationToken)
+	public async Task<Project> Handle(CreateProjectInput request, CancellationToken cancellationToken)
 	{
 		var newItem = new Project { Name = request.Name, Details = request.Details, HourlyRate = request.HourlyRate, Currency = request.Currency, HexColor = request.HexColor };
 		await dbContext.Projects.AddAsync(newItem, cancellationToken);
@@ -32,7 +32,7 @@ internal sealed class CreateProjectCommandHandler(DevBookDbContext dbContext) : 
 [MutationType]
 internal sealed class CreateProjectMutation
 {
-	public async Task<ProjectDto> CreateProject(CreateProjectCommand input, IExecutor executor, IMapper mapper, CancellationToken cancellationToken)
+	public async Task<ProjectDto> CreateProject(CreateProjectInput input, IExecutor executor, IMapper mapper, CancellationToken cancellationToken)
 	{
 		var result = await executor.ExecuteCommand(input, cancellationToken);
 		return mapper.Map<ProjectDto>(result);

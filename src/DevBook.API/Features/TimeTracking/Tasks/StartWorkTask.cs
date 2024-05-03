@@ -1,15 +1,15 @@
 ﻿namespace DevBook.API.Features.TimeTracking.Tasks;
 
-public sealed record StartWorkTaskCommand : ICommand<OneOf<WorkTask, DevBookValidationException>>
+public sealed record StartWorkTaskInput : ICommand<OneOf<WorkTask, DevBookValidationException>>
 {
 	public string? Description { get; init; }
 	public required DateTimeOffset Date { get; init; }
 	public required TimeOnly Start { get; init; }
 }
 
-internal sealed class StartTaskCommandHandler(DevBookDbContext dbContext) : ICommandHandler<StartWorkTaskCommand, OneOf<WorkTask, DevBookValidationException>>
+internal sealed class StartTaskCommandHandler(DevBookDbContext dbContext) : ICommandHandler<StartWorkTaskInput, OneOf<WorkTask, DevBookValidationException>>
 {
-	public async Task<OneOf<WorkTask, DevBookValidationException>> Handle(StartWorkTaskCommand request, CancellationToken cancellationToken)
+	public async Task<OneOf<WorkTask, DevBookValidationException>> Handle(StartWorkTaskInput request, CancellationToken cancellationToken)
 	{
 		if (await dbContext.Tasks.AnyAsync(x => x.End == null, cancellationToken: cancellationToken))
 		{
@@ -33,7 +33,7 @@ internal sealed class StartTaskCommandHandler(DevBookDbContext dbContext) : ICom
 [MutationType]
 internal sealed class StartWorkTaskMutation
 {
-	public async Task<WorkTaskDto> StartWorkTask(StartWorkTaskCommand input, IExecutor executor, IMapper mapper, CancellationToken cancellationToken)
+	public async Task<WorkTaskDto> StartWorkTask(StartWorkTaskInput input, IExecutor executor, IMapper mapper, CancellationToken cancellationToken)
 	{
 		var result = await executor.ExecuteCommand(input, cancellationToken);
 

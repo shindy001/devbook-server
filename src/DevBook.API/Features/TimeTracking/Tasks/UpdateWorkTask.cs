@@ -14,7 +14,7 @@ internal sealed record UpdateWorkTaskCommandDto
 	public required TimeOnly End { get; init; }
 }
 
-public sealed record UpdateWorkTaskCommand(
+public sealed record UpdateWorkTaskInput(
 	Guid Id,
 	Guid? ProjectId,
 	string? Description,
@@ -24,7 +24,7 @@ public sealed record UpdateWorkTaskCommand(
 	TimeOnly End)
 	: ICommand<OneOf<Success, NotFound>>;
 
-public sealed class UpdateWorkTaskCommandValidator : AbstractValidator<UpdateWorkTaskCommand>
+public sealed class UpdateWorkTaskCommandValidator : AbstractValidator<UpdateWorkTaskInput>
 {
 	public UpdateWorkTaskCommandValidator()
 	{
@@ -34,9 +34,9 @@ public sealed class UpdateWorkTaskCommandValidator : AbstractValidator<UpdateWor
 	}
 }
 
-internal sealed class UpdateUpdateWorkTaskCommandHandler(DevBookDbContext dbContext) : ICommandHandler<UpdateWorkTaskCommand, OneOf<Success, NotFound>>
+internal sealed class UpdateUpdateWorkTaskCommandHandler(DevBookDbContext dbContext) : ICommandHandler<UpdateWorkTaskInput, OneOf<Success, NotFound>>
 {
-	public async Task<OneOf<Success, NotFound>> Handle(UpdateWorkTaskCommand command, CancellationToken cancellationToken)
+	public async Task<OneOf<Success, NotFound>> Handle(UpdateWorkTaskInput command, CancellationToken cancellationToken)
 	{
 		var workTask = await dbContext.Tasks.FindAsync([command.Id], cancellationToken);
 		if (workTask is null)
@@ -65,7 +65,7 @@ internal sealed class UpdateUpdateWorkTaskCommandHandler(DevBookDbContext dbCont
 [MutationType]
 internal sealed class UpdateWorkTaskMutation
 {
-	public async Task<FieldResult<WorkTaskDto, NotFoundError>> UpdateWorkTask(UpdateWorkTaskCommand input, IExecutor executor, IMapper mapper, CancellationToken cancellationToken)
+	public async Task<FieldResult<WorkTaskDto, NotFoundError>> UpdateWorkTask(UpdateWorkTaskInput input, IExecutor executor, IMapper mapper, CancellationToken cancellationToken)
 	{
 		var result = await executor.ExecuteCommand(input, cancellationToken);
 
@@ -74,7 +74,7 @@ internal sealed class UpdateWorkTaskMutation
 			return new NotFoundError { Id = input.Id };
 		}
 
-		var item = await executor.ExecuteQuery(new GetWorkTaskQuery(input.Id), cancellationToken);
+		var item = await executor.ExecuteQuery(new WorkTaskInput(input.Id), cancellationToken);
 
 		return item.Match<FieldResult<WorkTaskDto, NotFoundError>>(
 			workTask => mapper.Map<WorkTaskDto>(workTask),

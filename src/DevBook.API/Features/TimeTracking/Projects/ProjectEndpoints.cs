@@ -43,7 +43,7 @@ internal static class ProjectEndpoints
 		return TypedResults.Ok(result);
 	}
 
-	private static async Task<IResult> CreateProject(CreateProjectCommand command, IExecutor executor, CancellationToken cancellationToken)
+	private static async Task<IResult> CreateProject(CreateProjectInput command, IExecutor executor, CancellationToken cancellationToken)
 	{
 		var result = await executor.ExecuteCommand(command, cancellationToken);
 		return TypedResults.CreatedAtRoute($"{OperationIdPrefix}{GetByIdRoute}", new { id = result.Id });
@@ -51,7 +51,7 @@ internal static class ProjectEndpoints
 
 	private static async Task<IResult> GetProjectById(Guid id, IExecutor executor, CancellationToken cancellationToken)
 	{
-		var result = await executor.ExecuteQuery(new GetProjectQuery(id), cancellationToken);
+		var result = await executor.ExecuteQuery(new GetProjectInput(id), cancellationToken);
 		return result.Match<IResult>(
 			project => TypedResults.Ok(project),
 			notFound => TypedResults.NotFound(id));
@@ -60,7 +60,7 @@ internal static class ProjectEndpoints
 	private static async Task<IResult> UpdateProject([FromRoute] Guid id, UpdateProjectCommandDto command, IExecutor executor, CancellationToken cancellationToken)
 	{
 		var result = await executor.ExecuteCommand(
-			new UpdateProjectCommand(
+			new UpdateProjectInput(
 				Id: id,
 				Name: command.Name,
 				Details: command.Details,
@@ -77,7 +77,7 @@ internal static class ProjectEndpoints
 	private static async Task<IResult> PatchProject([FromRoute] Guid id, PatchProjectCommandDto command, IExecutor executor, CancellationToken cancellationToken)
 	{
 		var result = await executor.ExecuteCommand(
-			new PatchProjectCommand(
+			new PatchProjectInput(
 				Id: id,
 				Name: command.Name,
 				Details: command.Details,
@@ -93,7 +93,7 @@ internal static class ProjectEndpoints
 
 	private static async Task<IResult> DeleteProject([FromRoute] Guid id, IExecutor executor, CancellationToken cancellationToken)
 	{
-		await executor.ExecuteCommand(new DeleteProjectCommand(id), cancellationToken);
+		await executor.ExecuteCommand(new DeleteProjectInput(id), cancellationToken);
 		return TypedResults.NoContent();
 	}
 }

@@ -1,10 +1,10 @@
 ﻿namespace DevBook.API.Features.TimeTracking.Tasks;
 
-public sealed record DeleteWorkTaskCommand(Guid Id) : ICommand;
+public sealed record DeleteWorkTaskInput(Guid Id) : ICommand;
 
-internal class DeleteWorkTaskCommandHandler(DevBookDbContext dbContext) : ICommandHandler<DeleteWorkTaskCommand>
+internal class DeleteWorkTaskCommandHandler(DevBookDbContext dbContext) : ICommandHandler<DeleteWorkTaskInput>
 {
-	public async Task Handle(DeleteWorkTaskCommand command, CancellationToken cancellationToken)
+	public async Task Handle(DeleteWorkTaskInput command, CancellationToken cancellationToken)
 	{
 		var workTask = await dbContext.Tasks.FindAsync([command.Id], cancellationToken);
 
@@ -19,7 +19,7 @@ internal class DeleteWorkTaskCommandHandler(DevBookDbContext dbContext) : IComma
 [MutationType]
 internal sealed class DeleteWorkTaskMutation
 {
-	public async Task<FieldResult<SuccessResult>> DeleteWorkTask(DeleteWorkTaskCommand input, IExecutor executor, CancellationToken cancellationToken)
+	public async Task<FieldResult<SuccessResult>> DeleteWorkTask(DeleteWorkTaskInput input, IExecutor executor, CancellationToken cancellationToken)
 	{
 		await executor.ExecuteCommand(input, cancellationToken);
 		return new SuccessResult();
