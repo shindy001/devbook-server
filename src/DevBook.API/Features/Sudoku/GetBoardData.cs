@@ -1,20 +1,23 @@
-﻿namespace DevBook.API.Features.Sudoku;
+﻿using HotChocolate.Authorization;
 
-internal sealed record GetBoardDataQuery : IQuery<BoardData>;
+namespace DevBook.API.Features.Sudoku;
 
-internal sealed class GetBoardDataQueryHandler(ISudokuService sudokuService) : IQueryHandler<GetBoardDataQuery, BoardData>
+internal sealed record GetBoardDataQueryInput : IQuery<BoardData>;
+
+internal sealed class GetBoardDataQueryHandler(ISudokuService sudokuService) : IQueryHandler<GetBoardDataQueryInput, BoardData>
 {
-	public async Task<BoardData> Handle(GetBoardDataQuery request, CancellationToken cancellationToken)
+	public async Task<BoardData> Handle(GetBoardDataQueryInput request, CancellationToken cancellationToken)
 	{
 		return await sudokuService.GetBoardData(cancellationToken);
 	}
 }
 
 [QueryType]
-internal sealed class BoardDataQuery
+internal sealed class GetBoardDataQuery
 {
+	[AllowAnonymous]
 	public async Task<BoardData> GetBoardData(IExecutor executor, CancellationToken cancellationToken)
 	{
-		return await executor.ExecuteQuery(new GetBoardDataQuery(), cancellationToken);
+		return await executor.ExecuteQuery(new GetBoardDataQueryInput(), cancellationToken);
 	}
 }
