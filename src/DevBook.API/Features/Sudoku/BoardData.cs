@@ -1,6 +1,7 @@
 ﻿namespace DevBook.API.Features.Sudoku;
 
-public sealed record BoardData
+[Authorize]
+public sealed record BoardDataDto
 {
 	[Required]
 	public required ICollection<ICollection<int>> GridNumbers { get; init; } = [];

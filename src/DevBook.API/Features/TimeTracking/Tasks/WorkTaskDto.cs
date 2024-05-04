@@ -1,5 +1,6 @@
 ﻿namespace DevBook.API.Features.TimeTracking.Tasks;
 
+[Authorize]
 public sealed record WorkTaskDto : IMappebleTo<WorkTask>
 {
 	[Required]

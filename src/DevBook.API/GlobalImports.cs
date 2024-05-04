@@ -16,6 +16,7 @@ global using FluentValidation;
 global using FluentValidation.Results;
 global using MediatR;
 global using AutoMapper;
+global using HotChocolate.Authorization;
 
 global using DevBook.API;
 global using DevBook.API.Exceptions;

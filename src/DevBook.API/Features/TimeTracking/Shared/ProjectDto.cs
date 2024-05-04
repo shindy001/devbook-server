@@ -1,5 +1,6 @@
 ﻿namespace DevBook.API.Features.TimeTracking.Shared;
 
+[Authorize]
 public sealed record ProjectDto : IMappebleTo<Project>
 {
 	[Required]

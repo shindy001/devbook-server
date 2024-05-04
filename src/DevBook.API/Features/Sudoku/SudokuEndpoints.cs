@@ -8,7 +8,7 @@ internal static class SudokuEndpoints
 	{
 		groupBuilder.MapGet("/", GetBoard)
 			.WithName($"{OperationIdPrefix}Board")
-			.Produces<BoardData>();
+			.Produces<BoardDataDto>();
 
 		return groupBuilder;
 	}

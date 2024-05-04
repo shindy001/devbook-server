@@ -2,7 +2,7 @@
 
 internal interface ISudokuService
 {
-	public Task<BoardData> GetBoardData(CancellationToken cancellationToken);
+	public Task<BoardDataDto> GetBoardData(CancellationToken cancellationToken);
 }
 
 /// <summary>
@@ -11,7 +11,7 @@ internal interface ISudokuService
 /// <param name="httpClient"></param>
 internal sealed class SudokuService(HttpClient httpClient) : ISudokuService
 {
-	public async Task<BoardData> GetBoardData(CancellationToken cancellationToken)
+	public async Task<BoardDataDto> GetBoardData(CancellationToken cancellationToken)
 	{
 		var response = await httpClient.GetAsync("dosuku", cancellationToken);
 		response.EnsureSuccessStatusCode();
@@ -25,7 +25,7 @@ internal sealed class SudokuService(HttpClient httpClient) : ISudokuService
 		var gridNumbers = grids.GetProperty("value").Deserialize<int[][]>();
 		var solutionNumbers = grids.GetProperty("solution").Deserialize<int[][]>();
 
-		return new BoardData
+		return new BoardDataDto
 		{
 			GridNumbers = gridNumbers ?? [],
 			SolutionNumbers = solutionNumbers ?? []
