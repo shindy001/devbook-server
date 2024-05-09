@@ -32,7 +32,7 @@ internal sealed class CreateTaskCommandHandler(DevBookDbContext dbContext) : ICo
 			ProjectId: request.ProjectId,
 			Description: request.Description,
 			Details: request.Details,
-			Date: request.Date.UtcDateTime,
+			Date: request.Date,
 			Start: request.Start,
 			End: request.End);
 
