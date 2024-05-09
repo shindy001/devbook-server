@@ -230,7 +230,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BoardData'
+                $ref: '#/components/schemas/BoardDataDto'
   /projects:
     get:
       tags:
@@ -489,7 +489,7 @@ components:
           type: string
           nullable: true
       additionalProperties: false
-    BoardData:
+    BoardDataDto:
       required:
         - gridNumbers
         - solutionNumbers
