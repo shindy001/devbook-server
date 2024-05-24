@@ -19,7 +19,7 @@ builder.Services.AddEndpointsApiExplorer()
 builder.Services.AddCors(options =>
 {
 	options.AddPolicy(
-		devBookCorsPolicyName, 
+		devBookCorsPolicyName,
 		p => p.WithOrigins(devBookClientOrigin)
 			.AllowAnyMethod()
 			.SetIsOriginAllowed(isAllowed => true)
@@ -84,3 +84,5 @@ if (app.Environment.IsDevelopment())
 }
 
 app.Run();
+
+public partial class Program { }
