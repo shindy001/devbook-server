@@ -32,6 +32,11 @@
     <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="DevBook.API.IntegrationTests" />
+    <InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
+  </ItemGroup>
+
   <Target Name="GenerateSwaggerJson" AfterTargets="Build" Condition="'$(Configuration)'=='Debug'">
     <Exec Command="dotnet tool run swagger tofile --yaml --output $(ProjectDir)devbook.api.yaml $(OutputPath)$(AssemblyName).dll v1" />
   </Target>
