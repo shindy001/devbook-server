@@ -2,7 +2,7 @@
 
 namespace DevBook.API.Infrastructure;
 
-internal static class DependencyInjection
+internal static class InfrastructureExtensions
 {
 	private readonly static Assembly Assembly = typeof(Program).Assembly;
 

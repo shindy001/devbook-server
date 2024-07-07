@@ -1,6 +1,6 @@
 ﻿namespace DevBook.API.Identity;
 
-public static class HttpContextAccessorExtensions
+public static class IdentityExtensions
 {
 	/// <summary>
 	/// Registers authentication and identity stores, uses <see cref="DevBookDbContext"/> for stores.
