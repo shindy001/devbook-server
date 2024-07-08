@@ -134,6 +134,19 @@ paths:
       tags:
         - BookStoreModule_BookEndpoints
       operationId: Books.GetAll
+      parameters:
+        - name: pageSize
+          in: query
+          style: form
+          schema:
+            type: integer
+            format: int32
+        - name: itemLimit
+          in: query
+          style: form
+          schema:
+            type: integer
+            format: int32
       responses:
         '200':
           description: Success
@@ -147,6 +160,13 @@ paths:
       tags:
         - BookStoreModule_BookEndpoints
       operationId: Books.Create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/CreateBookCommand'
+        required: true
       responses:
         '201':
           description: Created
@@ -184,6 +204,13 @@ paths:
           schema:
             type: string
             format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/UpdateBookCommandDto'
+        required: true
       responses:
         '204':
           description: No Content
@@ -201,6 +228,13 @@ paths:
           schema:
             type: string
             format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/PatchBookCommandDto'
+        required: true
       responses:
         '204':
           description: No Content
@@ -786,6 +820,38 @@ components:
           type: string
           nullable: true
       additionalProperties: false
+    CreateBookCommand:
+      required:
+        - name
+      type: object
+      properties:
+        name:
+          minLength: 1
+          type: string
+        authorId:
+          type: string
+          format: uuid
+        retailPrice:
+          type: number
+          format: double
+        price:
+          type: number
+          format: double
+        discountAmmount:
+          type: number
+          format: double
+        description:
+          type: string
+          nullable: true
+        coverImageUrl:
+          type: string
+          nullable: true
+        bookCategories:
+          type: array
+          items:
+            type: string
+          nullable: true
+      additionalProperties: false
     CreateProjectInput:
       required:
         - name
@@ -911,6 +977,40 @@ components:
           nullable: true
         description:
           type: string
+          nullable: true
+      additionalProperties: false
+    PatchBookCommandDto:
+      type: object
+      properties:
+        name:
+          type: string
+          nullable: true
+        authorId:
+          type: string
+          format: uuid
+          nullable: true
+        retailPrice:
+          type: number
+          format: double
+          nullable: true
+        price:
+          type: number
+          format: double
+          nullable: true
+        discountAmmount:
+          type: number
+          format: double
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        coverImageUrl:
+          type: string
+          nullable: true
+        bookCategories:
+          type: array
+          items:
+            type: string
           nullable: true
       additionalProperties: false
     PatchProjectCommandDto:
@@ -1080,6 +1180,42 @@ components:
           type: string
         description:
           type: string
+          nullable: true
+      additionalProperties: false
+    UpdateBookCommandDto:
+      required:
+        - authorId
+        - discountAmmount
+        - name
+        - price
+        - retailPrice
+      type: object
+      properties:
+        name:
+          minLength: 1
+          type: string
+        authorId:
+          type: string
+          format: uuid
+        retailPrice:
+          type: number
+          format: double
+        price:
+          type: number
+          format: double
+        discountAmmount:
+          type: number
+          format: double
+        description:
+          type: string
+          nullable: true
+        coverImageUrl:
+          type: string
+          nullable: true
+        bookCategories:
+          type: array
+          items:
+            type: string
           nullable: true
       additionalProperties: false
     UpdateProjectCommandDto:
