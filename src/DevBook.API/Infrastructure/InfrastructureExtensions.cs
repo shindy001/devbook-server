@@ -48,7 +48,7 @@ internal static class InfrastructureExtensions
 		return builder;
 	}
 
-	public static async Task<IApplicationBuilder> SeedRoles(this IApplicationBuilder builder, params string[] roles)
+	internal static async Task<IApplicationBuilder> SeedRoles(this IApplicationBuilder builder, params string[] roles)
 	{
 		using var scope = builder.ApplicationServices.CreateScope();
 		var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
@@ -64,7 +64,7 @@ internal static class InfrastructureExtensions
 		return builder;
 	}
 
-	public static async Task<IApplicationBuilder> SeedUsers(this IApplicationBuilder builder, params UserDbSeed[] userDbSeeds)
+	internal static async Task<IApplicationBuilder> SeedUsers(this IApplicationBuilder builder, params UserDbSeed[] userDbSeeds)
 	{
 		using var scope = builder.ApplicationServices.CreateScope();
 		var userManager = scope.ServiceProvider.GetRequiredService<UserManager<DevBookUser>>();
