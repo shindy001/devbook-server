@@ -17,9 +17,9 @@ public sealed class CreateAuthorCommandValidator : AbstractValidator<CreateAutho
 
 internal sealed class CreateAuthorCommandHandler(DevBookDbContext dbContext) : ICommandHandler<CreateAuthorCommand, Author>
 {
-	public async Task<Author> Handle(CreateAuthorCommand request, CancellationToken cancellationToken)
+	public async Task<Author> Handle(CreateAuthorCommand command, CancellationToken cancellationToken)
 	{
-		var newItem = new Author { Name = request.Name, Description = request.Description };
+		var newItem = new Author { Name = command.Name, Description = command.Description };
 		await dbContext.Authors.AddAsync(newItem, cancellationToken);
 		await dbContext.SaveChangesAsync(cancellationToken);
 		return newItem;
