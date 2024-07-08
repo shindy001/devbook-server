@@ -1,4 +1,6 @@
-﻿using DevBook.API.Features.TimeTracking.Shared;
+﻿using DevBook.API.Features.BookStore.Authors;
+using DevBook.API.Features.BookStore.Books;
+using DevBook.API.Features.TimeTracking.Shared;
 using DevBook.API.Features.TimeTracking.Tasks;
 
 namespace DevBook.API.Infrastructure;
@@ -12,21 +14,36 @@ namespace DevBook.API.Infrastructure;
 /// <exception cref="UnauthorizedAccessException">Will throw when httpContextAccessor does not contain user.</exception>
 public sealed class DevBookDbContext(DbContextOptions<DevBookDbContext> options, IHttpContextAccessor httpContextAccessor) : IdentityDbContext<DevBookUser>(options)
 {
+	#region TimeTracking module
+	
 	public DbSet<Project> Projects { get; set; }
 	public DbSet<WorkTask> Tasks { get; set; }
 
-	private Guid _ownerId => httpContextAccessor.GetUserId();
+	#endregion
+
+	#region BookStore module
+
+	public DbSet<Author> Authors { get; set; }
+	public DbSet<Book> Books { get; set; }
+
+	#endregion
+
+	private Guid OwnerId => httpContextAccessor.GetUserId();
 
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
 		base.OnModelCreating(modelBuilder);
 
-		modelBuilder.Entity<Project>().Property<Guid>(nameof(_ownerId)).HasColumnName("OwnerId");
-		modelBuilder.Entity<WorkTask>().Property<Guid>(nameof(_ownerId)).HasColumnName("OwnerId");
+		#region per user data
+
+		modelBuilder.Entity<Project>().Property<Guid>(nameof(OwnerId)).HasColumnName("OwnerId");
+		modelBuilder.Entity<WorkTask>().Property<Guid>(nameof(OwnerId)).HasColumnName("OwnerId");
 
 		// Configure entity filters
-		modelBuilder.Entity<Project>().HasQueryFilter(x => EF.Property<Guid>(x, nameof(_ownerId)) == _ownerId);
-		modelBuilder.Entity<WorkTask>().HasQueryFilter(x => EF.Property<Guid>(x, nameof(_ownerId)) == _ownerId);
+		modelBuilder.Entity<Project>().HasQueryFilter(x => EF.Property<Guid>(x, nameof(OwnerId)) == OwnerId);
+		modelBuilder.Entity<WorkTask>().HasQueryFilter(x => EF.Property<Guid>(x, nameof(OwnerId)) == OwnerId);
+
+		#endregion
 	}
 
 	public override int SaveChanges()
@@ -48,10 +65,9 @@ public sealed class DevBookDbContext(DbContextOptions<DevBookDbContext> options,
 		ChangeTracker.DetectChanges();
 
 		foreach (var item in ChangeTracker.Entries().Where(
-					 e =>
-						 e.State == EntityState.Added && e.Metadata.GetProperties().Any(p => p.Name == nameof(_ownerId))))
+			e => e.State == EntityState.Added && e.Metadata.GetProperties().Any(p => p.Name == nameof(OwnerId))))
 		{
-			item.CurrentValues[nameof(_ownerId)] = _ownerId;
+			item.CurrentValues[nameof(OwnerId)] = OwnerId;
 		}
 	}
 }
