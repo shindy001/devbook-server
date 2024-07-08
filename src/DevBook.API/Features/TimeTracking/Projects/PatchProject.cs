@@ -1,4 +1,6 @@
-﻿namespace DevBook.API.Features.TimeTracking.Projects;
+﻿using DevBook.API.Features.TimeTracking.Shared;
+
+namespace DevBook.API.Features.TimeTracking.Projects;
 
 public record PatchProjectCommandDto(
 	string? Name,

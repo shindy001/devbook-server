@@ -1,4 +1,5 @@
-﻿using HotChocolate.Resolvers;
+﻿using DevBook.API.Features.TimeTracking.Shared;
+using HotChocolate.Resolvers;
 
 namespace DevBook.API.Features.TimeTracking.Projects;
 

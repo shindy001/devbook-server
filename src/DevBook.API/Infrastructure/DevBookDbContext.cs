@@ -1,4 +1,7 @@
-﻿namespace DevBook.API.Infrastructure;
+﻿using DevBook.API.Features.TimeTracking.Shared;
+using DevBook.API.Features.TimeTracking.Tasks;
+
+namespace DevBook.API.Infrastructure;
 
 /// <summary>
 /// DevBookDbContext - entities are filtered by userId(owner) when querying and saved with ownerId(user) hence HttpContextAccessor and logged in user is necessity, otherwise throws UnauthorizedAccessException.

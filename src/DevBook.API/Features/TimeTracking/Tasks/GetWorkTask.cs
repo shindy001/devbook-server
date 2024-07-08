@@ -1,4 +1,6 @@
-﻿namespace DevBook.API.Features.TimeTracking.Tasks;
+﻿using DevBook.API.Features.TimeTracking.Shared;
+
+namespace DevBook.API.Features.TimeTracking.Tasks;
 
 public sealed record WorkTaskInput(Guid Id) : IQuery<OneOf<WorkTaskDto, NotFound>>;
 

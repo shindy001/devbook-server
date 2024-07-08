@@ -1,4 +1,7 @@
-﻿namespace DevBook.API.Features.TimeTracking;
+﻿using DevBook.API.Features.TimeTracking.Projects;
+using DevBook.API.Features.TimeTracking.Tasks;
+
+namespace DevBook.API.Features.TimeTracking;
 
 internal sealed class TimeTrackingModule : IFeatureModule
 {

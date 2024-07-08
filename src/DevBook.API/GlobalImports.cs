@@ -20,9 +20,6 @@ global using HotChocolate.Authorization;
 
 global using DevBook.API;
 global using DevBook.API.Exceptions;
-global using DevBook.API.Features.TimeTracking.Shared;
-global using DevBook.API.Features.TimeTracking.Projects;
-global using DevBook.API.Features.TimeTracking.Tasks;
 global using DevBook.API.Infrastructure;
 global using DevBook.API.Middleware;
 global using DevBook.API.Identity;
