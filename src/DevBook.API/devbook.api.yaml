@@ -8,6 +8,19 @@ paths:
       tags:
         - BookStoreModule_AuthorEndpoints
       operationId: Authors.GetAll
+      parameters:
+        - name: pageSize
+          in: query
+          style: form
+          schema:
+            type: integer
+            format: int32
+        - name: itemLimit
+          in: query
+          style: form
+          schema:
+            type: integer
+            format: int32
       responses:
         '200':
           description: Success
@@ -21,6 +34,13 @@ paths:
       tags:
         - BookStoreModule_AuthorEndpoints
       operationId: Authors.Create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/CreateAuthorCommand'
+        required: true
       responses:
         '201':
           description: Created
@@ -58,6 +78,13 @@ paths:
           schema:
             type: string
             format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/UpdateAuthorCommandDto'
+        required: true
       responses:
         '204':
           description: No Content
@@ -75,6 +102,13 @@ paths:
           schema:
             type: string
             format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/PatchAuthorCommandDto'
+        required: true
       responses:
         '204':
           description: No Content
@@ -740,6 +774,18 @@ components:
           type: number
           format: double
       additionalProperties: false
+    CreateAuthorCommand:
+      required:
+        - name
+      type: object
+      properties:
+        name:
+          minLength: 1
+          type: string
+        description:
+          type: string
+          nullable: true
+      additionalProperties: false
     CreateProjectInput:
       required:
         - name
@@ -854,6 +900,16 @@ components:
           type: string
           nullable: true
         twoFactorRecoveryCode:
+          type: string
+          nullable: true
+      additionalProperties: false
+    PatchAuthorCommandDto:
+      type: object
+      properties:
+        name:
+          type: string
+          nullable: true
+        description:
           type: string
           nullable: true
       additionalProperties: false
@@ -1013,6 +1069,16 @@ components:
           type: boolean
         isMachineRemembered:
           type: boolean
+      additionalProperties: false
+    UpdateAuthorCommandDto:
+      type: object
+      properties:
+        name:
+          type: string
+          nullable: true
+        description:
+          type: string
+          nullable: true
       additionalProperties: false
     UpdateProjectCommandDto:
       required:
