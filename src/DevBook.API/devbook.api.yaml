@@ -1071,11 +1071,13 @@ components:
           type: boolean
       additionalProperties: false
     UpdateAuthorCommandDto:
+      required:
+        - name
       type: object
       properties:
         name:
+          minLength: 1
           type: string
-          nullable: true
         description:
           type: string
           nullable: true

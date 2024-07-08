@@ -1,9 +1,12 @@
 ﻿namespace DevBook.API.Features.BookStore.Authors;
 
-public sealed record UpdateAuthorCommandDto(
-	string Name,
-	string? Description)
-	: ICommand<OneOf<Success, NotFound>>;
+public sealed record UpdateAuthorCommandDto() : ICommand<OneOf<Success, NotFound>>
+{
+	[Required]
+	public required string Name { get; init; }
+
+	public string? Description { get; init; }
+}	
 
 public sealed record UpdateAuthorCommand(
 	Guid Id,
