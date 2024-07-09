@@ -1,6 +1,6 @@
 ﻿using DevBook.API.Features.BookStore.Authors;
 using DevBook.API.Features.BookStore.Books;
-using DevBook.API.Features.BookStore.ProductCategories;
+using DevBook.API.Features.BookStore.Shared;
 using DevBook.API.Features.TimeTracking.Shared;
 using DevBook.API.Features.TimeTracking.Tasks;
 
