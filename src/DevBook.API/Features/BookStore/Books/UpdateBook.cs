@@ -54,7 +54,7 @@ internal sealed class UpdateBookCommandHandler(DevBookDbContext dbContext) : ICo
 {
 	public async Task<OneOf<Success, NotFound>> Handle(UpdateBookCommand command, CancellationToken cancellationToken)
 	{
-		var book = await dbContext.Books.FindAsync([command.Id], cancellationToken);
+		var book = await dbContext.Products.FindAsync([command.Id], cancellationToken) as Book;
 		if (book is null)
 		{
 			return new NotFound();
@@ -83,7 +83,7 @@ internal sealed class UpdateBookCommandHandler(DevBookDbContext dbContext) : ICo
 			[nameof(Book.ProductCategories)] = command.ProductCategories,
 		};
 
-		dbContext.Books.Entry(book).CurrentValues.SetValues(update);
+		dbContext.Products.Entry(book).CurrentValues.SetValues(update);
 		await dbContext.SaveChangesAsync(cancellationToken);
 		return new Success();
 	}

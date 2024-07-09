@@ -25,7 +25,7 @@ public sealed class DevBookDbContext(DbContextOptions<DevBookDbContext> options,
 	#region BookStore module
 
 	public DbSet<Author> Authors { get; set; }
-	public DbSet<Book> Books { get; set; }
+	public DbSet<Product> Products { get; set; }
 	public DbSet<ProductCategory> ProductCategories { get; set; }
 
 	#endregion
@@ -44,6 +44,14 @@ public sealed class DevBookDbContext(DbContextOptions<DevBookDbContext> options,
 		// Configure entity filters
 		modelBuilder.Entity<Project>().HasQueryFilter(x => EF.Property<Guid>(x, nameof(OwnerId)) == OwnerId);
 		modelBuilder.Entity<WorkTask>().HasQueryFilter(x => EF.Property<Guid>(x, nameof(OwnerId)) == OwnerId);
+
+		#endregion
+
+		#region BookStore module
+
+		modelBuilder.Entity<Product>()
+			.HasDiscriminator<ProductType>(nameof(ProductType))
+			.HasValue<Book>(ProductType.Book);
 
 		#endregion
 	}

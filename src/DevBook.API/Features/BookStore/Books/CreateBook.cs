@@ -46,6 +46,7 @@ internal sealed class CreateBookCommandHandler(DevBookDbContext dbContext) : ICo
 		var newItem = new Book
 		{ 
 			Name = command.Name,
+			ProductType = ProductType.Book,
 			AuthorId = command.AuthorId,
 			RetailPrice = command.RetailPrice,
 			Price = command.Price,
@@ -54,7 +55,7 @@ internal sealed class CreateBookCommandHandler(DevBookDbContext dbContext) : ICo
 			CoverImageUrl = command.CoverImageUrl,
 			ProductCategories = command.ProductCategories ?? [],
 		};
-		await dbContext.Books.AddAsync(newItem, cancellationToken);
+		await dbContext.Products.AddAsync(newItem, cancellationToken);
 		await dbContext.SaveChangesAsync(cancellationToken);
 		return newItem;
 	}

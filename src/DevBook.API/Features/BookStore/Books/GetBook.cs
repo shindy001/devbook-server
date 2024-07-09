@@ -6,10 +6,10 @@ internal class GetBookQueryHandler(DevBookDbContext dbContext) : IQueryHandler<G
 {
 	public async Task<OneOf<Book, NotFound>> Handle(GetBookQuery query, CancellationToken cancellationToken)
 	{
-		var book = await dbContext.Books.FindAsync([query.Id], cancellationToken);
+		var product = await dbContext.Products.FindAsync([query.Id], cancellationToken);
 
-		return book is null
+		return product is null
 			? new NotFound()
-			: book;
+			: (Book)product;
 	}
 }

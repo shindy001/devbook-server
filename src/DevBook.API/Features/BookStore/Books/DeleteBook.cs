@@ -6,11 +6,11 @@ internal class DeleteBookCommandHandler(DevBookDbContext dbContext) : ICommandHa
 {
 	public async Task Handle(DeleteBookCommand command, CancellationToken cancellationToken)
 	{
-		var book = await dbContext.Books.FindAsync([command.Id], cancellationToken);
+		var product = await dbContext.Products.FindAsync([command.Id], cancellationToken);
 
-		if (book is not null)
+		if (product is not null && product is Book)
 		{
-			dbContext.Books.Remove(book);
+			dbContext.Products.Remove(product);
 			await dbContext.SaveChangesAsync(cancellationToken);
 		}
 	}

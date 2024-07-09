@@ -41,7 +41,7 @@ internal sealed class PatchBookCommandHandler(DevBookDbContext dbContext) : ICom
 {
 	public async Task<OneOf<Success, NotFound>> Handle(PatchBookCommand command, CancellationToken cancellationToken)
 	{
-		var book = await dbContext.Books.FindAsync([command.Id], cancellationToken);
+		var book = await dbContext.Products.FindAsync([command.Id], cancellationToken) as Book;
 		if (book is null)
 		{
 			return new NotFound();
@@ -70,7 +70,7 @@ internal sealed class PatchBookCommandHandler(DevBookDbContext dbContext) : ICom
 			[nameof(Book.ProductCategories)] = command.ProductCategories ?? book.ProductCategories,
 		};
 
-		dbContext.Books.Entry(book).CurrentValues.SetValues(update);
+		dbContext.Products.Entry(book).CurrentValues.SetValues(update);
 		await dbContext.SaveChangesAsync(cancellationToken);
 		return new Success();
 	}
