@@ -3,7 +3,6 @@
 internal static class BookEndpoints
 {
 	private const string OperationIdPrefix = "Books.";
-	private const string GetByIdRoute = "GetById";
 
 	public static RouteGroupBuilder MapBookEndpoints(this RouteGroupBuilder groupBuilder)
 	{
@@ -17,7 +16,7 @@ internal static class BookEndpoints
 			.Produces(StatusCodes.Status201Created);
 
 		groupBuilder.MapGet("/{id:guid}", GetBookById)
-			.WithName($"{OperationIdPrefix}{GetByIdRoute}")
+			.WithName($"{OperationIdPrefix}{ApiConstants.GetByIdRoute}")
 			.Produces<Book>()
 			.Produces(StatusCodes.Status404NotFound)
 			.AllowAnonymous();
@@ -48,7 +47,7 @@ internal static class BookEndpoints
 	private static async Task<IResult> CreateBook(CreateBookCommand command, IExecutor executor, CancellationToken cancellationToken)
 	{
 		var result = await executor.ExecuteCommand(command, cancellationToken);
-		return TypedResults.CreatedAtRoute($"{OperationIdPrefix}{GetByIdRoute}", new { id = result.Id });
+		return TypedResults.CreatedAtRoute($"{OperationIdPrefix}{ApiConstants.GetByIdRoute}", new { id = result.Id });
 	}
 
 	private static async Task<IResult> GetBookById(Guid id, IExecutor executor, CancellationToken cancellationToken)

@@ -5,7 +5,6 @@ namespace DevBook.API.Features.TimeTracking.Projects;
 internal static class ProjectEndpoints
 {
 	private const string OperationIdPrefix = "Projects.";
-	private const string GetByIdRoute = "GetById";
 
 	public static RouteGroupBuilder MapProjectEndpoints(this RouteGroupBuilder groupBuilder)
 	{
@@ -18,7 +17,7 @@ internal static class ProjectEndpoints
 			.Produces(StatusCodes.Status201Created);
 
 		groupBuilder.MapGet("/{id:guid}", GetProjectById)
-			.WithName($"{OperationIdPrefix}{GetByIdRoute}")
+			.WithName($"{OperationIdPrefix}{ApiConstants.GetByIdRoute}")
 			.Produces<ProjectDto>()
 			.Produces(StatusCodes.Status404NotFound);
 
@@ -48,7 +47,7 @@ internal static class ProjectEndpoints
 	private static async Task<IResult> CreateProject(CreateProjectInput command, IExecutor executor, CancellationToken cancellationToken)
 	{
 		var result = await executor.ExecuteCommand(command, cancellationToken);
-		return TypedResults.CreatedAtRoute($"{OperationIdPrefix}{GetByIdRoute}", new { id = result.Id });
+		return TypedResults.CreatedAtRoute($"{OperationIdPrefix}{ApiConstants.GetByIdRoute}", new { id = result.Id });
 	}
 
 	private static async Task<IResult> GetProjectById(Guid id, IExecutor executor, CancellationToken cancellationToken)

@@ -3,7 +3,6 @@
 internal static class AuthorEndpoints
 {
 	private const string OperationIdPrefix = "Authors.";
-	private const string GetByIdRoute = "GetById";
 
 	public static RouteGroupBuilder MapAuthorEndpoints(this RouteGroupBuilder groupBuilder)
 	{
@@ -17,7 +16,7 @@ internal static class AuthorEndpoints
 			.Produces(StatusCodes.Status201Created);
 
 		groupBuilder.MapGet("/{id:guid}", GetAuthorById)
-			.WithName($"{OperationIdPrefix}{GetByIdRoute}")
+			.WithName($"{OperationIdPrefix}{ApiConstants.GetByIdRoute}")
 			.Produces<Author>()
 			.Produces(StatusCodes.Status404NotFound)
 			.AllowAnonymous();
@@ -48,7 +47,7 @@ internal static class AuthorEndpoints
 	private static async Task<IResult> CreateAuthor(CreateAuthorCommand command, IExecutor executor, CancellationToken cancellationToken)
 	{
 		var result = await executor.ExecuteCommand(command, cancellationToken);
-		return TypedResults.CreatedAtRoute($"{OperationIdPrefix}{GetByIdRoute}", new { id = result.Id });
+		return TypedResults.CreatedAtRoute($"{OperationIdPrefix}{ApiConstants.GetByIdRoute}", new { id = result.Id });
 	}
 
 	private static async Task<IResult> GetAuthorById(Guid id, IExecutor executor, CancellationToken cancellationToken)

@@ -3,7 +3,6 @@
 internal static class WorkTaskEndpoints
 {
 	private const string OperationIdPrefix = "WorkTasks.";
-	private const string GetByIdRoute = "GetById";
 
 	public static RouteGroupBuilder MapWorkTaskEndpoints(this RouteGroupBuilder groupBuilder)
 	{
@@ -20,7 +19,7 @@ internal static class WorkTaskEndpoints
 			.Produces(StatusCodes.Status201Created);
 
 		groupBuilder.MapGet("/{id:guid}", GetWorkTaskById)
-			.WithName($"{OperationIdPrefix}{GetByIdRoute}")
+			.WithName($"{OperationIdPrefix}{ApiConstants.GetByIdRoute}")
 			.Produces<WorkTaskDto>()
 			.Produces(StatusCodes.Status404NotFound);
 
@@ -50,7 +49,7 @@ internal static class WorkTaskEndpoints
 	private static async Task<IResult> CreateWorkTask(CreateWorkTaskInput command, IExecutor executor, CancellationToken cancellationToken)
 	{
 		var result = await executor.ExecuteCommand(command, cancellationToken);
-		return TypedResults.CreatedAtRoute($"{OperationIdPrefix}{GetByIdRoute}", new { id = result.Id });
+		return TypedResults.CreatedAtRoute($"{OperationIdPrefix}{ApiConstants.GetByIdRoute}", new { id = result.Id });
 	}
 
 	private static async Task<IResult> StartWorkTask(StartWorkTaskInput command, IExecutor executor, CancellationToken cancellationToken)
@@ -58,7 +57,7 @@ internal static class WorkTaskEndpoints
 		var result = await executor.ExecuteCommand(command, cancellationToken);
 
 		return result.Match<IResult>(
-			workTask => TypedResults.CreatedAtRoute($"{OperationIdPrefix}{GetByIdRoute}", new { id = result }),
+			workTask => TypedResults.CreatedAtRoute($"{OperationIdPrefix}{ApiConstants.GetByIdRoute}", new { id = result }),
 			validationException => TypedResults.BadRequest(validationException.Message));
 	}
 
