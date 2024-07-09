@@ -1,5 +1,6 @@
 ﻿using DevBook.API.Features.BookStore.Authors;
 using DevBook.API.Features.BookStore.Books;
+using DevBook.API.Features.BookStore.ProductCategories;
 
 internal sealed class BookStoreModule : IFeatureModule
 {
@@ -20,6 +21,12 @@ internal sealed class BookStoreModule : IFeatureModule
 			.MapGroup("/bookstore/books")
 			.MapBookEndpoints()
 			.WithTags($"{nameof(BookStoreModule)}_{nameof(BookEndpoints)}")
+			.RequireAuthorization(DevBookAccessPolicies.RequireAdmin);
+
+		endpointsBuilder
+			.MapGroup("/bookstore/productCategories")
+			.MapProductCategoryEndpoints()
+			.WithTags($"{nameof(BookStoreModule)}_{nameof(ProductCategoryEndpoints)}")
 			.RequireAuthorization(DevBookAccessPolicies.RequireAdmin);
 
 		return endpointsBuilder;
