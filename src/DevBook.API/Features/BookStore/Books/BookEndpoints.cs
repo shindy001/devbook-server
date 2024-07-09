@@ -70,7 +70,7 @@ internal static class BookEndpoints
 				DiscountAmmount: command.DiscountAmmount,
 				Description: command.Description,
 				CoverImageUrl: command.CoverImageUrl,
-				BookCategories: command.BookCategories),
+				ProductCategories: command.ProductCategories),
 			cancellationToken);
 
 		return result.Match<IResult>(
@@ -90,7 +90,7 @@ internal static class BookEndpoints
 				DiscountAmmount: command.DiscountAmmount,
 				Description: command.Description,
 				CoverImageUrl: command.CoverImageUrl,
-				BookCategories: command.BookCategories),
+				ProductCategories: command.ProductCategories),
 		cancellationToken);
 
 		return result.Match<IResult>(

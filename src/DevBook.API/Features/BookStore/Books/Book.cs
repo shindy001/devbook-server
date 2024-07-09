@@ -1,15 +1,8 @@
-﻿namespace DevBook.API.Features.BookStore.Books;
+﻿using DevBook.API.Features.BookStore.Shared;
 
-public sealed record Book()
-	: Entity(Guid.NewGuid())
+namespace DevBook.API.Features.BookStore.Books;
+
+public sealed record Book : Product
 {
-	public required string Name { get; init; }
 	public required Guid AuthorId { get; set; }
-	public string? Description { get; init; }
-	public string? CoverImageUrl { get; init; }
-	public string[] BookCategories { get; set; } = [];
-
-	public required decimal RetailPrice { get; init; }
-	public required decimal Price { get; init; }
-	public required decimal DiscountAmmount { get; init; }
 }

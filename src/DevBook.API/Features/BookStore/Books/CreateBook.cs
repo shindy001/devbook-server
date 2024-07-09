@@ -1,4 +1,6 @@
-﻿namespace DevBook.API.Features.BookStore.Books;
+﻿using DevBook.API.Features.BookStore.Shared;
+
+namespace DevBook.API.Features.BookStore.Books;
 
 public sealed record CreateBookCommand : ICommand<Book>
 {
@@ -11,7 +13,7 @@ public sealed record CreateBookCommand : ICommand<Book>
 
 	public string? Description { get; init; }
 	public string? CoverImageUrl { get; init; }
-	public string[] BookCategories { get; set; } = [];
+	public IEnumerable<ProductCategory>? ProductCategories { get; set; }
 }
 
 public sealed class CreateBookCommandValidator : AbstractValidator<CreateBookCommand>
@@ -36,6 +38,11 @@ internal sealed class CreateBookCommandHandler(DevBookDbContext dbContext) : ICo
 			throw new DevBookValidationException(nameof(command.AuthorId), $"AuthorId '{command.AuthorId}' not found.");
 		}
 
+		if (command.ProductCategories?.Any() == true)
+		{
+			await ProductCategoryHelper.EnsureProductCategoriesExist(command.ProductCategories, dbContext, cancellationToken);
+		}
+
 		var newItem = new Book
 		{ 
 			Name = command.Name,
@@ -45,7 +52,7 @@ internal sealed class CreateBookCommandHandler(DevBookDbContext dbContext) : ICo
 			DiscountAmmount = command.DiscountAmmount,
 			Description = command.Description,
 			CoverImageUrl = command.CoverImageUrl,
-			BookCategories = command.BookCategories,
+			ProductCategories = command.ProductCategories ?? [],
 		};
 		await dbContext.Books.AddAsync(newItem, cancellationToken);
 		await dbContext.SaveChangesAsync(cancellationToken);

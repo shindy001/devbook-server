@@ -1,4 +1,6 @@
-﻿namespace DevBook.API.Features.BookStore.Books;
+﻿using DevBook.API.Features.BookStore.Shared;
+
+namespace DevBook.API.Features.BookStore.Books;
 
 public record PatchBookCommandDto(
 	string? Name,
@@ -8,7 +10,7 @@ public record PatchBookCommandDto(
 	decimal? DiscountAmmount,
 	string? Description,
 	string? CoverImageUrl,
-	string[]? BookCategories)
+	IEnumerable<ProductCategory>? ProductCategories)
 	: ICommand<OneOf<Success, NotFound>>;
 
 public record PatchBookCommand(
@@ -20,7 +22,7 @@ public record PatchBookCommand(
 	decimal? DiscountAmmount,
 	string? Description,
 	string? CoverImageUrl,
-	string[]? BookCategories)
+	IEnumerable<ProductCategory>? ProductCategories)
 	: ICommand<OneOf<Success, NotFound>>;
 
 public sealed class PatchBookCommandValidator : AbstractValidator<PatchBookCommand>
@@ -51,6 +53,11 @@ internal sealed class PatchBookCommandHandler(DevBookDbContext dbContext) : ICom
 			throw new DevBookValidationException(nameof(command.AuthorId), $"AuthorId '{command.AuthorId}' not found.");
 		}
 
+		if (command.ProductCategories?.Any() == true)
+		{
+			await ProductCategoryHelper.EnsureProductCategoriesExist(command.ProductCategories, dbContext, cancellationToken);
+		}
+
 		var update = new Dictionary<string, object?>()
 		{
 			[nameof(Book.Name)] = command.Name ?? book.Name,
@@ -60,7 +67,7 @@ internal sealed class PatchBookCommandHandler(DevBookDbContext dbContext) : ICom
 			[nameof(Book.DiscountAmmount)] = command.DiscountAmmount ?? book.DiscountAmmount,
 			[nameof(Book.Description)] = command.Description ?? book.Description,
 			[nameof(Book.CoverImageUrl)] = command.CoverImageUrl ?? book.CoverImageUrl,
-			[nameof(Book.BookCategories)] = command.BookCategories ?? book.BookCategories,
+			[nameof(Book.ProductCategories)] = command.ProductCategories ?? book.ProductCategories,
 		};
 
 		dbContext.Books.Entry(book).CurrentValues.SetValues(update);

@@ -886,20 +886,6 @@ components:
         name:
           type: string
           nullable: true
-        authorId:
-          type: string
-          format: uuid
-        description:
-          type: string
-          nullable: true
-        coverImageUrl:
-          type: string
-          nullable: true
-        bookCategories:
-          type: array
-          items:
-            type: string
-          nullable: true
         retailPrice:
           type: number
           format: double
@@ -909,6 +895,20 @@ components:
         discountAmmount:
           type: number
           format: double
+        description:
+          type: string
+          nullable: true
+        coverImageUrl:
+          type: string
+          nullable: true
+        productCategories:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductCategory'
+          nullable: true
+        authorId:
+          type: string
+          format: uuid
       additionalProperties: false
     CreateAuthorCommand:
       required:
@@ -948,10 +948,10 @@ components:
         coverImageUrl:
           type: string
           nullable: true
-        bookCategories:
+        productCategories:
           type: array
           items:
-            type: string
+            $ref: '#/components/schemas/ProductCategory'
           nullable: true
       additionalProperties: false
     CreateProductCategoryCommand:
@@ -1118,10 +1118,10 @@ components:
         coverImageUrl:
           type: string
           nullable: true
-        bookCategories:
+        productCategories:
           type: array
           items:
-            type: string
+            $ref: '#/components/schemas/ProductCategory'
           nullable: true
       additionalProperties: false
     PatchProjectCommandDto:
@@ -1333,10 +1333,10 @@ components:
         coverImageUrl:
           type: string
           nullable: true
-        bookCategories:
+        productCategories:
           type: array
           items:
-            type: string
+            $ref: '#/components/schemas/ProductCategory'
           nullable: true
       additionalProperties: false
     UpdateProductCategoryCommandDto:
