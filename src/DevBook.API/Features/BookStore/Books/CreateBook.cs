@@ -13,7 +13,7 @@ public sealed record CreateBookCommand : ICommand<Book>
 
 	public string? Description { get; init; }
 	public string? CoverImageUrl { get; init; }
-	public IEnumerable<ProductCategory>? ProductCategories { get; set; }
+	public IList<Guid>? ProductCategoryIds { get; set; }
 }
 
 public sealed class CreateBookCommandValidator : AbstractValidator<CreateBookCommand>
@@ -38,9 +38,9 @@ internal sealed class CreateBookCommandHandler(DevBookDbContext dbContext) : ICo
 			throw new DevBookValidationException(nameof(command.AuthorId), $"AuthorId '{command.AuthorId}' not found.");
 		}
 
-		if (command.ProductCategories?.Any() == true)
+		if (command.ProductCategoryIds?.Any() == true)
 		{
-			await ProductCategoryHelper.EnsureProductCategoriesExist(command.ProductCategories, dbContext, cancellationToken);
+			await ProductCategoryHelper.EnsureProductCategoriesExist(command.ProductCategoryIds, dbContext, cancellationToken);
 		}
 
 		var newItem = new Book
@@ -53,7 +53,7 @@ internal sealed class CreateBookCommandHandler(DevBookDbContext dbContext) : ICo
 			DiscountAmmount = command.DiscountAmmount,
 			Description = command.Description,
 			CoverImageUrl = command.CoverImageUrl,
-			ProductCategories = command.ProductCategories ?? [],
+			ProductCategoryIds = command.ProductCategoryIds ?? [],
 		};
 		await dbContext.Products.AddAsync(newItem, cancellationToken);
 		await dbContext.SaveChangesAsync(cancellationToken);

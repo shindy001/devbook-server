@@ -1,5 +1,4 @@
 ﻿using DevBook.API.Features.BookStore.Shared;
-using MediatR;
 
 namespace DevBook.API.Features.BookStore.Books;
 
@@ -22,7 +21,7 @@ public sealed record UpdateBookCommandDto() : ICommand<OneOf<Success, NotFound>>
 
 	public string? Description { get; init; }
 	public string? CoverImageUrl { get; init; }
-	public IEnumerable<ProductCategory>? ProductCategories { get; set; }
+	public IList<Guid>? ProductCategoryIds { get; set; }
 }
 
 public sealed record UpdateBookCommand(
@@ -34,7 +33,7 @@ public sealed record UpdateBookCommand(
 	decimal DiscountAmmount,
 	string? Description,
 	string? CoverImageUrl,
-	IEnumerable<ProductCategory>? ProductCategories)
+	IList<Guid>? ProductCategoryIds)
 	: ICommand<OneOf<Success, NotFound>>;
 
 public sealed class UpdateBookCommandValidator : AbstractValidator<UpdateBookCommand>
@@ -66,9 +65,9 @@ internal sealed class UpdateBookCommandHandler(DevBookDbContext dbContext) : ICo
 			throw new DevBookValidationException(nameof(command.AuthorId), $"AuthorId '{command.AuthorId}' not found.");
 		}
 
-		if (command.ProductCategories?.Any() == true)
+		if (command.ProductCategoryIds?.Any() == true)
 		{
-			await ProductCategoryHelper.EnsureProductCategoriesExist(command.ProductCategories, dbContext, cancellationToken);
+			await ProductCategoryHelper.EnsureProductCategoriesExist(command.ProductCategoryIds, dbContext, cancellationToken);
 		}
 
 		var update = new Dictionary<string, object?>()
@@ -80,7 +79,7 @@ internal sealed class UpdateBookCommandHandler(DevBookDbContext dbContext) : ICo
 			[nameof(Book.DiscountAmmount)] = command.DiscountAmmount,
 			[nameof(Book.Description)] = command.Description,
 			[nameof(Book.CoverImageUrl)] = command.CoverImageUrl,
-			[nameof(Book.ProductCategories)] = command.ProductCategories,
+			[nameof(Book.ProductCategoryIds)] = command.ProductCategoryIds,
 		};
 
 		dbContext.Products.Entry(book).CurrentValues.SetValues(update);

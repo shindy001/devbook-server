@@ -12,5 +12,5 @@ public abstract record Product()
 
 	public string? Description { get; init; }
 	public string? CoverImageUrl { get; init; }
-	public IEnumerable<ProductCategory> ProductCategories { get; init; } = [];
+	public IList<Guid> ProductCategoryIds { get; init; } = [];
 }

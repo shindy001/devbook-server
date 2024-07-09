@@ -2,14 +2,14 @@
 
 internal static class ProductCategoryHelper
 {
-	public static async Task EnsureProductCategoriesExist(IEnumerable<ProductCategory> productCategories, DevBookDbContext dbContext, CancellationToken cancellationToken)
+	public static async Task EnsureProductCategoriesExist(IEnumerable<Guid> productCategoriesIds, DevBookDbContext dbContext, CancellationToken cancellationToken)
 	{
-		foreach (var productCategory in productCategories)
+		foreach (var productCategoryId in productCategoriesIds)
 		{
-			var category = await dbContext.ProductCategories.FindAsync([productCategory.Id], cancellationToken: cancellationToken);
+			var category = await dbContext.ProductCategories.FindAsync([productCategoryId], cancellationToken: cancellationToken);
 			if (category is null)
 			{
-				throw new DevBookValidationException(nameof(Product.ProductCategories), $"Category '{productCategory.Name}' not found.");
+				throw new DevBookValidationException(nameof(Product.ProductCategoryIds), $"ProductCategory with ID '{productCategoryId}' not found.");
 			}
 		}
 	}

@@ -904,10 +904,11 @@ components:
         coverImageUrl:
           type: string
           nullable: true
-        productCategories:
+        productCategoryIds:
           type: array
           items:
-            $ref: '#/components/schemas/ProductCategory'
+            type: string
+            format: uuid
           nullable: true
         authorId:
           type: string
@@ -951,10 +952,11 @@ components:
         coverImageUrl:
           type: string
           nullable: true
-        productCategories:
+        productCategoryIds:
           type: array
           items:
-            $ref: '#/components/schemas/ProductCategory'
+            type: string
+            format: uuid
           nullable: true
       additionalProperties: false
     CreateProductCategoryCommand:
@@ -1121,10 +1123,11 @@ components:
         coverImageUrl:
           type: string
           nullable: true
-        productCategories:
+        productCategoryIds:
           type: array
           items:
-            $ref: '#/components/schemas/ProductCategory'
+            type: string
+            format: uuid
           nullable: true
       additionalProperties: false
     PatchProjectCommandDto:
@@ -1341,10 +1344,11 @@ components:
         coverImageUrl:
           type: string
           nullable: true
-        productCategories:
+        productCategoryIds:
           type: array
           items:
-            $ref: '#/components/schemas/ProductCategory'
+            type: string
+            format: uuid
           nullable: true
       additionalProperties: false
     UpdateProductCategoryCommandDto:

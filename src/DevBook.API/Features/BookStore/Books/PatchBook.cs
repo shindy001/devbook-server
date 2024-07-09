@@ -10,7 +10,7 @@ public record PatchBookCommandDto(
 	decimal? DiscountAmmount,
 	string? Description,
 	string? CoverImageUrl,
-	IEnumerable<ProductCategory>? ProductCategories)
+	IList<Guid>? ProductCategoryIds)
 	: ICommand<OneOf<Success, NotFound>>;
 
 public record PatchBookCommand(
@@ -22,7 +22,7 @@ public record PatchBookCommand(
 	decimal? DiscountAmmount,
 	string? Description,
 	string? CoverImageUrl,
-	IEnumerable<ProductCategory>? ProductCategories)
+	IList<Guid>? ProductCategoryIds)
 	: ICommand<OneOf<Success, NotFound>>;
 
 public sealed class PatchBookCommandValidator : AbstractValidator<PatchBookCommand>
@@ -47,15 +47,15 @@ internal sealed class PatchBookCommandHandler(DevBookDbContext dbContext) : ICom
 			return new NotFound();
 		}
 
-		var author = await dbContext.Authors.FindAsync([command.AuthorId], cancellationToken: cancellationToken);
-		if (author is null)
+		if (command.AuthorId is not null
+			&& await dbContext.Authors.FindAsync([command.AuthorId], cancellationToken: cancellationToken) is null)
 		{
 			throw new DevBookValidationException(nameof(command.AuthorId), $"AuthorId '{command.AuthorId}' not found.");
 		}
 
-		if (command.ProductCategories?.Any() == true)
+		if (command.ProductCategoryIds?.Any() == true)
 		{
-			await ProductCategoryHelper.EnsureProductCategoriesExist(command.ProductCategories, dbContext, cancellationToken);
+			await ProductCategoryHelper.EnsureProductCategoriesExist(command.ProductCategoryIds, dbContext, cancellationToken);
 		}
 
 		var update = new Dictionary<string, object?>()
@@ -67,7 +67,7 @@ internal sealed class PatchBookCommandHandler(DevBookDbContext dbContext) : ICom
 			[nameof(Book.DiscountAmmount)] = command.DiscountAmmount ?? book.DiscountAmmount,
 			[nameof(Book.Description)] = command.Description ?? book.Description,
 			[nameof(Book.CoverImageUrl)] = command.CoverImageUrl ?? book.CoverImageUrl,
-			[nameof(Book.ProductCategories)] = command.ProductCategories ?? book.ProductCategories,
+			[nameof(Book.ProductCategoryIds)] = command.ProductCategoryIds ?? book.ProductCategoryIds,
 		};
 
 		dbContext.Products.Entry(book).CurrentValues.SetValues(update);
