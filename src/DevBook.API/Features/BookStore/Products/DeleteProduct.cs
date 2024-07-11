@@ -1,4 +1,4 @@
-﻿namespace DevBook.API.Features.BookStore.Shared;
+﻿namespace DevBook.API.Features.BookStore.Products;
 
 internal sealed record DeleteProductCommand(Guid Id) : ICommand;
 

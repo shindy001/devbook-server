@@ -1,6 +1,6 @@
 ﻿using DevBook.API.Features.BookStore.Authors;
+using DevBook.API.Features.BookStore.Products;
 using DevBook.API.Features.BookStore.Products.Books;
-using DevBook.API.Features.BookStore.Shared;
 using DevBook.API.Features.TimeTracking.Shared;
 using DevBook.API.Features.TimeTracking.Tasks;
 
@@ -16,7 +16,7 @@ namespace DevBook.API.Infrastructure;
 public sealed class DevBookDbContext(DbContextOptions<DevBookDbContext> options, IHttpContextAccessor httpContextAccessor) : IdentityDbContext<DevBookUser>(options)
 {
 	#region TimeTracking module
-	
+
 	public DbSet<Project> Projects { get; set; }
 	public DbSet<WorkTask> Tasks { get; set; }
 

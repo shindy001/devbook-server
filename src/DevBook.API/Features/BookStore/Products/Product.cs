@@ -1,7 +1,7 @@
 ﻿using DevBook.API.Features.BookStore.Products.Books;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace DevBook.API.Features.BookStore.Shared;
+namespace DevBook.API.Features.BookStore.Products;
 
 [SwaggerDiscriminator(nameof(ProductType))]
 [SwaggerSubType(typeof(Book), DiscriminatorValue = nameof(Book))]

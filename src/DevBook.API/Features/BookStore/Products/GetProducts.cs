@@ -1,6 +1,6 @@
 ﻿using DevBook.API.Helpers;
 
-namespace DevBook.API.Features.BookStore.Shared;
+namespace DevBook.API.Features.BookStore.Products;
 
 internal sealed record GetProductsQuery(int? PageSize, int? ItemLimit) : IQuery<IEnumerable<Product>>;
 
