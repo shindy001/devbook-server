@@ -18,7 +18,7 @@ public sealed class DevBookApiTestFixture<TProgram> : IDisposable where TProgram
 	private WebApplicationFactory<TProgram>? _app;
 	private TestServer? _server;
 	private HttpClient? _client;
-	private List<Action<IWebHostBuilder>> _configureWebHostActions = [];
+	private readonly List<Action<IWebHostBuilder>> _configureWebHostActions = [];
 
 	private readonly string TestDbName = $"integrationTests-{Guid.NewGuid()}.db";
 

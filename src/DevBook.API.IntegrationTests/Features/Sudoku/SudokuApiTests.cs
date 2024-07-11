@@ -45,7 +45,7 @@ public class SudokuApiTests : IntegrationTestsBase
 	}
 
 	[Fact]
-	public async Task GetBoardData_WhenCalled_ReturnsBoardData()
+	public async Task GetBoardData_should_return_board_data()
 	{
 		// Given
 		var givenBoardData = _givenBoardData;
@@ -62,6 +62,4 @@ public class SudokuApiTests : IntegrationTestsBase
 		response.GridNumbers.Should().BeEquivalentTo(givenBoardData.GridNumbers);
 		response.SolutionNumbers.Should().BeEquivalentTo(givenBoardData.SolutionNumbers);
 	}
-
-
 }
