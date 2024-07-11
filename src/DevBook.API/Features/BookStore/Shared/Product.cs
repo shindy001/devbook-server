@@ -1,5 +1,10 @@
-﻿namespace DevBook.API.Features.BookStore.Shared;
+﻿using DevBook.API.Features.BookStore.Books;
+using Swashbuckle.AspNetCore.Annotations;
 
+namespace DevBook.API.Features.BookStore.Shared;
+
+[SwaggerDiscriminator(nameof(ProductType))]
+[SwaggerSubType(typeof(Book), DiscriminatorValue = nameof(Book))]
 public abstract record Product()
 	: Entity(Guid.NewGuid())
 {
