@@ -1,4 +1,4 @@
-﻿namespace DevBook.API.Features.BookStore.Books;
+﻿namespace DevBook.API.Features.BookStore.Products.Books;
 
 internal static class BookEndpoints
 {

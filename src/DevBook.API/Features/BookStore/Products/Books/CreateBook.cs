@@ -1,6 +1,6 @@
 ﻿using DevBook.API.Features.BookStore.Shared;
 
-namespace DevBook.API.Features.BookStore.Books;
+namespace DevBook.API.Features.BookStore.Products.Books;
 
 public sealed record CreateBookCommand : ICommand<Book>
 {
@@ -44,7 +44,7 @@ internal sealed class CreateBookCommandHandler(DevBookDbContext dbContext) : ICo
 		}
 
 		var newItem = new Book
-		{ 
+		{
 			Name = command.Name,
 			ProductType = ProductType.Book,
 			AuthorId = command.AuthorId,

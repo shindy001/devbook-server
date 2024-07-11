@@ -1,6 +1,6 @@
 ﻿using DevBook.API.Features.BookStore.Shared;
 
-namespace DevBook.API.Features.BookStore.Books;
+namespace DevBook.API.Features.BookStore.Products.Books;
 
 public record PatchBookCommandDto(
 	string? Name,
