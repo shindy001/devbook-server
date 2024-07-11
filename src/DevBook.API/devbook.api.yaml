@@ -11,19 +11,17 @@ paths:
       parameters:
         - name: pageSize
           in: query
-          style: form
           schema:
             type: integer
             format: int32
         - name: itemLimit
           in: query
-          style: form
           schema:
             type: integer
             format: int32
       responses:
         '200':
-          description: Success
+          description: OK
           content:
             application/json:
               schema:
@@ -53,13 +51,12 @@ paths:
         - name: id
           in: path
           required: true
-          style: simple
           schema:
             type: string
             format: uuid
       responses:
         '200':
-          description: Success
+          description: OK
           content:
             application/json:
               schema:
@@ -74,7 +71,6 @@ paths:
         - name: id
           in: path
           required: true
-          style: simple
           schema:
             type: string
             format: uuid
@@ -98,7 +94,6 @@ paths:
         - name: id
           in: path
           required: true
-          style: simple
           schema:
             type: string
             format: uuid
@@ -122,7 +117,6 @@ paths:
         - name: id
           in: path
           required: true
-          style: simple
           schema:
             type: string
             format: uuid
@@ -137,19 +131,17 @@ paths:
       parameters:
         - name: pageSize
           in: query
-          style: form
           schema:
             type: integer
             format: int32
         - name: itemLimit
           in: query
-          style: form
           schema:
             type: integer
             format: int32
       responses:
         '200':
-          description: Success
+          description: OK
           content:
             application/json:
               schema:
@@ -179,13 +171,12 @@ paths:
         - name: id
           in: path
           required: true
-          style: simple
           schema:
             type: string
             format: uuid
       responses:
         '200':
-          description: Success
+          description: OK
           content:
             application/json:
               schema:
@@ -200,7 +191,6 @@ paths:
         - name: id
           in: path
           required: true
-          style: simple
           schema:
             type: string
             format: uuid
@@ -224,7 +214,6 @@ paths:
         - name: id
           in: path
           required: true
-          style: simple
           schema:
             type: string
             format: uuid
@@ -248,7 +237,6 @@ paths:
         - name: id
           in: path
           required: true
-          style: simple
           schema:
             type: string
             format: uuid
@@ -263,19 +251,17 @@ paths:
       parameters:
         - name: pageSize
           in: query
-          style: form
           schema:
             type: integer
             format: int32
         - name: itemLimit
           in: query
-          style: form
           schema:
             type: integer
             format: int32
       responses:
         '200':
-          description: Success
+          description: OK
           content:
             application/json:
               schema:
@@ -305,13 +291,12 @@ paths:
         - name: id
           in: path
           required: true
-          style: simple
           schema:
             type: string
             format: uuid
       responses:
         '200':
-          description: Success
+          description: OK
           content:
             application/json:
               schema:
@@ -326,7 +311,6 @@ paths:
         - name: id
           in: path
           required: true
-          style: simple
           schema:
             type: string
             format: uuid
@@ -350,7 +334,68 @@ paths:
         - name: id
           in: path
           required: true
-          style: simple
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: No Content
+  /bookstore/products:
+    get:
+      tags:
+        - BookStoreModule_ProductEndpoints
+      operationId: Products.GetAll
+      parameters:
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+            format: int32
+        - name: itemLimit
+          in: query
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  oneOf:
+                    - $ref: '#/components/schemas/Book'
+  '/bookstore/products/{id}':
+    get:
+      tags:
+        - BookStoreModule_ProductEndpoints
+      operationId: Products.GetById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Book'
+        '404':
+          description: Not Found
+    delete:
+      tags:
+        - BookStoreModule_ProductEndpoints
+      operationId: Products.Delete
+      parameters:
+        - name: id
+          in: path
+          required: true
           schema:
             type: string
             format: uuid
@@ -370,7 +415,7 @@ paths:
                 - $ref: '#/components/schemas/RegisterRequest'
       responses:
         '200':
-          description: Success
+          description: OK
         '400':
           description: Bad Request
           content:
@@ -385,12 +430,10 @@ paths:
       parameters:
         - name: useCookies
           in: query
-          style: form
           schema:
             type: boolean
         - name: useSessionCookies
           in: query
-          style: form
           schema:
             type: boolean
       requestBody:
@@ -401,7 +444,7 @@ paths:
                 - $ref: '#/components/schemas/LoginRequest'
       responses:
         '200':
-          description: Success
+          description: OK
           content:
             application/json:
               schema:
@@ -419,7 +462,7 @@ paths:
                 - $ref: '#/components/schemas/RefreshRequest'
       responses:
         '200':
-          description: Success
+          description: OK
           content:
             application/json:
               schema:
@@ -432,22 +475,19 @@ paths:
       parameters:
         - name: userId
           in: query
-          style: form
           schema:
             type: string
         - name: code
           in: query
-          style: form
           schema:
             type: string
         - name: changedEmail
           in: query
-          style: form
           schema:
             type: string
       responses:
         '200':
-          description: Success
+          description: OK
   /identity/resendConfirmationEmail:
     post:
       tags:
@@ -461,7 +501,7 @@ paths:
                 - $ref: '#/components/schemas/ResendConfirmationEmailRequest'
       responses:
         '200':
-          description: Success
+          description: OK
   /identity/forgotPassword:
     post:
       tags:
@@ -475,7 +515,7 @@ paths:
                 - $ref: '#/components/schemas/ForgotPasswordRequest'
       responses:
         '200':
-          description: Success
+          description: OK
         '400':
           description: Bad Request
           content:
@@ -495,7 +535,7 @@ paths:
                 - $ref: '#/components/schemas/ResetPasswordRequest'
       responses:
         '200':
-          description: Success
+          description: OK
         '400':
           description: Bad Request
           content:
@@ -515,7 +555,7 @@ paths:
                 - $ref: '#/components/schemas/TwoFactorRequest'
       responses:
         '200':
-          description: Success
+          description: OK
           content:
             application/json:
               schema:
@@ -535,7 +575,7 @@ paths:
       operationId: Identity.ManageInfo
       responses:
         '200':
-          description: Success
+          description: OK
           content:
             application/json:
               schema:
@@ -560,7 +600,7 @@ paths:
                 - $ref: '#/components/schemas/InfoRequest'
       responses:
         '200':
-          description: Success
+          description: OK
           content:
             application/json:
               schema:
@@ -580,7 +620,7 @@ paths:
       operationId: Sudoku.Board
       responses:
         '200':
-          description: Success
+          description: OK
           content:
             application/json:
               schema:
@@ -592,7 +632,7 @@ paths:
       operationId: Projects.GetAll
       responses:
         '200':
-          description: Success
+          description: OK
           content:
             application/json:
               schema:
@@ -622,13 +662,12 @@ paths:
         - name: id
           in: path
           required: true
-          style: simple
           schema:
             type: string
             format: uuid
       responses:
         '200':
-          description: Success
+          description: OK
           content:
             application/json:
               schema:
@@ -643,7 +682,6 @@ paths:
         - name: id
           in: path
           required: true
-          style: simple
           schema:
             type: string
             format: uuid
@@ -667,7 +705,6 @@ paths:
         - name: id
           in: path
           required: true
-          style: simple
           schema:
             type: string
             format: uuid
@@ -691,7 +728,6 @@ paths:
         - name: id
           in: path
           required: true
-          style: simple
           schema:
             type: string
             format: uuid
@@ -705,7 +741,7 @@ paths:
       operationId: WorkTasks.List
       responses:
         '200':
-          description: Success
+          description: OK
           content:
             application/json:
               schema:
@@ -748,13 +784,12 @@ paths:
         - name: id
           in: path
           required: true
-          style: simple
           schema:
             type: string
             format: uuid
       responses:
         '200':
-          description: Success
+          description: OK
           content:
             application/json:
               schema:
@@ -769,7 +804,6 @@ paths:
         - name: id
           in: path
           required: true
-          style: simple
           schema:
             type: string
             format: uuid
@@ -793,7 +827,6 @@ paths:
         - name: id
           in: path
           required: true
-          style: simple
           schema:
             type: string
             format: uuid
@@ -817,7 +850,6 @@ paths:
         - name: id
           in: path
           required: true
-          style: simple
           schema:
             type: string
             format: uuid
@@ -827,6 +859,10 @@ paths:
 components:
   schemas:
     AccessTokenResponse:
+      required:
+        - accessToken
+        - expiresIn
+        - refreshToken
       type: object
       properties:
         tokenType:
@@ -844,6 +880,8 @@ components:
           nullable: true
       additionalProperties: false
     Author:
+      required:
+        - name
       type: object
       properties:
         id:
@@ -878,42 +916,16 @@ components:
               format: int32
       additionalProperties: false
     Book:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        name:
-          type: string
-          nullable: true
-        productType:
-          allOf:
-            - $ref: '#/components/schemas/ProductType'
-        retailPrice:
-          type: number
-          format: double
-        price:
-          type: number
-          format: double
-        discountAmmount:
-          type: number
-          format: double
-        description:
-          type: string
-          nullable: true
-        coverImageUrl:
-          type: string
-          nullable: true
-        productCategoryIds:
-          type: array
-          items:
-            type: string
-            format: uuid
-          nullable: true
-        authorId:
-          type: string
-          format: uuid
-      additionalProperties: false
+      allOf:
+        - $ref: '#/components/schemas/Product'
+        - required:
+            - authorId
+          type: object
+          properties:
+            authorId:
+              type: string
+              format: uuid
+          additionalProperties: false
     CreateAuthorCommand:
       required:
         - name
@@ -928,7 +940,11 @@ components:
       additionalProperties: false
     CreateBookCommand:
       required:
+        - authorId
+        - discountAmmount
         - name
+        - price
+        - retailPrice
       type: object
       properties:
         name:
@@ -991,6 +1007,10 @@ components:
           nullable: true
       additionalProperties: false
     CreateWorkTaskInput:
+      required:
+        - date
+        - end
+        - start
       type: object
       properties:
         projectId:
@@ -1014,6 +1034,8 @@ components:
           format: time
       additionalProperties: false
     ForgotPasswordRequest:
+      required:
+        - email
       type: object
       properties:
         email:
@@ -1061,6 +1083,9 @@ components:
           nullable: true
       additionalProperties: false
     InfoResponse:
+      required:
+        - email
+        - isEmailConfirmed
       type: object
       properties:
         email:
@@ -1070,6 +1095,9 @@ components:
           type: boolean
       additionalProperties: false
     LoginRequest:
+      required:
+        - email
+        - password
       type: object
       properties:
         email:
@@ -1176,7 +1204,56 @@ components:
           format: time
           nullable: true
       additionalProperties: false
+    Product:
+      required:
+        - ProductType
+        - discountAmmount
+        - name
+        - price
+        - productType
+        - retailPrice
+      type: object
+      properties:
+        ProductType:
+          type: string
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          nullable: true
+        productType:
+          allOf:
+            - $ref: '#/components/schemas/ProductType'
+        retailPrice:
+          type: number
+          format: double
+        price:
+          type: number
+          format: double
+        discountAmmount:
+          type: number
+          format: double
+        description:
+          type: string
+          nullable: true
+        coverImageUrl:
+          type: string
+          nullable: true
+        productCategoryIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+          nullable: true
+      additionalProperties: false
+      discriminator:
+        propertyName: ProductType
+        mapping:
+          Book: '#/components/schemas/Book'
     ProductCategory:
+      required:
+        - name
       type: object
       properties:
         id:
@@ -1218,6 +1295,8 @@ components:
           nullable: true
       additionalProperties: false
     RefreshRequest:
+      required:
+        - refreshToken
       type: object
       properties:
         refreshToken:
@@ -1225,6 +1304,9 @@ components:
           nullable: true
       additionalProperties: false
     RegisterRequest:
+      required:
+        - email
+        - password
       type: object
       properties:
         email:
@@ -1235,6 +1317,8 @@ components:
           nullable: true
       additionalProperties: false
     ResendConfirmationEmailRequest:
+      required:
+        - email
       type: object
       properties:
         email:
@@ -1242,6 +1326,10 @@ components:
           nullable: true
       additionalProperties: false
     ResetPasswordRequest:
+      required:
+        - email
+        - newPassword
+        - resetCode
       type: object
       properties:
         email:
@@ -1255,6 +1343,9 @@ components:
           nullable: true
       additionalProperties: false
     StartWorkTaskInput:
+      required:
+        - date
+        - start
       type: object
       properties:
         description:
@@ -1284,6 +1375,11 @@ components:
           type: boolean
       additionalProperties: false
     TwoFactorResponse:
+      required:
+        - isMachineRemembered
+        - isTwoFactorEnabled
+        - recoveryCodesLeft
+        - sharedKey
       type: object
       properties:
         sharedKey:
