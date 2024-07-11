@@ -1,6 +1,6 @@
 ﻿using DevBook.API.Features.BookStore.Shared;
 
-namespace DevBook.API.Features.BookStore.ProductCategories;
+namespace DevBook.API.Features.BookStore.Products.ProductCategories;
 
 public sealed record CreateProductCategoryCommand : ICommand<ProductCategory>
 {

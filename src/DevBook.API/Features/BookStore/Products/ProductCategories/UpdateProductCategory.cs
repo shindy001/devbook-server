@@ -1,12 +1,12 @@
 ﻿using DevBook.API.Features.BookStore.Shared;
 
-namespace DevBook.API.Features.BookStore.ProductCategories;
+namespace DevBook.API.Features.BookStore.Products.ProductCategories;
 
 public sealed record UpdateProductCategoryCommandDto() : ICommand<OneOf<Success, NotFound>>
 {
 	[Required]
 	public required string Name { get; init; }
-}	
+}
 
 public sealed record UpdateProductCategoryCommand(
 	Guid Id,

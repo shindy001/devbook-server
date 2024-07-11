@@ -1,6 +1,6 @@
 ﻿using DevBook.API.Features.BookStore.Shared;
 
-namespace DevBook.API.Features.BookStore.ProductCategories;
+namespace DevBook.API.Features.BookStore.Products.ProductCategories;
 
 internal sealed record GetProductCategoryQuery(Guid Id) : IQuery<OneOf<ProductCategory, NotFound>>;
 
