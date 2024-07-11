@@ -1,7 +1,7 @@
 ﻿using DevBook.API.Features.BookStore.Authors;
+using DevBook.API.Features.BookStore.Products;
 using DevBook.API.Features.BookStore.Products.Books;
 using DevBook.API.Features.BookStore.Products.ProductCategories;
-using DevBook.API.Features.BookStore.Shared;
 
 internal sealed class BookStoreModule : IFeatureModule
 {

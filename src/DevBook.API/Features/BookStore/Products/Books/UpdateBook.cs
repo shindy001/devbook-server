@@ -1,6 +1,4 @@
-﻿using DevBook.API.Features.BookStore.Shared;
-
-namespace DevBook.API.Features.BookStore.Products.Books;
+﻿namespace DevBook.API.Features.BookStore.Products.Books;
 
 public sealed record UpdateBookCommandDto() : ICommand<OneOf<Success, NotFound>>
 {

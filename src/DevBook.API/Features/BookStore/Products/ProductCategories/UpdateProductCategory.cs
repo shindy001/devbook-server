@@ -1,6 +1,4 @@
-﻿using DevBook.API.Features.BookStore.Shared;
-
-namespace DevBook.API.Features.BookStore.Products.ProductCategories;
+﻿namespace DevBook.API.Features.BookStore.Products.ProductCategories;
 
 public sealed record UpdateProductCategoryCommandDto() : ICommand<OneOf<Success, NotFound>>
 {

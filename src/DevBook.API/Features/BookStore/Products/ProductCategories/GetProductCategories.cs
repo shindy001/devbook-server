@@ -1,5 +1,4 @@
-﻿using DevBook.API.Features.BookStore.Shared;
-using DevBook.API.Helpers;
+﻿using DevBook.API.Helpers;
 
 namespace DevBook.API.Features.BookStore.Products.ProductCategories;
 
