@@ -3,6 +3,7 @@
 public class IntegrationTestsBase : IDisposable
 {
 	private readonly DevBookApiTestFixture<Program> _fixture;
+	private TestAuthInterceptor? _testAuthInterceptor;
 	private readonly IDisposable? _testContext;
 	private HttpClient? _httpClient;
 
@@ -15,6 +16,7 @@ public class IntegrationTestsBase : IDisposable
 	public T GetClient<T>()
 	{
 		_httpClient = _fixture.CreateClient();
+		_testAuthInterceptor = _fixture.GetTestAuthInterceptor();
 		return RestService.For<T>(_httpClient);
 	}
 
@@ -26,6 +28,26 @@ public class IntegrationTestsBase : IDisposable
 		}
 
 		_fixture.ReplaceService<TService>(instance);
+	}
+
+	public void AuthenticatedUser()
+	{
+		if (_httpClient is null)
+		{
+			throw new InvalidOperationException("Cannot Authenticate user before Client creation. Create client and then authenticate user.");
+		}
+
+		_testAuthInterceptor?.AuthenticateUser();
+	}
+
+	public void AuthenticatedAdmin()
+	{
+		if (_httpClient is null)
+		{
+			throw new InvalidOperationException("Cannot Authenticate user before Client creation. Create client and then authenticate user.");
+		}
+
+		_testAuthInterceptor?.AuthenticateAdmin();
 	}
 
 	public void Dispose()

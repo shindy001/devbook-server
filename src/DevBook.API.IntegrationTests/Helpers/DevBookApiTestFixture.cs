@@ -1,4 +1,5 @@
 ﻿using DevBook.API.Infrastructure;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -7,7 +8,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
-using Xunit.Abstractions;
 
 namespace DevBook.API.IntegrationTests.Helpers;
 
@@ -42,7 +42,7 @@ public sealed class DevBookApiTestFixture<TProgram> : IDisposable where TProgram
 	{
 		_configureWebHostActions.Add((builder) =>
 		{
-			builder.ConfigureServices(
+			builder.ConfigureTestServices(
 				services =>
 				{
 					var descriptor = services.SingleOrDefault(d => d.ServiceType == typeof(TService));
@@ -63,6 +63,12 @@ public sealed class DevBookApiTestFixture<TProgram> : IDisposable where TProgram
 		return new TimedTestContext<TProgram>(this, outputHelper);
 	}
 
+	public TestAuthInterceptor GetTestAuthInterceptor()
+	{
+		return _app?.Services.GetRequiredService<TestAuthInterceptor>()
+			?? throw new InvalidOperationException($"Cannot get {nameof(TestAuthInterceptor)}, WebApplicationFactory is null - not initialized yet.");
+	}
+
 	public HttpClient CreateClient()
 	{
 		if (_client is null)
@@ -70,14 +76,21 @@ public sealed class DevBookApiTestFixture<TProgram> : IDisposable where TProgram
 			_app = new WebApplicationFactory<TProgram>()
 				.WithWebHostBuilder(builder =>
 				{
-					builder.ConfigureServices(services =>
+					builder.ConfigureTestServices(services =>
 					{
 						services.AddSingleton<ILoggerFactory>(LoggerFactory);
 
 						ReplaceDbWithTestDb(services);
+
+						// Mock Authentication setup https://learn.microsoft.com/en-us/aspnet/core/test/integration-tests?view=aspnetcore-6.0#mock-authentication
+						services.AddSingleton<TestAuthInterceptor>();
+						services
+							.AddAuthentication(defaultScheme: "TestSchema")
+							.AddScheme<AuthenticationSchemeOptions, TestAuthHandler>("TestSchema", options => { });
 					});
 
 					builder.UseTestServer();
+
 					foreach (var action in _configureWebHostActions)
 					{
 						action?.Invoke(builder);
