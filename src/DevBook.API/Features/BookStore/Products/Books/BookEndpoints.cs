@@ -26,7 +26,7 @@ internal static class BookEndpoints
 	private static async Task<IResult> CreateBook(CreateBookCommand command, IExecutor executor, CancellationToken cancellationToken)
 	{
 		var result = await executor.ExecuteCommand(command, cancellationToken);
-		return TypedResults.CreatedAtRoute($"{OperationIdPrefix}{ApiConstants.GetByIdRoute}", new { id = result.Id });
+		return TypedResults.CreatedAtRoute($"{ApiConstants.ProductsOperationIdPrefix}{ApiConstants.GetByIdRoute}", new { id = result.Id });
 	}
 
 	private static async Task<IResult> UpdateBook([FromRoute] Guid id, UpdateBookCommandDto command, IExecutor executor, CancellationToken cancellationToken)

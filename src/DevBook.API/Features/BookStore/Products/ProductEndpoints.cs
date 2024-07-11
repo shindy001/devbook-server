@@ -2,23 +2,21 @@
 
 internal static class ProductEndpoints
 {
-	private const string OperationIdPrefix = "Products.";
-
 	public static RouteGroupBuilder MapProductEndpoints(this RouteGroupBuilder groupBuilder)
 	{
 		groupBuilder.MapGet("/", GetProducts)
-			.WithName($"{OperationIdPrefix}GetAll")
+			.WithName($"{ApiConstants.ProductsOperationIdPrefix}GetAll")
 			.Produces<IList<Product>>()
 			.AllowAnonymous();
 
 		groupBuilder.MapGet("/{id:guid}", GetProductById)
-			.WithName($"{OperationIdPrefix}{ApiConstants.GetByIdRoute}")
+			.WithName($"{ApiConstants.ProductsOperationIdPrefix}{ApiConstants.GetByIdRoute}")
 			.Produces<Product>()
 			.Produces(StatusCodes.Status404NotFound)
 			.AllowAnonymous();
 
 		groupBuilder.MapDelete("/{id:guid}", DeleteProduct)
-			.WithName($"{OperationIdPrefix}Delete")
+			.WithName($"{ApiConstants.ProductsOperationIdPrefix}Delete")
 			.Produces(StatusCodes.Status204NoContent);
 
 		return groupBuilder;
