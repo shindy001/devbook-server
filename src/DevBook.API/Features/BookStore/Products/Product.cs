@@ -1,4 +1,4 @@
-﻿using DevBook.API.Features.BookStore.Books;
+﻿using DevBook.API.Features.BookStore.Products.Books;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace DevBook.API.Features.BookStore.Shared;
