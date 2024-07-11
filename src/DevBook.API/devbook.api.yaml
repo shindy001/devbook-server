@@ -14,7 +14,7 @@ paths:
           schema:
             type: integer
             format: int32
-        - name: itemLimit
+        - name: offset
           in: query
           schema:
             type: integer
@@ -124,30 +124,6 @@ paths:
         '204':
           description: No Content
   /bookstore/books:
-    get:
-      tags:
-        - BookStoreModule_BookEndpoints
-      operationId: Books.GetAll
-      parameters:
-        - name: pageSize
-          in: query
-          schema:
-            type: integer
-            format: int32
-        - name: itemLimit
-          in: query
-          schema:
-            type: integer
-            format: int32
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Book'
     post:
       tags:
         - BookStoreModule_BookEndpoints
@@ -163,26 +139,6 @@ paths:
         '201':
           description: Created
   '/bookstore/books/{id}':
-    get:
-      tags:
-        - BookStoreModule_BookEndpoints
-      operationId: Books.GetById
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Book'
-        '404':
-          description: Not Found
     put:
       tags:
         - BookStoreModule_BookEndpoints
@@ -229,20 +185,6 @@ paths:
           description: No Content
         '404':
           description: Not Found
-    delete:
-      tags:
-        - BookStoreModule_BookEndpoints
-      operationId: Books.Delete
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-      responses:
-        '204':
-          description: No Content
   /bookstore/productCategories:
     get:
       tags:
@@ -254,7 +196,7 @@ paths:
           schema:
             type: integer
             format: int32
-        - name: itemLimit
+        - name: offset
           in: query
           schema:
             type: integer
@@ -356,6 +298,10 @@ paths:
           schema:
             type: integer
             format: int32
+        - name: productType
+          in: query
+          schema:
+            type: string
       responses:
         '200':
           description: OK
