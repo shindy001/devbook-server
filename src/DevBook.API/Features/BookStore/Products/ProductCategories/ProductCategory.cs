@@ -1,4 +1,4 @@
-﻿namespace DevBook.API.Features.BookStore.Products;
+﻿namespace DevBook.API.Features.BookStore.Products.ProductCategories;
 
 public sealed record ProductCategory()
 	: Entity(Guid.NewGuid())

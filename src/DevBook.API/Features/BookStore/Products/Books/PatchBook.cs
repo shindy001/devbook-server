@@ -1,4 +1,6 @@
-﻿namespace DevBook.API.Features.BookStore.Products.Books;
+﻿using DevBook.API.Features.BookStore.Products.ProductCategories;
+
+namespace DevBook.API.Features.BookStore.Products.Books;
 
 public record PatchBookCommandDto(
 	string? Name,
