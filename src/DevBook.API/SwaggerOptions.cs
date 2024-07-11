@@ -6,6 +6,10 @@ public static class SwaggerOptions
 	{
 		return opt =>
 		{
+			// Support inheritance and polymorphism
+			opt.UseOneOfForPolymorphism();
+			opt.EnableAnnotations(enableAnnotationsForInheritance: true, enableAnnotationsForPolymorphism: true);
+
 			// Swagger Bearer auth
 			opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
 			{
