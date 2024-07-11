@@ -38,9 +38,9 @@ internal static class AuthorEndpoints
 		return groupBuilder;
 	}
 
-	private static async Task<IResult> GetAuthors(int? pageSize, int? itemLimit, IExecutor executor, CancellationToken cancellationToken)
+	private static async Task<IResult> GetAuthors(int? pageSize, int? offset, IExecutor executor, CancellationToken cancellationToken)
 	{
-		var result = await executor.ExecuteQuery(new GetAuthorsQuery(PageSize: pageSize, ItemLimit: itemLimit), cancellationToken);
+		var result = await executor.ExecuteQuery(new GetAuthorsQuery(PageSize: pageSize, Offset: offset), cancellationToken);
 		return TypedResults.Ok(result);
 	}
 

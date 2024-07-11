@@ -26,7 +26,7 @@ internal static class ProductEndpoints
 
 	private static async Task<IResult> GetProducts(int? pageSize, int? itemLimit, ProductType? productType, IExecutor executor, CancellationToken cancellationToken)
 	{
-		var result = await executor.ExecuteQuery(new GetProductsQuery(PageSize: pageSize, ItemLimit: itemLimit, ProductType: productType), cancellationToken);
+		var result = await executor.ExecuteQuery(new GetProductsQuery(PageSize: pageSize, Offset: itemLimit, ProductType: productType), cancellationToken);
 		return TypedResults.Ok(result);
 	}
 

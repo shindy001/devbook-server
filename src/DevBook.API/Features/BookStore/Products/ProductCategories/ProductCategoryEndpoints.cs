@@ -33,9 +33,9 @@ internal static class ProductCategoryEndpoints
 		return groupBuilder;
 	}
 
-	private static async Task<IResult> GetProductCategories(int? pageSize, int? itemLimit, IExecutor executor, CancellationToken cancellationToken)
+	private static async Task<IResult> GetProductCategories(int? pageSize, int? offset, IExecutor executor, CancellationToken cancellationToken)
 	{
-		var result = await executor.ExecuteQuery(new GetProductCategoriesQuery(PageSize: pageSize, ItemLimit: itemLimit), cancellationToken);
+		var result = await executor.ExecuteQuery(new GetProductCategoriesQuery(PageSize: pageSize, Offset: offset), cancellationToken);
 		return TypedResults.Ok(result);
 	}
 

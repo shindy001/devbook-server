@@ -2,7 +2,7 @@
 
 namespace DevBook.API.Features.BookStore.Authors;
 
-internal sealed record GetAuthorsQuery(int? PageSize, int? ItemLimit) : IQuery<IEnumerable<Author>>;
+internal sealed record GetAuthorsQuery(int? PageSize, int? Offset) : IQuery<IEnumerable<Author>>;
 
 internal sealed class GetAuthorsQueryHandler(DevBookDbContext dbContext) : IQueryHandler<GetAuthorsQuery, IEnumerable<Author>>
 {
@@ -10,7 +10,7 @@ internal sealed class GetAuthorsQueryHandler(DevBookDbContext dbContext) : IQuer
 	{
 		return await dbContext.Authors
 			.OrderBy(x => x.Name)
-			.Skip(PagingHelper.NormalizeItemLimit(query.ItemLimit))
+			.Skip(PagingHelper.NormalizeOffset(query.Offset))
 			.Take(PagingHelper.NormalizePageSize(query.PageSize))
 			.ToListAsync(cancellationToken);
 	}

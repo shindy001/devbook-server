@@ -9,10 +9,10 @@ internal static class PagingHelper
 			: pageSize.Value;
 	}
 
-	public static int NormalizeItemLimit(int? itemLimit)
+	public static int NormalizeOffset(int? offset)
 	{
-		return itemLimit is null || itemLimit.Value < 0
+		return offset is null || offset.Value < 0
 			? 0
-			: itemLimit.Value;
+			: offset.Value;
 	}
 }

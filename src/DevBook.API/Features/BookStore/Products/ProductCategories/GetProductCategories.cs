@@ -2,7 +2,7 @@
 
 namespace DevBook.API.Features.BookStore.Products.ProductCategories;
 
-internal sealed record GetProductCategoriesQuery(int? PageSize, int? ItemLimit) : IQuery<IEnumerable<ProductCategory>>;
+internal sealed record GetProductCategoriesQuery(int? PageSize, int? Offset) : IQuery<IEnumerable<ProductCategory>>;
 
 internal sealed class GetProductCategoriesQueryHandler(DevBookDbContext dbContext) : IQueryHandler<GetProductCategoriesQuery, IEnumerable<ProductCategory>>
 {
@@ -10,7 +10,7 @@ internal sealed class GetProductCategoriesQueryHandler(DevBookDbContext dbContex
 	{
 		return await dbContext.ProductCategories
 			.OrderBy(x => x.Name)
-			.Skip(PagingHelper.NormalizeItemLimit(query.ItemLimit))
+			.Skip(PagingHelper.NormalizeOffset(query.Offset))
 			.Take(PagingHelper.NormalizePageSize(query.PageSize))
 			.ToListAsync(cancellationToken);
 	}
