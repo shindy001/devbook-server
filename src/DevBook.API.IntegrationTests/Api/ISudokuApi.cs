@@ -1,5 +1,4 @@
-﻿using Refit;
-namespace DevBook.API.IntegrationTests.Api;
+﻿namespace DevBook.API.IntegrationTests.Api;
 
 public interface ISudokuApi
 {

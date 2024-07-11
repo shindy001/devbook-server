@@ -1,8 +1,4 @@
-﻿using DevBook.API.IntegrationTests.Helpers;
-using Refit;
-using Xunit.Abstractions;
-
-namespace DevBook.API.IntegrationTests;
+﻿namespace DevBook.API.IntegrationTests;
 
 public class IntegrationTestsBase : IDisposable
 {

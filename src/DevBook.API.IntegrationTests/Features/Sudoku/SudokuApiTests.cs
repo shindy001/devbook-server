@@ -1,8 +1,4 @@
 ﻿using DevBook.API.Features.Sudoku;
-using DevBook.API.IntegrationTests.Api;
-using FluentAssertions;
-using NSubstitute;
-using Xunit.Abstractions;
 
 namespace DevBook.API.IntegrationTests.Features.Sudoku;
 
