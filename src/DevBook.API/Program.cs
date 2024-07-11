@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 var builder = WebApplication.CreateBuilder(args);
 
 var devBookClientOrigin = builder.Configuration.GetSection("DevBookClientOrigins").Get<string[]>()!;
@@ -14,8 +16,11 @@ builder.Services.RegisterFeatureModules([typeof(Program).Assembly]);
 
 builder.Services.AddSwaggerGen(SwaggerOptions.WithDevBookOptions());
 builder.Services.AddEndpointsApiExplorer()
-	.ConfigureHttpJsonOptions(opt
-		=> opt.SerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull);
+	.ConfigureHttpJsonOptions(opt =>
+	{
+		opt.SerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+		opt.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+	});
 
 builder.Services.AddCors(options =>
 {
