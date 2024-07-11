@@ -1,10 +1,12 @@
 ﻿using DevBook.API.Features.BookStore.Products.Books;
 using Swashbuckle.AspNetCore.Annotations;
+using System.Text.Json.Serialization;
 
 namespace DevBook.API.Features.BookStore.Products;
 
 [SwaggerDiscriminator(nameof(ProductType))]
 [SwaggerSubType(typeof(Book), DiscriminatorValue = nameof(Book))]
+[JsonDerivedType(typeof(Book))]
 public abstract record Product()
 	: Entity(Guid.NewGuid())
 {
