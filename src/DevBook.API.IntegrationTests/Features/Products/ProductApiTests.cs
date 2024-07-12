@@ -92,6 +92,18 @@ public class ProductApiTests : IntegrationTestsBase
 			});
 	}
 
+	[Fact]
+	public async Task GetProductById_should_throw_404_NotFound_ApiException_when_product_does_not_exist()
+	{
+		// Given
+		// When
+		Func<Task> act = async () => await _bookStoreApi.GetProductById<Book>(Guid.NewGuid());
+
+		// Then
+		var exception = await act.Should().ThrowAsync<ApiException>();
+		exception.Which.StatusCode.Should().Be(HttpStatusCode.NotFound);
+	}
+
 	#endregion
 
 	#region DeleteProduct
