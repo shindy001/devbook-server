@@ -2,21 +2,22 @@
 
 public class IntegrationTestsBase : IDisposable
 {
-	private readonly DevBookApiTestFixture<Program> _fixture;
-	private TestAuthInterceptor? _testAuthInterceptor;
+	public TestAuthInterceptor TestAuthInterceptor { get; private set; } = null!;
+
+	private readonly DevBookApiTestFixture<Program> _devBookApiTestFixture;
 	private readonly IDisposable? _testContext;
 	private HttpClient? _httpClient;
 
 	public IntegrationTestsBase(ITestOutputHelper outputHelper)
 	{
-		_fixture = new DevBookApiTestFixture<Program>();
-		_testContext = _fixture.GetTestContext(outputHelper);
+		_devBookApiTestFixture = new DevBookApiTestFixture<Program>();
+		_testContext = _devBookApiTestFixture.GetTestContext(outputHelper);
 	}
 
 	public T GetClient<T>()
 	{
-		_httpClient = _fixture.CreateClient();
-		_testAuthInterceptor = _fixture.GetTestAuthInterceptor();
+		_httpClient = _devBookApiTestFixture.CreateClient();
+		TestAuthInterceptor = _devBookApiTestFixture.GetTestAuthInterceptor();
 		return RestService.For<T>(_httpClient);
 	}
 
@@ -27,32 +28,32 @@ public class IntegrationTestsBase : IDisposable
 			throw new InvalidOperationException("Cannot replace service after Client creation. Replace first and then create client.");
 		}
 
-		_fixture.ReplaceService<TService>(instance);
+		_devBookApiTestFixture.ReplaceService<TService>(instance);
 	}
 
-	public void AuthenticatedUser()
+	public void AuthenticateUser()
 	{
 		if (_httpClient is null)
 		{
 			throw new InvalidOperationException("Cannot Authenticate user before Client creation. Create client and then authenticate user.");
 		}
 
-		_testAuthInterceptor?.AuthenticateUser();
+		TestAuthInterceptor.AuthenticateUser();
 	}
 
-	public void AuthenticatedAdmin()
+	public void AuthenticateAdmin()
 	{
 		if (_httpClient is null)
 		{
 			throw new InvalidOperationException("Cannot Authenticate user before Client creation. Create client and then authenticate user.");
 		}
 
-		_testAuthInterceptor?.AuthenticateAdmin();
+		TestAuthInterceptor.AuthenticateAdmin();
 	}
 
 	public void Dispose()
 	{
 		_testContext?.Dispose();
-		_fixture?.Dispose();
+		_devBookApiTestFixture?.Dispose();
 	}
 }
