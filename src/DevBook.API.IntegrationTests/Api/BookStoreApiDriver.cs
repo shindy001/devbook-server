@@ -41,7 +41,10 @@ internal sealed class BookStoreApiDriver
 	private async Task<Guid> ExecuteInAdminAuthContext(Func<Task<Guid>> action)
 	{
 		var currentAuthentication = _testAuthInterceptor.OnAuthenticate?.Clone() as Func<Task<AuthenticateResult>>;
+		_testAuthInterceptor.AuthenticateAdmin();
+
 		var result = await action();
+
 		_testAuthInterceptor.OnAuthenticate = currentAuthentication;
 
 		return result;
@@ -51,7 +54,9 @@ internal sealed class BookStoreApiDriver
 	{
 		var currentAuthentication = _testAuthInterceptor.OnAuthenticate?.Clone() as Func<Task<AuthenticateResult>>;
 		_testAuthInterceptor.AuthenticateAdmin();
+
 		await action();
+
 		_testAuthInterceptor.OnAuthenticate = currentAuthentication;
 	}
 
