@@ -4,7 +4,7 @@ namespace DevBook.API.Infrastructure;
 
 /// <summary>
 /// Marks feature module
-/// Modules are automatically discovered and registered by <see cref="FeatureModuleExtensions"/> methods.
+/// Modules are automatically discovered and registered by <see cref="FeatureModuleRegister"/> methods.
 /// </summary>
 public interface IFeatureModule
 {
@@ -23,9 +23,9 @@ public interface IFeatureModule
 	IEndpointRouteBuilder MapEndpoints(IEndpointRouteBuilder endpointsBuilder);
 }
 
-public static class FeatureModuleExtensions
+public sealed class FeatureModuleRegister
 {
-	static readonly List<IFeatureModule> registeredModules = [];
+	private readonly List<IFeatureModule> registeredModules = [];
 
 	/// <summary>
 	/// Registeres modules that implement <see cref="IFeatureModule"/> contract
@@ -33,7 +33,7 @@ public static class FeatureModuleExtensions
 	/// <param name="services"></param>
 	/// <param name="commandAndQueriesAssemblies"></param>
 	/// <returns></returns>
-	public static IServiceCollection RegisterFeatureModules(this IServiceCollection services, params Assembly[] commandAndQueriesAssemblies)
+	public IServiceCollection RegisterFeatureModules(IServiceCollection services, params Assembly[] commandAndQueriesAssemblies)
 	{
 		foreach (var assembly in commandAndQueriesAssemblies)
 		{
@@ -48,9 +48,9 @@ public static class FeatureModuleExtensions
 	/// </summary>
 	/// <param name="app"></param>
 	/// <returns></returns>
-	public static WebApplication MapFeatureModulesEndpoints(this WebApplication app)
+	public WebApplication MapFeatureModulesEndpoints(WebApplication app)
 	{
-		foreach (var module in registeredModules)
+		foreach (var module in this.registeredModules)
 		{
 			module.MapEndpoints(app);
 		}
@@ -58,13 +58,13 @@ public static class FeatureModuleExtensions
 		return app;
 	}
 
-	private static void RegisterModules(IServiceCollection services, Assembly assembly)
+	private void RegisterModules(IServiceCollection services, Assembly assembly)
 	{
 		var modules = DiscoverModules(assembly);
 		foreach (var module in modules)
 		{
 			module.RegisterModule(services);
-			registeredModules.Add(module);
+			this.registeredModules.Add(module);
 		}
 	}
 

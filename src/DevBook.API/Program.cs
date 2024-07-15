@@ -7,12 +7,13 @@ var authTokenTTLInMinutes = builder.Configuration.GetSection("AuthTokenTTLInMinu
 var graphQLIntrospectionAllowed = builder.Configuration.GetSection("GraphQLIntrospectionAllowed").Get<bool>()!;
 var defaultUsers = builder.Configuration.GetSection("DefaultUsers").Get<UserDbSeed[]>();
 var devBookCorsPolicyName = "DevBookCorsPolicy";
+var featureModuleRegister = new FeatureModuleRegister();
 
 builder.AddServiceDefaults();
 builder.Services.RegisterDevBookDbContext();
 builder.Services.RegisterRequestPipelines();
 builder.Services.RegisterAuth(tokenTTLinMinutes: authTokenTTLInMinutes, requireConfirmedAccountOnSignIn: false);
-builder.Services.RegisterFeatureModules([typeof(Program).Assembly]);
+featureModuleRegister.RegisterFeatureModules(builder.Services, [typeof(Program).Assembly]);
 
 builder.Services.AddSwaggerGen(SwaggerOptions.WithDevBookOptions());
 builder.Services.AddEndpointsApiExplorer()
@@ -86,7 +87,7 @@ app.MapGroup("/identity")
 	.MapIdentityApi<DevBookUser>()
 	.WithTags("Identity");
 
-app.MapFeatureModulesEndpoints();
+featureModuleRegister.MapFeatureModulesEndpoints(app);
 
 app.MapGraphQLHttp("/graphql")
 	.RequireCors(devBookCorsPolicyName);
