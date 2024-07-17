@@ -8,8 +8,23 @@ public interface IBookStoreApi
 {
 	#region Authors
 
+	[Get("/bookstore/authors")]
+	Task<IList<Author>> GetAuthors();
+
+	[Get("/bookstore/authors/{id}")]
+	Task<Author> GetAuthorById(Guid id);
+
 	[Post("/bookstore/authors")]
 	Task<HttpResponseMessage> CreateAuthor(CreateAuthorCommand command);
+
+	[Put("/bookstore/authors/{id}")]
+	Task<HttpResponseMessage> UpdateAuthor(Guid id, UpdateAuthorCommandDto command);
+
+	[Patch("/bookstore/authors/{id}")]
+	Task<HttpResponseMessage> PatchAuthor(Guid id, PatchAuthorCommandDto command);
+
+	[Delete("/bookstore/authors/{id}")]
+	Task<HttpResponseMessage> DeleteAuthor(Guid id);
 
 	#endregion
 
