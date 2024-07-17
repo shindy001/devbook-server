@@ -1,5 +1,6 @@
 ﻿using DevBook.API.Features.BookStore.Authors;
 using DevBook.API.Features.BookStore.Products.Books;
+using DevBook.API.Features.BookStore.Products.ProductCategories;
 using Microsoft.AspNetCore.Authentication;
 using System.Net;
 
@@ -25,6 +26,15 @@ internal sealed class BookStoreApiDriver
 		return await ExecuteInAdminAuthContext(async () =>
 		{
 			var response = await _bookStoreApi.CreateAuthor(createCommand);
+			return ExtractCreatedLocationGuid(response);
+		});
+	}
+
+	public async Task<Guid> SeedProductCategory(CreateProductCategoryCommand createCommand)
+	{
+		return await ExecuteInAdminAuthContext(async () =>
+		{
+			var response = await _bookStoreApi.CreateProductCategory(createCommand);
 			return ExtractCreatedLocationGuid(response);
 		});
 	}

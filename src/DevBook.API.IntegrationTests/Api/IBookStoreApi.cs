@@ -1,10 +1,18 @@
 ﻿using DevBook.API.Features.BookStore.Authors;
 using DevBook.API.Features.BookStore.Products.Books;
+using DevBook.API.Features.BookStore.Products.ProductCategories;
 
 namespace DevBook.API.IntegrationTests.Api;
 
 public interface IBookStoreApi
 {
+	#region Authors
+
+	[Post("/bookstore/authors")]
+	Task<HttpResponseMessage> CreateAuthor(CreateAuthorCommand command);
+
+	#endregion
+
 	#region Products
 
 	[Get("/bookstore/products")]
@@ -18,10 +26,22 @@ public interface IBookStoreApi
 
 	#endregion
 
-	#region Authors
+	#region ProductCategories
 
-	[Post("/bookstore/authors")]
-	Task<HttpResponseMessage> CreateAuthor(CreateAuthorCommand command);
+	[Get("/bookstore/productCategories")]
+	Task<IList<ProductCategory>> GetProductCategories();
+
+	[Get("/bookstore/productCategories/{id}")]
+	Task<ProductCategory> GetProductCategoryById(Guid id);
+
+	[Post("/bookstore/productCategories")]
+	Task<HttpResponseMessage> CreateProductCategory(CreateProductCategoryCommand command);
+
+	[Put("/bookstore/productCategories/{id}")]
+	Task<HttpResponseMessage> UpdateProductCategory(Guid id, UpdateProductCategoryCommand command);
+
+	[Delete("/bookstore/productCategories/{id}")]
+	Task<HttpResponseMessage> DeleteProductCategory(Guid id);
 
 	#endregion
 
