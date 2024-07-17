@@ -30,5 +30,11 @@ public interface IBookStoreApi
 	[Post("/bookstore/books")]
 	Task<HttpResponseMessage> CreateBook(CreateBookCommand command);
 
+	[Put("/bookstore/books/{id}")]
+	Task<HttpResponseMessage> UpdateBook(Guid id, UpdateBookCommandDto command);
+
+	[Patch("/bookstore/books/{id}")]
+	Task<HttpResponseMessage> PatchBook(Guid id, PatchBookCommandDto command);
+
 	#endregion
 }
