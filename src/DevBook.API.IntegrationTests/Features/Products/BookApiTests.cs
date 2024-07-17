@@ -2,6 +2,7 @@
 using DevBook.API.Features.BookStore.Authors;
 using DevBook.API.Features.BookStore.Products;
 using DevBook.API.Features.BookStore.Products.Books;
+using DevBook.API.IntegrationTests.Extensions;
 using System.Net;
 
 namespace DevBook.API.IntegrationTests.Features.Products;
@@ -38,7 +39,7 @@ public class BookApiTests : IntegrationTestsBase
 
 		// Then
 		response.StatusCode.Should().Be(HttpStatusCode.Created);
-		var actualBookGuid = GetGuidFromResponseLocation(response);
+		var actualBookGuid = response.GetGuidFromResponseLocation();
 		actualBookGuid.Should().NotBeNull();
 		actualBook.Should().BeEquivalentTo(
 			new Book
@@ -331,10 +332,4 @@ public class BookApiTests : IntegrationTestsBase
 	}
 
 	#endregion
-
-	private Guid? GetGuidFromResponseLocation(HttpResponseMessage response)
-	{
-		var success = Guid.TryParse(response.Headers.Location?.Segments[^1], out var result);
-		return success ? result : null;
-	}
 }
