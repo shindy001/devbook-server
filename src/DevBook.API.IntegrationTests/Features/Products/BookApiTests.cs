@@ -39,12 +39,12 @@ public class BookApiTests : IntegrationTestsBase
 
 		// Then
 		response.StatusCode.Should().Be(HttpStatusCode.Created);
-		var actualBookGuid = response.GetGuidFromResponseLocation();
-		actualBookGuid.Should().NotBeNull();
+		var actualBookId = response.GetGuidFromResponseLocation();
+		actualBookId.Should().NotBeNull();
 		actualBook.Should().BeEquivalentTo(
 			new Book
 			{
-				Id = actualBookGuid!.Value,
+				Id = actualBookId!.Value,
 				Name = givenCreateBookCommand.Name,
 				ProductType = ProductType.Book,
 				AuthorId = givenAuthorId,

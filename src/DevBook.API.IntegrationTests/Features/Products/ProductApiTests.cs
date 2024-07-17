@@ -55,6 +55,18 @@ public class ProductApiTests : IntegrationTestsBase
 			});
 	}
 
+	[Fact]
+	public async Task GetProducts_should_return_empty_collection_when_there_are_no_products()
+	{
+		// Given
+		// When
+		var response = await _bookStoreApi.GetProducts<Book>();
+
+		// Then
+		response.Should().NotBeNull();
+		response.Should().BeEmpty();
+	}
+
 	#endregion
 
 	#region GetProductById
