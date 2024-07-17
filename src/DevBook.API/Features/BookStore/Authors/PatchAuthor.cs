@@ -1,8 +1,8 @@
 ﻿namespace DevBook.API.Features.BookStore.Authors;
 
 public record PatchAuthorCommandDto(
-	string? Name,
-	string? Description)
+	string? Name = null,
+	string? Description = null)
 	: ICommand<OneOf<Success, NotFound>>;
 
 public record PatchAuthorCommand(

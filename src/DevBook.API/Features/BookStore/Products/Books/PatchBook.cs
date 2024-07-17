@@ -3,14 +3,14 @@
 namespace DevBook.API.Features.BookStore.Products.Books;
 
 public record PatchBookCommandDto(
-	string? Name,
-	Guid? AuthorId,
-	decimal? RetailPrice,
-	decimal? Price,
-	decimal? DiscountAmmount,
-	string? Description,
-	string? CoverImageUrl,
-	IList<Guid>? ProductCategoryIds)
+	string? Name = null,
+	Guid? AuthorId = null,
+	decimal? RetailPrice = null,
+	decimal? Price = null,
+	decimal? DiscountAmmount = null,
+	string? Description = null,
+	string? CoverImageUrl = null,
+	IList<Guid>? ProductCategoryIds = null)
 	: ICommand<OneOf<Success, NotFound>>;
 
 public record PatchBookCommand(

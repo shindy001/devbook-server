@@ -275,15 +275,7 @@ public class BookApiTests : IntegrationTestsBase
 			.With(x => x.ProductCategoryIds, [])
 			.Create();
 		var givenBookId = await _bookStoreDriver.SeedBook(givenCreateBookSeedCommand);
-		var givenPatchBookCommand = new PatchBookCommandDto(
-			Name: null,
-			AuthorId: null,
-			RetailPrice: null,
-			Price: null,
-			DiscountAmmount: null,
-			Description: "patched description",
-			CoverImageUrl: null,
-			ProductCategoryIds: null);
+		var givenPatchBookCommand = new PatchBookCommandDto(Description: "patched description");
 
 		// When
 		var response = await _bookStoreApi.PatchBook(givenBookId, givenPatchBookCommand);
