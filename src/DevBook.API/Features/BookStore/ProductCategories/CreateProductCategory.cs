@@ -1,4 +1,4 @@
-﻿namespace DevBook.API.Features.BookStore.Products.ProductCategories;
+﻿namespace DevBook.API.Features.BookStore.ProductCategories;
 
 public sealed record CreateProductCategoryCommand : ICommand<ProductCategory>
 {

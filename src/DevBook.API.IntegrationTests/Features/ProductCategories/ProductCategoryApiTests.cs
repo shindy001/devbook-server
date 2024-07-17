@@ -1,11 +1,11 @@
 ﻿using AutoFixture;
 using DevBook.API.Features.BookStore.Authors;
+using DevBook.API.Features.BookStore.ProductCategories;
 using DevBook.API.Features.BookStore.Products.Books;
-using DevBook.API.Features.BookStore.Products.ProductCategories;
 using DevBook.API.IntegrationTests.Extensions;
 using System.Net;
 
-namespace DevBook.API.IntegrationTests.Features.Products;
+namespace DevBook.API.IntegrationTests.Features.ProductCategories;
 
 public class ProductCategoryApiTests : IntegrationTestsBase
 {

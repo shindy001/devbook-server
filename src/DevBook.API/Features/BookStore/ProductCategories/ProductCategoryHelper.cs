@@ -1,4 +1,6 @@
-﻿namespace DevBook.API.Features.BookStore.Products.ProductCategories;
+﻿using DevBook.API.Features.BookStore.Products;
+
+namespace DevBook.API.Features.BookStore.ProductCategories;
 
 internal static class ProductCategoryHelper
 {

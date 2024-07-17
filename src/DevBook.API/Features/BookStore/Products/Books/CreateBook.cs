@@ -1,4 +1,4 @@
-﻿using DevBook.API.Features.BookStore.Products.ProductCategories;
+﻿using DevBook.API.Features.BookStore.ProductCategories;
 
 namespace DevBook.API.Features.BookStore.Products.Books;
 
