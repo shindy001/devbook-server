@@ -7,18 +7,22 @@ DevBook Server is a backend webapi for [DevBook.Web application](https://github.
 Purpose of this repo is to provide backend for my testing and personal endeavors in applications/web space and also to brush up on my rusty skills and to try new languages/technologies/approaches.
 
 ## Current state of API Features (more to come)
-- [x] Authentication (.net identity)
-  - Token based with refresh
-  - Registration (no email confirmation at least for now)
-- [x] Time Management (for signed in users only)
-  - Project Management (CRUD + additional commands)
-  - Tasks Management (CRUD + additional commands)
-- [x] Sudoku boards api
-  - Uses remote api to get a new board
-- [ ] Time Management analytics - time tracking / earnings statistics
-- [ ] Time Management exports - export to excel stylesheet
-- [ ] Server integration tests
-- [ ] CI tests pipeline
+- Authentication (.net identity)
+  - [x] Token based with refresh
+  - [x] Registration (no email confirmation at least for now)
+- Time Management module (for signed in users only)
+  - [x] Project Management (CRUD + additional commands)
+  - [x] Tasks Management (CRUD + additional commands)
+  - [ ] Time Management analytics - time tracking / earnings statistics
+  - [ ] Time Management exports - export to excel stylesheet
+- Sudoku boards module
+  - [x] remote api to get a new board
+- BookStore module
+  - [x] Authors api
+  - [x] Product (generic) api
+  - [x] ProductCategories api
+  - [x] Books api
+  - [x] Integration tests
 
 ## Technology stack
 #### DevBook Api Service (per user data / other apis)
