@@ -1,5 +1,6 @@
 ﻿using DevBook.API.Features.BookStore.Authors;
 using DevBook.API.Features.BookStore.ProductCategories;
+using DevBook.API.Features.BookStore.Products;
 using DevBook.API.Features.BookStore.Products.Books;
 
 namespace DevBook.API.IntegrationTests.Api;
@@ -31,7 +32,7 @@ public interface IBookStoreApi
 	#region Products
 
 	[Get("/bookstore/products")]
-	Task<IList<T>> GetProducts<T>();
+	Task<IList<T>> GetProducts<T>(GetProductsQuery? query = null);
 
 	[Get("/bookstore/products/{id}")]
 	Task<T> GetProductById<T>(Guid id);

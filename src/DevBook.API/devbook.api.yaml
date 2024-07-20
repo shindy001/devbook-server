@@ -298,10 +298,11 @@ paths:
           schema:
             type: integer
             format: int32
-        - name: ProductType
+        - name: ProductCategoryId
           in: query
           schema:
             type: string
+            format: uuid
       responses:
         '200':
           description: OK
