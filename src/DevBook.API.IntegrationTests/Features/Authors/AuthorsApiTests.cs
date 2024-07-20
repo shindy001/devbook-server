@@ -298,14 +298,14 @@ public class AuthorsApiTests : IntegrationTestsBase
 	#region DeleteAuthor
 
 	[Fact]
-	public async Task DeleteAuthorCategory_should_succeed_for_Admin_user()
+	public async Task DeleteAuthor_should_succeed_for_Admin_user()
 	{
 		// Given
 		AuthenticateAdmin();
-		var givenProductCategoryId = await _bookStoreDriver.SeedAuthor(_fixture.Create<CreateAuthorCommand>());
+		var givenAuthorId = await _bookStoreDriver.SeedAuthor(_fixture.Create<CreateAuthorCommand>());
 
 		// When
-		var response = await _bookStoreApi.DeleteAuthor(givenProductCategoryId);
+		var response = await _bookStoreApi.DeleteAuthor(givenAuthorId);
 
 		// Then
 		response.StatusCode.Should().Be(HttpStatusCode.NoContent);

@@ -173,7 +173,7 @@ public class ProductCategoryApiTests : IntegrationTestsBase
 		// Given
 		AuthenticateAdmin();
 		var givenProductCategoryId = await _bookStoreDriver.SeedProductCategory(_fixture.Create<CreateProductCategoryCommand>());
-		var givenUpdateProductCategoryCommand = _fixture.Create<UpdateProductCategoryCommand>();
+		var givenUpdateProductCategoryCommand = _fixture.Create<UpdateProductCategoryCommandDto>();
 
 		// When
 		var response = await _bookStoreApi.UpdateProductCategory(givenProductCategoryId, givenUpdateProductCategoryCommand);
@@ -194,7 +194,7 @@ public class ProductCategoryApiTests : IntegrationTestsBase
 	{
 		// Given
 		// When
-		var response = await _bookStoreApi.UpdateProductCategory(Guid.NewGuid(), _fixture.Create<UpdateProductCategoryCommand>());
+		var response = await _bookStoreApi.UpdateProductCategory(Guid.NewGuid(), _fixture.Create<UpdateProductCategoryCommandDto>());
 
 		// Then
 		response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
@@ -207,7 +207,7 @@ public class ProductCategoryApiTests : IntegrationTestsBase
 		AuthenticateUser();
 
 		// When
-		var response = await _bookStoreApi.UpdateProductCategory(Guid.NewGuid(), _fixture.Create<UpdateProductCategoryCommand>());
+		var response = await _bookStoreApi.UpdateProductCategory(Guid.NewGuid(), _fixture.Create<UpdateProductCategoryCommandDto>());
 
 		// Then
 		response.StatusCode.Should().Be(HttpStatusCode.Forbidden);

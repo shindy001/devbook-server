@@ -53,7 +53,7 @@ public interface IBookStoreApi
 	Task<HttpResponseMessage> CreateProductCategory(CreateProductCategoryCommand command);
 
 	[Put("/bookstore/productCategories/{id}")]
-	Task<HttpResponseMessage> UpdateProductCategory(Guid id, UpdateProductCategoryCommand command);
+	Task<HttpResponseMessage> UpdateProductCategory(Guid id, UpdateProductCategoryCommandDto command);
 
 	[Delete("/bookstore/productCategories/{id}")]
 	Task<HttpResponseMessage> DeleteProductCategory(Guid id);
