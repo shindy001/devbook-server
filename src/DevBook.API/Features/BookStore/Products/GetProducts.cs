@@ -2,7 +2,11 @@
 
 namespace DevBook.API.Features.BookStore.Products;
 
-internal sealed record GetProductsQuery(int? PageSize, int? Offset, ProductType? ProductType) : IQuery<IEnumerable<Product>>;
+public sealed record GetProductsQuery(
+	int? PageSize = null,
+	int? Offset = null,
+	ProductType? ProductType = null)
+	: IQuery<IEnumerable<Product>>;
 
 internal sealed class GetProductsQueryHandler(DevBookDbContext dbContext) : IQueryHandler<GetProductsQuery, IEnumerable<Product>>
 {

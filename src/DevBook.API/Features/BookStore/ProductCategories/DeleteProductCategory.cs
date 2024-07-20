@@ -1,6 +1,6 @@
 ﻿namespace DevBook.API.Features.BookStore.ProductCategories;
 
-internal sealed record DeleteProductCategoryCommand(Guid Id) : ICommand;
+public sealed record DeleteProductCategoryCommand(Guid Id) : ICommand;
 
 internal class DeleteProductCategoryCommandHandler(DevBookDbContext dbContext) : ICommandHandler<DeleteProductCategoryCommand>
 {

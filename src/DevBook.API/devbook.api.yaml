@@ -9,12 +9,12 @@ paths:
         - BookStoreModule_AuthorEndpoints
       operationId: Authors.GetAll
       parameters:
-        - name: pageSize
+        - name: PageSize
           in: query
           schema:
             type: integer
             format: int32
-        - name: offset
+        - name: Offset
           in: query
           schema:
             type: integer
@@ -191,12 +191,12 @@ paths:
         - BookStoreModule_ProductCategoryEndpoints
       operationId: ProductCategories.GetAll
       parameters:
-        - name: pageSize
+        - name: PageSize
           in: query
           schema:
             type: integer
             format: int32
-        - name: offset
+        - name: Offset
           in: query
           schema:
             type: integer
@@ -288,17 +288,17 @@ paths:
         - BookStoreModule_ProductEndpoints
       operationId: Products.GetAll
       parameters:
-        - name: pageSize
+        - name: PageSize
           in: query
           schema:
             type: integer
             format: int32
-        - name: itemLimit
+        - name: Offset
           in: query
           schema:
             type: integer
             format: int32
-        - name: productType
+        - name: ProductType
           in: query
           schema:
             type: string

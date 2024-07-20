@@ -11,15 +11,15 @@ internal static class AuthorEndpoints
 			.Produces<IList<Author>>()
 			.AllowAnonymous();
 
-		groupBuilder.MapPost("/", CreateAuthor)
-			.WithName($"{OperationIdPrefix}Create")
-			.Produces(StatusCodes.Status201Created);
-
 		groupBuilder.MapGet("/{id:guid}", GetAuthorById)
 			.WithName($"{OperationIdPrefix}{ApiConstants.GetByIdRoute}")
 			.Produces<Author>()
 			.Produces(StatusCodes.Status404NotFound)
 			.AllowAnonymous();
+
+		groupBuilder.MapPost("/", CreateAuthor)
+			.WithName($"{OperationIdPrefix}Create")
+			.Produces(StatusCodes.Status201Created);
 
 		groupBuilder.MapPut("/{id:guid}", UpdateAuthor)
 			.WithName($"{OperationIdPrefix}Update")
@@ -38,24 +38,24 @@ internal static class AuthorEndpoints
 		return groupBuilder;
 	}
 
-	private static async Task<IResult> GetAuthors(int? pageSize, int? offset, IExecutor executor, CancellationToken cancellationToken)
+	private static async Task<IResult> GetAuthors([AsParameters] GetAuthorsQuery query, IExecutor executor, CancellationToken cancellationToken)
 	{
-		var result = await executor.ExecuteQuery(new GetAuthorsQuery(PageSize: pageSize, Offset: offset), cancellationToken);
+		var result = await executor.ExecuteQuery(query, cancellationToken);
 		return TypedResults.Ok(result);
+	}
+
+	private static async Task<IResult> GetAuthorById([AsParameters] GetAuthorQuery query, IExecutor executor, CancellationToken cancellationToken)
+	{
+		var result = await executor.ExecuteQuery(query, cancellationToken);
+		return result.Match<IResult>(
+			author => TypedResults.Ok(author),
+			notFound => TypedResults.NotFound(query.Id));
 	}
 
 	private static async Task<IResult> CreateAuthor(CreateAuthorCommand command, IExecutor executor, CancellationToken cancellationToken)
 	{
 		var result = await executor.ExecuteCommand(command, cancellationToken);
 		return TypedResults.CreatedAtRoute($"{OperationIdPrefix}{ApiConstants.GetByIdRoute}", new { id = result.Id });
-	}
-
-	private static async Task<IResult> GetAuthorById(Guid id, IExecutor executor, CancellationToken cancellationToken)
-	{
-		var result = await executor.ExecuteQuery(new GetAuthorQuery(id), cancellationToken);
-		return result.Match<IResult>(
-			author => TypedResults.Ok(author),
-			notFound => TypedResults.NotFound(id));
 	}
 
 	private static async Task<IResult> UpdateAuthor([FromRoute] Guid id, UpdateAuthorCommandDto command, IExecutor executor, CancellationToken cancellationToken)
@@ -86,9 +86,9 @@ internal static class AuthorEndpoints
 			notFound => TypedResults.NotFound(id));
 	}
 
-	private static async Task<IResult> DeleteAuthor([FromRoute] Guid id, IExecutor executor, CancellationToken cancellationToken)
+	private static async Task<IResult> DeleteAuthor([AsParameters] DeleteAuthorCommand command, IExecutor executor, CancellationToken cancellationToken)
 	{
-		await executor.ExecuteCommand(new DeleteAuthorCommand(id), cancellationToken);
+		await executor.ExecuteCommand(command, cancellationToken);
 		return TypedResults.NoContent();
 	}
 }

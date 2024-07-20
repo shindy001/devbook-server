@@ -2,7 +2,7 @@
 
 namespace DevBook.API.Features.BookStore.Authors;
 
-internal sealed record DeleteAuthorCommand(Guid Id) : ICommand;
+public sealed record DeleteAuthorCommand(Guid Id) : ICommand;
 
 internal class DeleteAuthorCommandHandler(DevBookDbContext dbContext) : ICommandHandler<DeleteAuthorCommand>
 {

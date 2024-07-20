@@ -22,23 +22,23 @@ internal static class ProductEndpoints
 		return groupBuilder;
 	}
 
-	private static async Task<IResult> GetProducts(int? pageSize, int? itemLimit, ProductType? productType, IExecutor executor, CancellationToken cancellationToken)
+	private static async Task<IResult> GetProducts([AsParameters] GetProductsQuery query, IExecutor executor, CancellationToken cancellationToken)
 	{
-		var result = await executor.ExecuteQuery(new GetProductsQuery(PageSize: pageSize, Offset: itemLimit, ProductType: productType), cancellationToken);
+		var result = await executor.ExecuteQuery(query, cancellationToken);
 		return TypedResults.Ok(result);
 	}
 
-	private static async Task<IResult> GetProductById(Guid id, IExecutor executor, CancellationToken cancellationToken)
+	private static async Task<IResult> GetProductById([AsParameters] GetProductQuery query, IExecutor executor, CancellationToken cancellationToken)
 	{
-		var result = await executor.ExecuteQuery(new GetProductQuery(id), cancellationToken);
+		var result = await executor.ExecuteQuery(query, cancellationToken);
 		return result.Match<IResult>(
 			book => TypedResults.Ok(book),
-			notFound => TypedResults.NotFound(id));
+			notFound => TypedResults.NotFound(query.Id));
 	}
 
-	private static async Task<IResult> DeleteProduct([FromRoute] Guid id, IExecutor executor, CancellationToken cancellationToken)
+	private static async Task<IResult> DeleteProduct([AsParameters] DeleteProductCommand command, IExecutor executor, CancellationToken cancellationToken)
 	{
-		await executor.ExecuteCommand(new DeleteProductCommand(id), cancellationToken);
+		await executor.ExecuteCommand(command, cancellationToken);
 		return TypedResults.NoContent();
 	}
 }

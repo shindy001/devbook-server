@@ -1,6 +1,6 @@
 ﻿namespace DevBook.API.Features.BookStore.ProductCategories;
 
-internal sealed record GetProductCategoryQuery(Guid Id) : IQuery<OneOf<ProductCategory, NotFound>>;
+public sealed record GetProductCategoryQuery(Guid Id) : IQuery<OneOf<ProductCategory, NotFound>>;
 
 internal class GetProductCategoryQueryHandler(DevBookDbContext dbContext) : IQueryHandler<GetProductCategoryQuery, OneOf<ProductCategory, NotFound>>
 {

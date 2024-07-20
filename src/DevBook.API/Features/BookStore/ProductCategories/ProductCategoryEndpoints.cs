@@ -11,15 +11,15 @@ internal static class ProductCategoryEndpoints
 			.Produces<IList<ProductCategory>>()
 			.AllowAnonymous();
 
-		groupBuilder.MapPost("/", CreateProductCategory)
-			.WithName($"{OperationIdPrefix}Create")
-			.Produces(StatusCodes.Status201Created);
-
 		groupBuilder.MapGet("/{id:guid}", GetProductCategoryById)
 			.WithName($"{OperationIdPrefix}{ApiConstants.GetByIdRoute}")
 			.Produces<ProductCategory>()
 			.Produces(StatusCodes.Status404NotFound)
 			.AllowAnonymous();
+
+		groupBuilder.MapPost("/", CreateProductCategory)
+			.WithName($"{OperationIdPrefix}Create")
+			.Produces(StatusCodes.Status201Created);
 
 		groupBuilder.MapPut("/{id:guid}", UpdateProductCategory)
 			.WithName($"{OperationIdPrefix}Update")
@@ -33,24 +33,24 @@ internal static class ProductCategoryEndpoints
 		return groupBuilder;
 	}
 
-	private static async Task<IResult> GetProductCategories(int? pageSize, int? offset, IExecutor executor, CancellationToken cancellationToken)
+	private static async Task<IResult> GetProductCategories([AsParameters] GetProductCategoriesQuery query, IExecutor executor, CancellationToken cancellationToken)
 	{
-		var result = await executor.ExecuteQuery(new GetProductCategoriesQuery(PageSize: pageSize, Offset: offset), cancellationToken);
+		var result = await executor.ExecuteQuery(query, cancellationToken);
 		return TypedResults.Ok(result);
+	}
+
+	private static async Task<IResult> GetProductCategoryById([AsParameters] GetProductCategoryQuery query, IExecutor executor, CancellationToken cancellationToken)
+	{
+		var result = await executor.ExecuteQuery(query, cancellationToken);
+		return result.Match<IResult>(
+			productCategory => TypedResults.Ok(productCategory),
+			notFound => TypedResults.NotFound(query.Id));
 	}
 
 	private static async Task<IResult> CreateProductCategory(CreateProductCategoryCommand command, IExecutor executor, CancellationToken cancellationToken)
 	{
 		var result = await executor.ExecuteCommand(command, cancellationToken);
 		return TypedResults.CreatedAtRoute($"{OperationIdPrefix}{ApiConstants.GetByIdRoute}", new { id = result.Id });
-	}
-
-	private static async Task<IResult> GetProductCategoryById(Guid id, IExecutor executor, CancellationToken cancellationToken)
-	{
-		var result = await executor.ExecuteQuery(new GetProductCategoryQuery(id), cancellationToken);
-		return result.Match<IResult>(
-			productCategory => TypedResults.Ok(productCategory),
-			notFound => TypedResults.NotFound(id));
 	}
 
 	private static async Task<IResult> UpdateProductCategory([FromRoute] Guid id, UpdateProductCategoryCommandDto command, IExecutor executor, CancellationToken cancellationToken)
@@ -66,9 +66,9 @@ internal static class ProductCategoryEndpoints
 			notFound => TypedResults.NotFound(id));
 	}
 
-	private static async Task<IResult> DeleteProductCategory([FromRoute] Guid id, IExecutor executor, CancellationToken cancellationToken)
+	private static async Task<IResult> DeleteProductCategory([AsParameters] DeleteProductCategoryCommand command, IExecutor executor, CancellationToken cancellationToken)
 	{
-		await executor.ExecuteCommand(new DeleteProductCategoryCommand(id), cancellationToken);
+		await executor.ExecuteCommand(command, cancellationToken);
 		return TypedResults.NoContent();
 	}
 }

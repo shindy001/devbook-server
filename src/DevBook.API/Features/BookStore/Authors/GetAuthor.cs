@@ -1,6 +1,6 @@
 ﻿namespace DevBook.API.Features.BookStore.Authors;
 
-internal sealed record GetAuthorQuery(Guid Id) : IQuery<OneOf<Author, NotFound>>;
+public sealed record GetAuthorQuery(Guid Id) : IQuery<OneOf<Author, NotFound>>;
 
 internal class GetAuthorQueryHandler(DevBookDbContext dbContext) : IQueryHandler<GetAuthorQuery, OneOf<Author, NotFound>>
 {

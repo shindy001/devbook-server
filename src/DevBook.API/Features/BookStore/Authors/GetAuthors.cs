@@ -2,7 +2,7 @@
 
 namespace DevBook.API.Features.BookStore.Authors;
 
-internal sealed record GetAuthorsQuery(int? PageSize, int? Offset) : IQuery<IEnumerable<Author>>;
+public sealed record GetAuthorsQuery(int? PageSize, int? Offset) : IQuery<IEnumerable<Author>>;
 
 internal sealed class GetAuthorsQueryHandler(DevBookDbContext dbContext) : IQueryHandler<GetAuthorsQuery, IEnumerable<Author>>
 {
