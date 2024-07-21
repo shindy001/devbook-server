@@ -54,7 +54,8 @@ public static class SwaggerOptions
 			if (context.ApiDescription.RelativePath?.StartsWith("identity", StringComparison.OrdinalIgnoreCase) == true)
 			{
 				var relativePath = context.ApiDescription.RelativePath ?? string.Empty;
-				operation.OperationId = $"{OperationIdPrefix}{GenerateOperationIdBaseString(relativePath)}";
+				// Add operationId to Identity actions, also add HttpMethod at the end to avoid duplicates
+				operation.OperationId = $"{OperationIdPrefix}{GenerateOperationIdBaseString(relativePath)}{context.ApiDescription.HttpMethod}";
 				return;
 			}
 		}

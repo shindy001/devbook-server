@@ -353,7 +353,7 @@ paths:
     post:
       tags:
         - Identity
-      operationId: Identity.Register
+      operationId: Identity.RegisterPOST
       requestBody:
         content:
           application/json:
@@ -373,7 +373,7 @@ paths:
     post:
       tags:
         - Identity
-      operationId: Identity.Login
+      operationId: Identity.LoginPOST
       parameters:
         - name: useCookies
           in: query
@@ -400,7 +400,7 @@ paths:
     post:
       tags:
         - Identity
-      operationId: Identity.Refresh
+      operationId: Identity.RefreshPOST
       requestBody:
         content:
           application/json:
@@ -418,7 +418,7 @@ paths:
     get:
       tags:
         - Identity
-      operationId: Identity.ConfirmEmail
+      operationId: Identity.ConfirmEmailGET
       parameters:
         - name: userId
           in: query
@@ -439,7 +439,7 @@ paths:
     post:
       tags:
         - Identity
-      operationId: Identity.ResendConfirmationEmail
+      operationId: Identity.ResendConfirmationEmailPOST
       requestBody:
         content:
           application/json:
@@ -453,7 +453,7 @@ paths:
     post:
       tags:
         - Identity
-      operationId: Identity.ForgotPassword
+      operationId: Identity.ForgotPasswordPOST
       requestBody:
         content:
           application/json:
@@ -473,7 +473,7 @@ paths:
     post:
       tags:
         - Identity
-      operationId: Identity.ResetPassword
+      operationId: Identity.ResetPasswordPOST
       requestBody:
         content:
           application/json:
@@ -493,7 +493,7 @@ paths:
     post:
       tags:
         - Identity
-      operationId: Identity.Manage2fa
+      operationId: Identity.Manage2faPOST
       requestBody:
         content:
           application/json:
@@ -519,7 +519,7 @@ paths:
     get:
       tags:
         - Identity
-      operationId: Identity.ManageInfo
+      operationId: Identity.ManageInfoGET
       responses:
         '200':
           description: OK
@@ -538,7 +538,7 @@ paths:
     post:
       tags:
         - Identity
-      operationId: Identity.ManageInfo
+      operationId: Identity.ManageInfoPOST
       requestBody:
         content:
           application/json:
