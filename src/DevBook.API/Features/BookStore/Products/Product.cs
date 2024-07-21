@@ -4,8 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace DevBook.API.Features.BookStore.Products;
 
-[SwaggerDiscriminator(nameof(ProductType))]
-[SwaggerSubType(typeof(Book), DiscriminatorValue = nameof(Book))]
+[SwaggerSubType(typeof(Book))]
 [JsonDerivedType(typeof(Book))]
 public abstract record Product()
 	: Entity(Guid.NewGuid())

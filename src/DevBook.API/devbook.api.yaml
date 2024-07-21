@@ -1153,7 +1153,6 @@ components:
       additionalProperties: false
     Product:
       required:
-        - ProductType
         - discountAmmount
         - name
         - price
@@ -1161,8 +1160,6 @@ components:
         - retailPrice
       type: object
       properties:
-        ProductType:
-          type: string
         id:
           type: string
           format: uuid
@@ -1194,10 +1191,6 @@ components:
             format: uuid
           nullable: true
       additionalProperties: false
-      discriminator:
-        propertyName: ProductType
-        mapping:
-          Book: '#/components/schemas/Book'
     ProductCategory:
       required:
         - name
