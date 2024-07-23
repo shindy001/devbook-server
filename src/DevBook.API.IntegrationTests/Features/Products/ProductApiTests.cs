@@ -34,14 +34,14 @@ public class ProductApiTests : IntegrationTestsBase
 		var givenBookId = await _bookStoreDriver.SeedBook(givenCreateBookCommand);
 
 		// When
-		var response = await _bookStoreApi.GetProducts<Book>();
+		var response = await _bookStoreApi.GetProducts<BookDto>();
 
 		// Then
 		response.Should().NotBeNull();
 		response.Should().NotBeEmpty();
 		response.Count.Should().Be(1);
 		response.First().Should().BeEquivalentTo(
-			new Book
+			new BookDto
 			{
 				Id = givenBookId,
 				Name = givenCreateBookCommand.Name,
@@ -71,14 +71,14 @@ public class ProductApiTests : IntegrationTestsBase
 		await _bookStoreDriver.SeedBook(givenCreateBookCommand with { ProductCategoryIds = [] });
 
 		// When
-		var response = await _bookStoreApi.GetProducts<Book>(new GetProductsQuery(ProductCategoryId: givenProductCategoryId));
+		var response = await _bookStoreApi.GetProducts<BookDto>(new GetProductsQuery(ProductCategoryId: givenProductCategoryId));
 
 		// Then
 		response.Should().NotBeNull();
 		response.Should().NotBeEmpty();
 		response.Count.Should().Be(1);
 		response.First().Should().BeEquivalentTo(
-			new Book
+			new BookDto
 			{
 				Id = givenBookId,
 				Name = givenCreateBookCommand.Name,
@@ -98,7 +98,7 @@ public class ProductApiTests : IntegrationTestsBase
 	{
 		// Given
 		// When
-		var response = await _bookStoreApi.GetProducts<Book>();
+		var response = await _bookStoreApi.GetProducts<BookDto>();
 
 		// Then
 		response.Should().NotBeNull();
@@ -122,12 +122,12 @@ public class ProductApiTests : IntegrationTestsBase
 		var givenBookId = await _bookStoreDriver.SeedBook(givenCreateBookCommand);
 
 		// When
-		var response = await _bookStoreApi.GetProductById<Book>(givenBookId);
+		var response = await _bookStoreApi.GetProductById<BookDto>(givenBookId);
 
 		// Then
 		response.Should().NotBeNull();
 		response.Should().BeEquivalentTo(
-			new Book
+			new BookDto
 			{
 				Id = givenBookId,
 				Name = givenCreateBookCommand.Name,
@@ -147,7 +147,7 @@ public class ProductApiTests : IntegrationTestsBase
 	{
 		// Given
 		// When
-		Func<Task> act = async () => await _bookStoreApi.GetProductById<Book>(Guid.NewGuid());
+		Func<Task> act = async () => await _bookStoreApi.GetProductById<BookDto>(Guid.NewGuid());
 
 		// Then
 		var exception = await act.Should().ThrowAsync<ApiException>();

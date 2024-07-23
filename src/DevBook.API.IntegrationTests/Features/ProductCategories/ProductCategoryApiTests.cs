@@ -36,7 +36,7 @@ public class ProductCategoryApiTests : IntegrationTestsBase
 		response.Should().NotBeEmpty();
 		response.Count.Should().Be(1);
 		response.First().Should().BeEquivalentTo(
-			new ProductCategory
+			new ProductCategoryDto
 			{
 				Id = givenProductCategoryId,
 				Name = givenCreateProductCategoryCommand.Name,
@@ -72,7 +72,7 @@ public class ProductCategoryApiTests : IntegrationTestsBase
 		// Then
 		response.Should().NotBeNull();
 		response.Should().BeEquivalentTo(
-			new ProductCategory
+			new ProductCategoryDto
 			{
 				Id = givenProductCategoryId,
 				Name = givenCreateProductCategoryCommand.Name,
@@ -111,7 +111,7 @@ public class ProductCategoryApiTests : IntegrationTestsBase
 		var actualCategoryId = response.GetGuidFromResponseLocation();
 		actualCategoryId.Should().NotBeNull();
 		actualCategory.Should().BeEquivalentTo(
-			new ProductCategory
+			new ProductCategoryDto
 			{
 				Id = actualCategoryId!.Value,
 				Name = givenCreateProductCategoryCommand.Name,
@@ -182,7 +182,7 @@ public class ProductCategoryApiTests : IntegrationTestsBase
 		// Then
 		response.StatusCode.Should().Be(HttpStatusCode.NoContent);
 		actualCategory.Should().BeEquivalentTo(
-			new ProductCategory
+			new ProductCategoryDto
 			{
 				Id = givenProductCategoryId,
 				Name = givenUpdateProductCategoryCommand.Name,

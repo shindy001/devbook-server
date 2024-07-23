@@ -35,14 +35,14 @@ public class BookApiTests : IntegrationTestsBase
 
 		// When
 		var response = await _bookStoreApi.CreateBook(givenCreateBookCommand);
-		var actualBook = (await _bookStoreApi.GetProducts<Book>()).Single();
+		var actualBook = (await _bookStoreApi.GetProducts<BookDto>()).Single();
 
 		// Then
 		response.StatusCode.Should().Be(HttpStatusCode.Created);
 		var actualBookId = response.GetGuidFromResponseLocation();
 		actualBookId.Should().NotBeNull();
 		actualBook.Should().BeEquivalentTo(
-			new Book
+			new BookDto
 			{
 				Id = actualBookId!.Value,
 				Name = givenCreateBookCommand.Name,
@@ -174,12 +174,12 @@ public class BookApiTests : IntegrationTestsBase
 
 		// When
 		var response = await _bookStoreApi.UpdateBook(givenBookId, givenUpdateBookCommand);
-		var actualBook = await _bookStoreApi.GetProductById<Book>(givenBookId);
+		var actualBook = await _bookStoreApi.GetProductById<BookDto>(givenBookId);
 
 		// Then
 		response.StatusCode.Should().Be(HttpStatusCode.NoContent);
 		actualBook.Should().BeEquivalentTo(
-			new Book
+			new BookDto
 			{
 				Id = givenBookId,
 				Name = givenUpdateBookCommand.Name,
@@ -243,12 +243,12 @@ public class BookApiTests : IntegrationTestsBase
 
 		// When
 		var response = await _bookStoreApi.PatchBook(givenBookId, givenPatchBookCommand);
-		var actualBook = await _bookStoreApi.GetProductById<Book>(givenBookId);
+		var actualBook = await _bookStoreApi.GetProductById<BookDto>(givenBookId);
 
 		// Then
 		response.StatusCode.Should().Be(HttpStatusCode.NoContent);
 		actualBook.Should().BeEquivalentTo(
-			new Book
+			new BookDto
 			{
 				Id = givenBookId,
 				Name = givenPatchBookCommand.Name!,
@@ -279,12 +279,12 @@ public class BookApiTests : IntegrationTestsBase
 
 		// When
 		var response = await _bookStoreApi.PatchBook(givenBookId, givenPatchBookCommand);
-		var actualBook = await _bookStoreApi.GetProductById<Book>(givenBookId);
+		var actualBook = await _bookStoreApi.GetProductById<BookDto>(givenBookId);
 
 		// Then
 		response.StatusCode.Should().Be(HttpStatusCode.NoContent);
 		actualBook.Should().BeEquivalentTo(
-			new Book
+			new BookDto
 			{
 				Id = givenBookId,
 				Name = givenCreateBookSeedCommand.Name,

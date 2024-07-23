@@ -6,12 +6,12 @@ internal static class ProductEndpoints
 	{
 		groupBuilder.MapGet("/", GetProducts)
 			.WithName($"{ApiConstants.ProductsOperationIdPrefix}GetAll")
-			.Produces<IList<Product>>()
+			.Produces<IList<ProductDto>>()
 			.AllowAnonymous();
 
 		groupBuilder.MapGet("/{id:guid}", GetProductById)
 			.WithName($"{ApiConstants.ProductsOperationIdPrefix}{ApiConstants.GetByIdRoute}")
-			.Produces<Product>()
+			.Produces<ProductDto>()
 			.Produces(StatusCodes.Status404NotFound)
 			.AllowAnonymous();
 
@@ -25,14 +25,15 @@ internal static class ProductEndpoints
 	private static async Task<IResult> GetProducts([AsParameters] GetProductsQuery query, IExecutor executor, CancellationToken cancellationToken)
 	{
 		var result = await executor.ExecuteQuery(query, cancellationToken);
-		return TypedResults.Ok(result);
+		var dtos = result.Select(x => x.ToDto());
+		return TypedResults.Ok(dtos);
 	}
 
 	private static async Task<IResult> GetProductById([AsParameters] GetProductQuery query, IExecutor executor, CancellationToken cancellationToken)
 	{
 		var result = await executor.ExecuteQuery(query, cancellationToken);
 		return result.Match<IResult>(
-			book => TypedResults.Ok(book),
+			book => TypedResults.Ok(book.ToDto()),
 			notFound => TypedResults.NotFound(query.Id));
 	}
 

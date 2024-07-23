@@ -8,12 +8,12 @@ internal static class ProductCategoryEndpoints
 	{
 		groupBuilder.MapGet("/", GetProductCategories)
 			.WithName($"{OperationIdPrefix}GetAll")
-			.Produces<IList<ProductCategory>>()
+			.Produces<IList<ProductCategoryDto>>()
 			.AllowAnonymous();
 
 		groupBuilder.MapGet("/{id:guid}", GetProductCategoryById)
 			.WithName($"{OperationIdPrefix}{ApiConstants.GetByIdRoute}")
-			.Produces<ProductCategory>()
+			.Produces<ProductCategoryDto>()
 			.Produces(StatusCodes.Status404NotFound)
 			.AllowAnonymous();
 
@@ -36,14 +36,15 @@ internal static class ProductCategoryEndpoints
 	private static async Task<IResult> GetProductCategories([AsParameters] GetProductCategoriesQuery query, IExecutor executor, CancellationToken cancellationToken)
 	{
 		var result = await executor.ExecuteQuery(query, cancellationToken);
-		return TypedResults.Ok(result);
+		var dtos = result.Select(x => x.ToDto());
+		return TypedResults.Ok(dtos);
 	}
 
 	private static async Task<IResult> GetProductCategoryById([AsParameters] GetProductCategoryQuery query, IExecutor executor, CancellationToken cancellationToken)
 	{
 		var result = await executor.ExecuteQuery(query, cancellationToken);
 		return result.Match<IResult>(
-			productCategory => TypedResults.Ok(productCategory),
+			productCategory => TypedResults.Ok(productCategory.ToDto()),
 			notFound => TypedResults.NotFound(query.Id));
 	}
 
