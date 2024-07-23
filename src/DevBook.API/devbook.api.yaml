@@ -27,7 +27,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Author'
+                  $ref: '#/components/schemas/AuthorDto'
     post:
       tags:
         - BookStoreModule_AuthorEndpoints
@@ -60,7 +60,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Author'
+                $ref: '#/components/schemas/AuthorDto'
         '404':
           description: Not Found
     put:
@@ -209,7 +209,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/ProductCategory'
+                  $ref: '#/components/schemas/ProductCategoryDto'
     post:
       tags:
         - BookStoreModule_ProductCategoryEndpoints
@@ -242,7 +242,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProductCategory'
+                $ref: '#/components/schemas/ProductCategoryDto'
         '404':
           description: Not Found
     put:
@@ -312,7 +312,7 @@ paths:
                 type: array
                 items:
                   oneOf:
-                    - $ref: '#/components/schemas/Book'
+                    - $ref: '#/components/schemas/BookDto'
   '/bookstore/products/{id}':
     get:
       tags:
@@ -332,7 +332,7 @@ paths:
             application/json:
               schema:
                 oneOf:
-                  - $ref: '#/components/schemas/Book'
+                  - $ref: '#/components/schemas/BookDto'
         '404':
           description: Not Found
     delete:
@@ -826,8 +826,9 @@ components:
           type: string
           nullable: true
       additionalProperties: false
-    Author:
+    AuthorDto:
       required:
+        - id
         - name
       type: object
       properties:
@@ -835,8 +836,8 @@ components:
           type: string
           format: uuid
         name:
+          minLength: 1
           type: string
-          nullable: true
         description:
           type: string
           nullable: true
@@ -862,9 +863,9 @@ components:
               type: integer
               format: int32
       additionalProperties: false
-    Book:
+    BookDto:
       allOf:
-        - $ref: '#/components/schemas/Product'
+        - $ref: '#/components/schemas/ProductDto'
         - required:
             - authorId
           type: object
@@ -1151,9 +1152,23 @@ components:
           format: time
           nullable: true
       additionalProperties: false
-    Product:
+    ProductCategoryDto:
+      required:
+        - id
+        - name
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          minLength: 1
+          type: string
+      additionalProperties: false
+    ProductDto:
       required:
         - discountAmmount
+        - id
         - name
         - price
         - productType
@@ -1164,8 +1179,8 @@ components:
           type: string
           format: uuid
         name:
+          minLength: 1
           type: string
-          nullable: true
         productType:
           allOf:
             - $ref: '#/components/schemas/ProductType'
@@ -1189,18 +1204,6 @@ components:
           items:
             type: string
             format: uuid
-          nullable: true
-      additionalProperties: false
-    ProductCategory:
-      required:
-        - name
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        name:
-          type: string
           nullable: true
       additionalProperties: false
     ProductType:
