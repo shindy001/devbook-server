@@ -8,12 +8,12 @@ internal static class AuthorEndpoints
 	{
 		groupBuilder.MapGet("/", GetAuthors)
 			.WithName($"{OperationIdPrefix}GetAll")
-			.Produces<IList<Author>>()
+			.Produces<IList<AuthorDto>>()
 			.AllowAnonymous();
 
 		groupBuilder.MapGet("/{id:guid}", GetAuthorById)
 			.WithName($"{OperationIdPrefix}{ApiConstants.GetByIdRoute}")
-			.Produces<Author>()
+			.Produces<AuthorDto>()
 			.Produces(StatusCodes.Status404NotFound)
 			.AllowAnonymous();
 
@@ -41,14 +41,15 @@ internal static class AuthorEndpoints
 	private static async Task<IResult> GetAuthors([AsParameters] GetAuthorsQuery query, IExecutor executor, CancellationToken cancellationToken)
 	{
 		var result = await executor.ExecuteQuery(query, cancellationToken);
-		return TypedResults.Ok(result);
+		var dtos = result.Select(x => x.ToDto());
+		return TypedResults.Ok(dtos);
 	}
 
 	private static async Task<IResult> GetAuthorById([AsParameters] GetAuthorQuery query, IExecutor executor, CancellationToken cancellationToken)
 	{
 		var result = await executor.ExecuteQuery(query, cancellationToken);
 		return result.Match<IResult>(
-			author => TypedResults.Ok(author),
+			author => TypedResults.Ok(author.ToDto()),
 			notFound => TypedResults.NotFound(query.Id));
 	}
 

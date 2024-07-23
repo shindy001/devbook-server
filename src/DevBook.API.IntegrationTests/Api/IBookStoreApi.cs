@@ -10,10 +10,10 @@ public interface IBookStoreApi
 	#region Authors
 
 	[Get("/bookstore/authors")]
-	Task<IList<Author>> GetAuthors();
+	Task<IList<AuthorDto>> GetAuthors();
 
 	[Get("/bookstore/authors/{id}")]
-	Task<Author> GetAuthorById(Guid id);
+	Task<AuthorDto> GetAuthorById(Guid id);
 
 	[Post("/bookstore/authors")]
 	Task<HttpResponseMessage> CreateAuthor(CreateAuthorCommand command);
@@ -45,10 +45,10 @@ public interface IBookStoreApi
 	#region ProductCategories
 
 	[Get("/bookstore/productCategories")]
-	Task<IList<ProductCategory>> GetProductCategories();
+	Task<IList<ProductCategoryDto>> GetProductCategories();
 
 	[Get("/bookstore/productCategories/{id}")]
-	Task<ProductCategory> GetProductCategoryById(Guid id);
+	Task<ProductCategoryDto> GetProductCategoryById(Guid id);
 
 	[Post("/bookstore/productCategories")]
 	Task<HttpResponseMessage> CreateProductCategory(CreateProductCategoryCommand command);

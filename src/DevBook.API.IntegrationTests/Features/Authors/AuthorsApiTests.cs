@@ -35,7 +35,7 @@ public class AuthorsApiTests : IntegrationTestsBase
 		response.Should().NotBeEmpty();
 		response.Count.Should().Be(1);
 		response.First().Should().BeEquivalentTo(
-			new Author
+			new AuthorDto
 			{
 				Id = givenAuthorId,
 				Name = givenCreateAuthorCommand.Name,
@@ -72,7 +72,7 @@ public class AuthorsApiTests : IntegrationTestsBase
 		// Then
 		response.Should().NotBeNull();
 		response.Should().BeEquivalentTo(
-			new Author
+			new AuthorDto
 			{
 				Id = givenAuthorId,
 				Name = givenCreateAuthorCommand.Name,
@@ -112,7 +112,7 @@ public class AuthorsApiTests : IntegrationTestsBase
 		var actualAuthorId = response.GetGuidFromResponseLocation();
 		actualAuthorId.Should().NotBeNull();
 		actualAuthor.Should().BeEquivalentTo(
-			new Author
+			new AuthorDto
 			{
 				Id = actualAuthorId!.Value,
 				Name = givenCreateAuthorCommand.Name,
@@ -184,7 +184,7 @@ public class AuthorsApiTests : IntegrationTestsBase
 		// Then
 		response.StatusCode.Should().Be(HttpStatusCode.NoContent);
 		actualAuthor.Should().BeEquivalentTo(
-			new Author
+			new AuthorDto
 			{
 				Id = givenAuthorId,
 				Name = givenUpdateAuthorCommand.Name,
@@ -237,7 +237,7 @@ public class AuthorsApiTests : IntegrationTestsBase
 		// Then
 		response.StatusCode.Should().Be(HttpStatusCode.NoContent);
 		actualAuthor.Should().BeEquivalentTo(
-			new Author
+			new AuthorDto
 			{
 				Id = givenAuthorId,
 				Name = givenPatchAuthorCommand.Name!,
@@ -261,7 +261,7 @@ public class AuthorsApiTests : IntegrationTestsBase
 		// Then
 		response.StatusCode.Should().Be(HttpStatusCode.NoContent);
 		actualAuthor.Should().BeEquivalentTo(
-			new Author
+			new AuthorDto
 			{
 				Id = givenAuthorId,
 				Name = givenCreateAuthorCommand.Name,
