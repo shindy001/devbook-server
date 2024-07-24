@@ -58,11 +58,17 @@ internal static class IdentityEndpoints
 		var user = new DevBookUser();
 		await userStore.SetUserNameAsync(user, email, CancellationToken.None);
 		await emailStore.SetEmailAsync(user, email, CancellationToken.None);
-		var result = await userManager.CreateAsync(user, registration.Password);
 
-		if (!result.Succeeded)
+		var createUserResult = await userManager.CreateAsync(user, registration.Password);
+		if (!createUserResult.Succeeded)
 		{
-			return CreateValidationProblem(result);
+			return CreateValidationProblem(createUserResult);
+		}
+
+		var addRoleResult = await userManager.AddToRoleAsync(user, DevBookUserRoles.User);
+		if (!addRoleResult.Succeeded)
+		{
+			return CreateValidationProblem(addRoleResult);
 		}
 
 		return TypedResults.Ok();
