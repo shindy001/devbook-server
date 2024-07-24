@@ -7,7 +7,7 @@ paths:
     post:
       tags:
         - AccountModule_IdentityEndpoints
-      operationId: Identity.RegisterPOST
+      operationId: Identity.Register
       requestBody:
         content:
           application/json:
@@ -28,7 +28,7 @@ paths:
     post:
       tags:
         - AccountModule_IdentityEndpoints
-      operationId: Identity.LoginPOST
+      operationId: Identity.Login
       requestBody:
         content:
           application/json:
@@ -45,11 +45,11 @@ paths:
                 $ref: '#/components/schemas/AccessTokenResponse'
         '401':
           description: Unauthorized
-  /identity/manage/info:
+  /identity/info:
     get:
       tags:
         - AccountModule_IdentityEndpoints
-      operationId: Identity.ManageInfoGET
+      operationId: Identity.Info
       responses:
         '200':
           description: OK
