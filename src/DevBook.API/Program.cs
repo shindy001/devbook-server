@@ -83,10 +83,6 @@ app.UseAuthorization();
 // Health check + Alive
 app.MapDefaultEndpoints();
 
-app.MapGroup("/identity")
-	.MapIdentityApi<DevBookUser>()
-	.WithTags("Identity");
-
 featureModuleRegister.MapFeatureModulesEndpoints(app);
 
 app.MapGraphQLHttp("/graphql")

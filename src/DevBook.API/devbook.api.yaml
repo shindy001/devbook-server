@@ -3,6 +3,68 @@ info:
   title: 'DevBook.API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null'
   version: '1.0'
 paths:
+  /identity/register:
+    post:
+      tags:
+        - AccountModule_IdentityEndpoints
+      operationId: Identity.RegisterPOST
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/RegisterRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/HttpValidationProblemDetails'
+  /identity/login:
+    post:
+      tags:
+        - AccountModule_IdentityEndpoints
+      operationId: Identity.LoginPOST
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/LoginRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccessTokenResponse'
+        '401':
+          description: Unauthorized
+  /identity/manage/info:
+    get:
+      tags:
+        - AccountModule_IdentityEndpoints
+      operationId: Identity.ManageInfoGET
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InfoResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/HttpValidationProblemDetails'
+        '404':
+          description: Not Found
   /bookstore/authors:
     get:
       tags:
@@ -349,217 +411,6 @@ paths:
       responses:
         '204':
           description: No Content
-  /identity/register:
-    post:
-      tags:
-        - Identity
-      operationId: Identity.RegisterPOST
-      requestBody:
-        content:
-          application/json:
-            schema:
-              allOf:
-                - $ref: '#/components/schemas/RegisterRequest'
-      responses:
-        '200':
-          description: OK
-        '400':
-          description: Bad Request
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/HttpValidationProblemDetails'
-  /identity/login:
-    post:
-      tags:
-        - Identity
-      operationId: Identity.LoginPOST
-      parameters:
-        - name: useCookies
-          in: query
-          schema:
-            type: boolean
-        - name: useSessionCookies
-          in: query
-          schema:
-            type: boolean
-      requestBody:
-        content:
-          application/json:
-            schema:
-              allOf:
-                - $ref: '#/components/schemas/LoginRequest'
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AccessTokenResponse'
-  /identity/refresh:
-    post:
-      tags:
-        - Identity
-      operationId: Identity.RefreshPOST
-      requestBody:
-        content:
-          application/json:
-            schema:
-              allOf:
-                - $ref: '#/components/schemas/RefreshRequest'
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AccessTokenResponse'
-  /identity/confirmEmail:
-    get:
-      tags:
-        - Identity
-      operationId: Identity.ConfirmEmailGET
-      parameters:
-        - name: userId
-          in: query
-          schema:
-            type: string
-        - name: code
-          in: query
-          schema:
-            type: string
-        - name: changedEmail
-          in: query
-          schema:
-            type: string
-      responses:
-        '200':
-          description: OK
-  /identity/resendConfirmationEmail:
-    post:
-      tags:
-        - Identity
-      operationId: Identity.ResendConfirmationEmailPOST
-      requestBody:
-        content:
-          application/json:
-            schema:
-              allOf:
-                - $ref: '#/components/schemas/ResendConfirmationEmailRequest'
-      responses:
-        '200':
-          description: OK
-  /identity/forgotPassword:
-    post:
-      tags:
-        - Identity
-      operationId: Identity.ForgotPasswordPOST
-      requestBody:
-        content:
-          application/json:
-            schema:
-              allOf:
-                - $ref: '#/components/schemas/ForgotPasswordRequest'
-      responses:
-        '200':
-          description: OK
-        '400':
-          description: Bad Request
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/HttpValidationProblemDetails'
-  /identity/resetPassword:
-    post:
-      tags:
-        - Identity
-      operationId: Identity.ResetPasswordPOST
-      requestBody:
-        content:
-          application/json:
-            schema:
-              allOf:
-                - $ref: '#/components/schemas/ResetPasswordRequest'
-      responses:
-        '200':
-          description: OK
-        '400':
-          description: Bad Request
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/HttpValidationProblemDetails'
-  /identity/manage/2fa:
-    post:
-      tags:
-        - Identity
-      operationId: Identity.Manage2faPOST
-      requestBody:
-        content:
-          application/json:
-            schema:
-              allOf:
-                - $ref: '#/components/schemas/TwoFactorRequest'
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TwoFactorResponse'
-        '400':
-          description: Bad Request
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/HttpValidationProblemDetails'
-        '404':
-          description: Not Found
-  /identity/manage/info:
-    get:
-      tags:
-        - Identity
-      operationId: Identity.ManageInfoGET
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/InfoResponse'
-        '400':
-          description: Bad Request
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/HttpValidationProblemDetails'
-        '404':
-          description: Not Found
-    post:
-      tags:
-        - Identity
-      operationId: Identity.ManageInfoPOST
-      requestBody:
-        content:
-          application/json:
-            schema:
-              allOf:
-                - $ref: '#/components/schemas/InfoRequest'
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/InfoResponse'
-        '400':
-          description: Bad Request
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/HttpValidationProblemDetails'
-        '404':
-          description: Not Found
   /sudoku:
     get:
       tags:
@@ -981,15 +832,6 @@ components:
           type: string
           format: time
       additionalProperties: false
-    ForgotPasswordRequest:
-      required:
-        - email
-      type: object
-      properties:
-        email:
-          type: string
-          nullable: true
-      additionalProperties: false
     HttpValidationProblemDetails:
       type: object
       properties:
@@ -1017,30 +859,19 @@ components:
               type: string
           nullable: true
       additionalProperties: { }
-    InfoRequest:
-      type: object
-      properties:
-        newEmail:
-          type: string
-          nullable: true
-        newPassword:
-          type: string
-          nullable: true
-        oldPassword:
-          type: string
-          nullable: true
-      additionalProperties: false
     InfoResponse:
       required:
         - email
-        - isEmailConfirmed
+        - roles
       type: object
       properties:
         email:
+          minLength: 1
           type: string
-          nullable: true
-        isEmailConfirmed:
-          type: boolean
+        roles:
+          type: array
+          items:
+            type: string
       additionalProperties: false
     LoginRequest:
       required:
@@ -1237,15 +1068,6 @@ components:
           type: string
           nullable: true
       additionalProperties: false
-    RefreshRequest:
-      required:
-        - refreshToken
-      type: object
-      properties:
-        refreshToken:
-          type: string
-          nullable: true
-      additionalProperties: false
     RegisterRequest:
       required:
         - email
@@ -1256,32 +1078,6 @@ components:
           type: string
           nullable: true
         password:
-          type: string
-          nullable: true
-      additionalProperties: false
-    ResendConfirmationEmailRequest:
-      required:
-        - email
-      type: object
-      properties:
-        email:
-          type: string
-          nullable: true
-      additionalProperties: false
-    ResetPasswordRequest:
-      required:
-        - email
-        - newPassword
-        - resetCode
-      type: object
-      properties:
-        email:
-          type: string
-          nullable: true
-        resetCode:
-          type: string
-          nullable: true
-        newPassword:
           type: string
           nullable: true
       additionalProperties: false
@@ -1300,46 +1096,6 @@ components:
         start:
           type: string
           format: time
-      additionalProperties: false
-    TwoFactorRequest:
-      type: object
-      properties:
-        enable:
-          type: boolean
-          nullable: true
-        twoFactorCode:
-          type: string
-          nullable: true
-        resetSharedKey:
-          type: boolean
-        resetRecoveryCodes:
-          type: boolean
-        forgetMachine:
-          type: boolean
-      additionalProperties: false
-    TwoFactorResponse:
-      required:
-        - isMachineRemembered
-        - isTwoFactorEnabled
-        - recoveryCodesLeft
-        - sharedKey
-      type: object
-      properties:
-        sharedKey:
-          type: string
-          nullable: true
-        recoveryCodesLeft:
-          type: integer
-          format: int32
-        recoveryCodes:
-          type: array
-          items:
-            type: string
-          nullable: true
-        isTwoFactorEnabled:
-          type: boolean
-        isMachineRemembered:
-          type: boolean
       additionalProperties: false
     UpdateAuthorCommandDto:
       required:
