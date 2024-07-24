@@ -65,6 +65,25 @@ paths:
                 $ref: '#/components/schemas/HttpValidationProblemDetails'
         '404':
           description: Not Found
+  /identity/refresh:
+    post:
+      tags:
+        - AccountModule_IdentityEndpoints
+      operationId: Identity.Refresh
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/RefreshRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccessTokenResponse'
   /bookstore/authors:
     get:
       tags:
@@ -880,17 +899,11 @@ components:
       type: object
       properties:
         email:
+          minLength: 1
           type: string
-          nullable: true
         password:
+          minLength: 1
           type: string
-          nullable: true
-        twoFactorCode:
-          type: string
-          nullable: true
-        twoFactorRecoveryCode:
-          type: string
-          nullable: true
       additionalProperties: false
     PatchAuthorCommandDto:
       type: object
@@ -1065,6 +1078,15 @@ components:
           type: string
           nullable: true
         hexColor:
+          type: string
+          nullable: true
+      additionalProperties: false
+    RefreshRequest:
+      required:
+        - refreshToken
+      type: object
+      properties:
+        refreshToken:
           type: string
           nullable: true
       additionalProperties: false

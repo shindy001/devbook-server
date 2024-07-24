@@ -30,6 +30,11 @@ internal static class IdentityEndpoints
 			.WithName($"{OperationIdPrefix}Info")
 			.Produces<InfoResponse>();
 
+		groupBuilder.MapPost("/refresh", Refresh)
+			.WithName($"{OperationIdPrefix}Refresh")
+			.Produces<AccessTokenResponse>()
+			.AllowAnonymous();
+
 		return groupBuilder;
 	}
 
@@ -74,6 +79,29 @@ internal static class IdentityEndpoints
 		return result.Succeeded
 			? TypedResults.Empty
 			: TypedResults.Problem(result.ToString(), statusCode: StatusCodes.Status401Unauthorized);
+	}
+
+	public static async Task<Results<Ok<AccessTokenResponse>, UnauthorizedHttpResult, SignInHttpResult, ChallengeHttpResult>> Refresh(
+		[FromBody] RefreshRequest refreshRequest,
+		[FromServices] IServiceProvider sp)
+	{
+		var timeProvider = sp.GetRequiredService<TimeProvider>();
+		var bearerTokenOptions = sp.GetRequiredService<IOptionsMonitor<BearerTokenOptions>>();
+		var signInManager = sp.GetRequiredService<SignInManager<DevBookUser>>();
+		var refreshTokenProtector = bearerTokenOptions.Get(IdentityConstants.BearerScheme).RefreshTokenProtector;
+		var refreshTicket = refreshTokenProtector.Unprotect(refreshRequest.RefreshToken);
+
+		// Reject the /refresh attempt with a 401 if the token expired or the security stamp validation fails
+		if (refreshTicket?.Properties?.ExpiresUtc is not { } expiresUtc ||
+			timeProvider.GetUtcNow() >= expiresUtc ||
+			await signInManager.ValidateSecurityStampAsync(refreshTicket.Principal) is not DevBookUser user)
+
+		{
+			return TypedResults.Challenge();
+		}
+
+		var newPrincipal = await signInManager.CreateUserPrincipalAsync(user);
+		return TypedResults.SignIn(newPrincipal, authenticationScheme: IdentityConstants.BearerScheme);
 	}
 
 	private static async Task<Results<Ok<InfoResponse>, ValidationProblem, NotFound>> GetInfo(
