@@ -75,7 +75,7 @@ internal static class IdentityEndpoints
 		var signInManager = sp.GetRequiredService<SignInManager<DevBookUser>>();
 		signInManager.AuthenticationScheme = IdentityConstants.BearerScheme;
 
-		var result = await signInManager.PasswordSignInAsync(login.Email, login.Password, isPersistent: false, lockoutOnFailure: true);
+		var result = await signInManager.PasswordSignInAsync(login.Email, login.Password, isPersistent: false, lockoutOnFailure: false);
 		return result.Succeeded
 			? TypedResults.Empty
 			: TypedResults.Problem(result.ToString(), statusCode: StatusCodes.Status401Unauthorized);
