@@ -25,8 +25,16 @@ public class ProductCategoryApiTests : IntegrationTestsBase
 	public async Task GetProductCategories_should_return_categories()
 	{
 		// Given
-		var givenCreateProductCategoryCommand = _fixture.Create<CreateProductCategoryCommand>();
-		var givenProductCategoryId = await _bookStoreDriver.SeedProductCategory(givenCreateProductCategoryCommand);
+		var givenCreateProductCategoryCommand1 = _fixture
+			.Build<CreateProductCategoryCommand>()
+			.With(x => x.Subcategories, [])
+			.Create();
+		var givenCreateProductCategoryCommand2 = _fixture
+			.Build<CreateProductCategoryCommand>()
+			.With(x => x.Subcategories, [])
+			.Create();
+		var givenProductCategoryId1 = await _bookStoreDriver.SeedProductCategory(givenCreateProductCategoryCommand1);
+		var givenProductCategoryId2 = await _bookStoreDriver.SeedProductCategory(givenCreateProductCategoryCommand2);
 
 		// When
 		var response = await _bookStoreApi.GetProductCategories();
@@ -34,13 +42,23 @@ public class ProductCategoryApiTests : IntegrationTestsBase
 		// Then
 		response.Should().NotBeNull();
 		response.Should().NotBeEmpty();
-		response.Count.Should().Be(1);
-		response.First().Should().BeEquivalentTo(
+		response.Count.Should().Be(2);
+		response.Should().BeEquivalentTo([
 			new ProductCategoryDto
 			{
-				Id = givenProductCategoryId,
-				Name = givenCreateProductCategoryCommand.Name,
-			});
+				Id = givenProductCategoryId1,
+				Name = givenCreateProductCategoryCommand1.Name,
+				IsTopLevelCategory = givenCreateProductCategoryCommand1.IsTopLevelCategory!.Value,
+				Subcategories = givenCreateProductCategoryCommand1.Subcategories!.ToList()
+			},
+			new ProductCategoryDto
+			{
+				Id = givenProductCategoryId2,
+				Name = givenCreateProductCategoryCommand2.Name,
+				IsTopLevelCategory = givenCreateProductCategoryCommand2.IsTopLevelCategory!.Value,
+				Subcategories = givenCreateProductCategoryCommand2.Subcategories!.ToList()
+			}
+		]);
 	}
 
 	[Fact]
@@ -63,7 +81,10 @@ public class ProductCategoryApiTests : IntegrationTestsBase
 	public async Task GetProductCategoryById_should_return_category()
 	{
 		// Given
-		var givenCreateProductCategoryCommand = _fixture.Create<CreateProductCategoryCommand>();
+		var givenCreateProductCategoryCommand = _fixture
+			.Build<CreateProductCategoryCommand>()
+			.With(x => x.Subcategories, [])
+			.Create();
 		var givenProductCategoryId = await _bookStoreDriver.SeedProductCategory(givenCreateProductCategoryCommand);
 
 		// When
@@ -76,6 +97,38 @@ public class ProductCategoryApiTests : IntegrationTestsBase
 			{
 				Id = givenProductCategoryId,
 				Name = givenCreateProductCategoryCommand.Name,
+				IsTopLevelCategory = givenCreateProductCategoryCommand.IsTopLevelCategory!.Value,
+				Subcategories = givenCreateProductCategoryCommand.Subcategories!.ToList()
+			});
+	}
+
+	[Fact]
+	public async Task GetProductCategoryById_should_return_category_with_subcategory()
+	{
+		// Given
+		var givenProductCategoryId1 = await _bookStoreDriver.SeedProductCategory(_fixture
+			.Build<CreateProductCategoryCommand>()
+			.With(x => x.Subcategories, [])
+			.Create());
+
+		var givenCreateProductCategoryCommand2 = _fixture
+			.Build<CreateProductCategoryCommand>()
+			.With(x => x.Subcategories, [givenProductCategoryId1])
+			.Create();
+		var givenProductCategoryId2 = await _bookStoreDriver.SeedProductCategory(givenCreateProductCategoryCommand2);
+
+		// When
+		var response = await _bookStoreApi.GetProductCategoryById(givenProductCategoryId2);
+
+		// Then
+		response.Should().NotBeNull();
+		response.Should().BeEquivalentTo(
+			new ProductCategoryDto
+			{
+				Id = givenProductCategoryId2,
+				Name = givenCreateProductCategoryCommand2.Name,
+				IsTopLevelCategory = false,
+				Subcategories = [givenProductCategoryId1],
 			});
 	}
 
@@ -100,7 +153,10 @@ public class ProductCategoryApiTests : IntegrationTestsBase
 	{
 		// Given
 		AuthenticateAdmin();
-		var givenCreateProductCategoryCommand = _fixture.Create<CreateProductCategoryCommand>();
+		var givenCreateProductCategoryCommand = _fixture
+			.Build<CreateProductCategoryCommand>()
+			.With(x => x.Subcategories, [])
+			.Create();
 
 		// When
 		var response = await _bookStoreApi.CreateProductCategory(givenCreateProductCategoryCommand);
@@ -115,6 +171,44 @@ public class ProductCategoryApiTests : IntegrationTestsBase
 			{
 				Id = actualCategoryId!.Value,
 				Name = givenCreateProductCategoryCommand.Name,
+				IsTopLevelCategory = givenCreateProductCategoryCommand.IsTopLevelCategory!.Value,
+				Subcategories = givenCreateProductCategoryCommand.Subcategories!.ToList(),
+			});
+	}
+
+	[Fact]
+	public async Task CreateProductCategory_should_create_top_level_category_with_subcategory()
+	{
+		// Given
+		AuthenticateAdmin();
+		var givenProductCategoryId1 = await _bookStoreDriver.SeedProductCategory(_fixture
+			.Build<CreateProductCategoryCommand>()
+			.With(x => x.Subcategories, [])
+			.Create());
+
+		var givenCreateProductCategoryCommand2 = _fixture
+			.Build<CreateProductCategoryCommand>()
+			.With(x => x.IsTopLevelCategory, true)
+			.With(x => x.Subcategories, [givenProductCategoryId1])
+			.Create();
+
+		// When
+		var response = await _bookStoreApi.CreateProductCategory(givenCreateProductCategoryCommand2);
+		var actualCategories = (await _bookStoreApi.GetProductCategories());
+
+		// Then
+		response.StatusCode.Should().Be(HttpStatusCode.Created);
+		var actualCreatedCategoryId = response.GetGuidFromResponseLocation();
+		actualCreatedCategoryId.Should().NotBeNull();
+
+		actualCategories.Count.Should().Be(2);
+		actualCategories.Single(x => x.Id == actualCreatedCategoryId).Should().BeEquivalentTo(
+			new ProductCategoryDto
+			{
+				Id = actualCreatedCategoryId!.Value,
+				Name = givenCreateProductCategoryCommand2.Name,
+				IsTopLevelCategory = givenCreateProductCategoryCommand2.IsTopLevelCategory!.Value,
+				Subcategories = [givenProductCategoryId1],
 			});
 	}
 
@@ -172,8 +266,14 @@ public class ProductCategoryApiTests : IntegrationTestsBase
 	{
 		// Given
 		AuthenticateAdmin();
-		var givenProductCategoryId = await _bookStoreDriver.SeedProductCategory(_fixture.Create<CreateProductCategoryCommand>());
-		var givenUpdateProductCategoryCommand = _fixture.Create<UpdateProductCategoryCommandDto>();
+		var givenProductCategoryId = await _bookStoreDriver.SeedProductCategory(_fixture
+			.Build<CreateProductCategoryCommand>()
+			.With(x => x.Subcategories, [])
+			.Create());
+		var givenUpdateProductCategoryCommand = _fixture
+			.Build<UpdateProductCategoryCommandDto>()
+			.With(x => x.Subcategories, [])
+			.Create();
 
 		// When
 		var response = await _bookStoreApi.UpdateProductCategory(givenProductCategoryId, givenUpdateProductCategoryCommand);
@@ -186,7 +286,68 @@ public class ProductCategoryApiTests : IntegrationTestsBase
 			{
 				Id = givenProductCategoryId,
 				Name = givenUpdateProductCategoryCommand.Name,
+				IsTopLevelCategory = givenUpdateProductCategoryCommand.IsTopLevelCategory,
+				Subcategories = givenUpdateProductCategoryCommand.Subcategories.ToList(),
 			});
+	}
+
+	[Fact]
+	public async Task UpdateProductCategory_should_update_category_subcategories()
+	{
+		// Given
+		AuthenticateAdmin();
+		var givenProductCategoryId1 = await _bookStoreDriver.SeedProductCategory(_fixture
+			.Build<CreateProductCategoryCommand>()
+			.With(x => x.Subcategories, [])
+			.Create());
+
+		var givenProductCategoryId2 = await _bookStoreDriver.SeedProductCategory(_fixture
+			.Build<CreateProductCategoryCommand>()
+			.With(x => x.Subcategories, [])
+			.Create());
+
+		var givenUpdateProductCategoryCommand = _fixture
+			.Build<UpdateProductCategoryCommandDto>()
+			.With(x => x.Subcategories, [givenProductCategoryId1])
+			.Create();
+
+		// When
+		var response = await _bookStoreApi.UpdateProductCategory(givenProductCategoryId2, givenUpdateProductCategoryCommand);
+		var actualCategory = await _bookStoreApi.GetProductCategoryById(givenProductCategoryId2);
+
+		// Then
+		response.StatusCode.Should().Be(HttpStatusCode.NoContent);
+		actualCategory.Should().BeEquivalentTo(
+			new ProductCategoryDto
+			{
+				Id = givenProductCategoryId2,
+				Name = givenUpdateProductCategoryCommand.Name,
+				IsTopLevelCategory = givenUpdateProductCategoryCommand.IsTopLevelCategory,
+				Subcategories = givenUpdateProductCategoryCommand.Subcategories.ToList(),
+			});
+	}
+
+	[Fact]
+	public async Task UpdateProductCategory_should_return_400_badRequest_when_subcategories_contain_same_id_as_updated_category()
+	{
+		// Given
+		AuthenticateAdmin();
+		var givenProductCategoryId1 = await _bookStoreDriver.SeedProductCategory(_fixture
+			.Build<CreateProductCategoryCommand>()
+			.With(x => x.Subcategories, [])
+			.Create());
+
+		var givenUpdateProductCategoryCommand = _fixture
+			.Build<UpdateProductCategoryCommandDto>()
+			.With(x => x.Subcategories, [givenProductCategoryId1])
+			.Create();
+
+		// When
+
+		var response = await _bookStoreApi.UpdateProductCategory(givenProductCategoryId1, givenUpdateProductCategoryCommand);
+
+		// Then
+		response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
 	}
 
 	[Fact]
@@ -222,7 +383,10 @@ public class ProductCategoryApiTests : IntegrationTestsBase
 	{
 		// Given
 		AuthenticateAdmin();
-		var givenProductCategoryId = await _bookStoreDriver.SeedProductCategory(_fixture.Create<CreateProductCategoryCommand>());
+		var givenProductCategoryId = await _bookStoreDriver.SeedProductCategory(_fixture
+			.Build<CreateProductCategoryCommand>()
+			.With(x => x.Subcategories, [])
+			.Create());
 
 		// When
 		var response = await _bookStoreApi.DeleteProductCategory(givenProductCategoryId);
@@ -232,7 +396,7 @@ public class ProductCategoryApiTests : IntegrationTestsBase
 	}
 
 	[Fact]
-	public async Task DeleteProductCategory_should_succeed_for_Admin_user_when_product_does_not_exist()
+	public async Task DeleteProductCategory_should_succeed_when_product_does_not_exist()
 	{
 		// Given
 		AuthenticateAdmin();
@@ -250,7 +414,10 @@ public class ProductCategoryApiTests : IntegrationTestsBase
 		// Given
 		AuthenticateAdmin();
 		var givenAuthorId = await _bookStoreDriver.SeedAuthor(_fixture.Create<CreateAuthorCommand>());
-		var givenProductCategoryId = await _bookStoreDriver.SeedProductCategory(_fixture.Create<CreateProductCategoryCommand>());
+		var givenProductCategoryId = await _bookStoreDriver.SeedProductCategory(_fixture
+			.Build<CreateProductCategoryCommand>()
+			.With(x => x.Subcategories, [])
+			.Create());
 		var givenCreateBookCommand = _fixture
 			.Build<CreateBookCommand>()
 			.With(x => x.AuthorId, givenAuthorId)

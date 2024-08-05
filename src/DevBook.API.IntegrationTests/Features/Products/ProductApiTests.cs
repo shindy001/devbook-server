@@ -61,7 +61,10 @@ public class ProductApiTests : IntegrationTestsBase
 	{
 		// Given
 		var givenAuthorId = await _bookStoreDriver.SeedAuthor(_fixture.Create<CreateAuthorCommand>());
-		var givenProductCategoryId = await _bookStoreDriver.SeedProductCategory(_fixture.Create<CreateProductCategoryCommand>());
+		var givenProductCategoryId = await _bookStoreDriver.SeedProductCategory(_fixture
+			.Build<CreateProductCategoryCommand>()
+			.With(x => x.Subcategories, [])
+			.Create());
 		var givenCreateBookCommand = _fixture
 			.Build<CreateBookCommand>()
 			.With(x => x.AuthorId, givenAuthorId)
