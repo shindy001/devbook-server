@@ -4,6 +4,8 @@ public sealed record CreateProductCategoryCommand : ICommand<ProductCategory>
 {
 	[Required]
 	public required string Name { get; init; }
+	public bool? IsTopLevelCategory { get; init; }
+	public IEnumerable<Guid>? Subcategories { get; init; }
 }
 
 public sealed class CreateProductCategoryCommandValidator : AbstractValidator<CreateProductCategoryCommand>
@@ -18,7 +20,18 @@ internal sealed class CreateProductCategoryCommandHandler(DevBookDbContext dbCon
 {
 	public async Task<ProductCategory> Handle(CreateProductCategoryCommand command, CancellationToken cancellationToken)
 	{
-		var newItem = new ProductCategory { Name = command.Name };
+		if (command.Subcategories?.Any() == true)
+		{
+			await ProductCategoryHelper.EnsureProductCategoriesExist(command.Subcategories, dbContext, cancellationToken);
+		}
+
+		var newItem = new ProductCategory
+		{
+			Name = command.Name,
+			IsTopLevelCategory = command.IsTopLevelCategory ?? false,
+			Subcategories = command.Subcategories?.ToList() ?? [],
+		};
+
 		await dbContext.ProductCategories.AddAsync(newItem, cancellationToken);
 		await dbContext.SaveChangesAsync(cancellationToken);
 		return newItem;

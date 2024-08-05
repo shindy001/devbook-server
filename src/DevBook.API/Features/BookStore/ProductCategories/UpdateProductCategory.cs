@@ -4,11 +4,15 @@ public sealed record UpdateProductCategoryCommandDto() : ICommand<OneOf<Success,
 {
 	[Required]
 	public required string Name { get; init; }
+	public required bool IsTopLevelCategory { get; init; }
+	public required IEnumerable<Guid> Subcategories { get; init; }
 }
 
 public sealed record UpdateProductCategoryCommand(
 	Guid Id,
-	string Name)
+	string Name,
+	bool IsTopLevelCategory,
+	IEnumerable<Guid> Subcategories)
 	: ICommand<OneOf<Success, NotFound>>;
 
 public sealed class UpdateProductCategoryCommandValidator : AbstractValidator<UpdateProductCategoryCommand>
@@ -29,16 +33,31 @@ internal sealed class UpdateProductCategoryCommandHandler(DevBookDbContext dbCon
 		{
 			return new NotFound();
 		}
-		else
-		{
-			var update = new Dictionary<string, object?>()
-			{
-				[nameof(ProductCategory.Name)] = command.Name,
-			};
 
-			dbContext.ProductCategories.Entry(productCategory).CurrentValues.SetValues(update);
-			await dbContext.SaveChangesAsync(cancellationToken);
-			return new Success();
+		await ValidateSubcategories(productCategory.Id, command.Subcategories, cancellationToken);
+
+		var update = new Dictionary<string, object?>()
+		{
+			[nameof(ProductCategory.Name)] = command.Name,
+			[nameof(ProductCategory.IsTopLevelCategory)] = command.IsTopLevelCategory,
+			[nameof(ProductCategory.Subcategories)] = command.Subcategories,
+		};
+
+		dbContext.ProductCategories.Entry(productCategory).CurrentValues.SetValues(update);
+		await dbContext.SaveChangesAsync(cancellationToken);
+		return new Success();
+	}
+
+	private async Task ValidateSubcategories(Guid currentCategoryId, IEnumerable<Guid> subcategories, CancellationToken cancellationToken)
+	{
+		if (subcategories.Contains(currentCategoryId))
+		{
+			throw new DevBookValidationException(nameof(UpdateProductCategoryCommand.Subcategories), $"Subcategories cannot contain Id of current product category to update '{currentCategoryId}'.");
+		}
+
+		if (subcategories.Any() == true)
+		{
+			await ProductCategoryHelper.EnsureProductCategoriesExist(subcategories, dbContext, cancellationToken);
 		}
 	}
 }

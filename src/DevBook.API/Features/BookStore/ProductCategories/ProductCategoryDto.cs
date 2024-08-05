@@ -7,6 +7,10 @@ public sealed record ProductCategoryDto
 
 	[Required]
 	public required string Name { get; init; }
+
+	public bool IsTopLevelCategory { get; init; }
+
+	public IList<Guid>? Subcategories { get; init; }
 }
 
 public static class ProductCategoryMappings
@@ -17,6 +21,8 @@ public static class ProductCategoryMappings
 		{
 			Id = productCategory.Id,
 			Name = productCategory.Name,
+			IsTopLevelCategory = productCategory.IsTopLevelCategory,
+			Subcategories = productCategory.Subcategories,
 		};
 	}
 }

@@ -59,7 +59,9 @@ internal static class ProductCategoryEndpoints
 		var result = await executor.ExecuteCommand(
 			new UpdateProductCategoryCommand(
 				Id: id,
-				Name: command.Name),
+				Name: command.Name,
+				IsTopLevelCategory: command.IsTopLevelCategory,
+				Subcategories: command.Subcategories),
 			cancellationToken);
 
 		return result.Match<IResult>(

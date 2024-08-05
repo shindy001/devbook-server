@@ -801,6 +801,15 @@ components:
         name:
           minLength: 1
           type: string
+        isTopLevelCategory:
+          type: boolean
+          nullable: true
+        subcategories:
+          type: array
+          items:
+            type: string
+            format: uuid
+          nullable: true
       additionalProperties: false
     CreateProjectInput:
       required:
@@ -1008,6 +1017,14 @@ components:
         name:
           minLength: 1
           type: string
+        isTopLevelCategory:
+          type: boolean
+        subcategories:
+          type: array
+          items:
+            type: string
+            format: uuid
+          nullable: true
       additionalProperties: false
     ProductDto:
       required:
@@ -1170,12 +1187,22 @@ components:
       additionalProperties: false
     UpdateProductCategoryCommandDto:
       required:
+        - isTopLevelCategory
         - name
+        - subcategories
       type: object
       properties:
         name:
           minLength: 1
           type: string
+        isTopLevelCategory:
+          type: boolean
+        subcategories:
+          type: array
+          items:
+            type: string
+            format: uuid
+          nullable: true
       additionalProperties: false
     UpdateProjectCommandDto:
       required:
