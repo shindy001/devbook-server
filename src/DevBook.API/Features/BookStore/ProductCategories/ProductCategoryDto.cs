@@ -10,19 +10,24 @@ public sealed record ProductCategoryDto
 
 	public bool IsTopLevelCategory { get; init; }
 
-	public IList<Guid>? Subcategories { get; init; }
+	public IList<string>? Subcategories { get; init; }
 }
 
 public static class ProductCategoryMappings
 {
-	public static ProductCategoryDto ToDto(this ProductCategory productCategory)
+	public static ProductCategoryDto ToDto(this ProductCategory productCategory, IEnumerable<ProductCategory>? subcategories)
 	{
+		var subcategoryNames = subcategories?
+			.Where(x => productCategory.Subcategories.Contains(x.Id))
+			.Select(x => x.Name)
+			.ToList();
+
 		return new ProductCategoryDto
 		{
 			Id = productCategory.Id,
 			Name = productCategory.Name,
 			IsTopLevelCategory = productCategory.IsTopLevelCategory,
-			Subcategories = productCategory.Subcategories,
+			Subcategories = subcategoryNames,
 		};
 	}
 }

@@ -36,15 +36,14 @@ internal static class ProductCategoryEndpoints
 	private static async Task<IResult> GetProductCategories([AsParameters] GetProductCategoriesQuery query, IExecutor executor, CancellationToken cancellationToken)
 	{
 		var result = await executor.ExecuteQuery(query, cancellationToken);
-		var dtos = result.Select(x => x.ToDto());
-		return TypedResults.Ok(dtos);
+		return TypedResults.Ok(result);
 	}
 
 	private static async Task<IResult> GetProductCategoryById([AsParameters] GetProductCategoryQuery query, IExecutor executor, CancellationToken cancellationToken)
 	{
 		var result = await executor.ExecuteQuery(query, cancellationToken);
 		return result.Match<IResult>(
-			productCategory => TypedResults.Ok(productCategory.ToDto()),
+			productCategoryDto => TypedResults.Ok(productCategoryDto),
 			notFound => TypedResults.NotFound(query.Id));
 	}
 

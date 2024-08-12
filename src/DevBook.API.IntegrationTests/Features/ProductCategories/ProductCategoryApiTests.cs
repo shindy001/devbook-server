@@ -49,14 +49,14 @@ public class ProductCategoryApiTests : IntegrationTestsBase
 				Id = givenProductCategoryId1,
 				Name = givenCreateProductCategoryCommand1.Name,
 				IsTopLevelCategory = givenCreateProductCategoryCommand1.IsTopLevelCategory!.Value,
-				Subcategories = givenCreateProductCategoryCommand1.Subcategories!.ToList()
+				Subcategories = []
 			},
 			new ProductCategoryDto
 			{
 				Id = givenProductCategoryId2,
 				Name = givenCreateProductCategoryCommand2.Name,
 				IsTopLevelCategory = givenCreateProductCategoryCommand2.IsTopLevelCategory!.Value,
-				Subcategories = givenCreateProductCategoryCommand2.Subcategories!.ToList()
+				Subcategories = []
 			}
 		]);
 	}
@@ -98,7 +98,7 @@ public class ProductCategoryApiTests : IntegrationTestsBase
 				Id = givenProductCategoryId,
 				Name = givenCreateProductCategoryCommand.Name,
 				IsTopLevelCategory = givenCreateProductCategoryCommand.IsTopLevelCategory!.Value,
-				Subcategories = givenCreateProductCategoryCommand.Subcategories!.ToList()
+				Subcategories = []
 			});
 	}
 
@@ -106,10 +106,11 @@ public class ProductCategoryApiTests : IntegrationTestsBase
 	public async Task GetProductCategoryById_should_return_category_with_subcategory()
 	{
 		// Given
-		var givenProductCategoryId1 = await _bookStoreDriver.SeedProductCategory(_fixture
+		var givenCreateProductCategoryCommand1 = _fixture
 			.Build<CreateProductCategoryCommand>()
 			.With(x => x.Subcategories, [])
-			.Create());
+			.Create();
+		var givenProductCategoryId1 = await _bookStoreDriver.SeedProductCategory(givenCreateProductCategoryCommand1);
 
 		var givenCreateProductCategoryCommand2 = _fixture
 			.Build<CreateProductCategoryCommand>()
@@ -128,7 +129,7 @@ public class ProductCategoryApiTests : IntegrationTestsBase
 				Id = givenProductCategoryId2,
 				Name = givenCreateProductCategoryCommand2.Name,
 				IsTopLevelCategory = false,
-				Subcategories = [givenProductCategoryId1],
+				Subcategories = [givenCreateProductCategoryCommand1.Name],
 			});
 	}
 
@@ -172,7 +173,7 @@ public class ProductCategoryApiTests : IntegrationTestsBase
 				Id = actualCategoryId!.Value,
 				Name = givenCreateProductCategoryCommand.Name,
 				IsTopLevelCategory = givenCreateProductCategoryCommand.IsTopLevelCategory!.Value,
-				Subcategories = givenCreateProductCategoryCommand.Subcategories!.ToList(),
+				Subcategories = [],
 			});
 	}
 
@@ -181,10 +182,11 @@ public class ProductCategoryApiTests : IntegrationTestsBase
 	{
 		// Given
 		AuthenticateAdmin();
-		var givenProductCategoryId1 = await _bookStoreDriver.SeedProductCategory(_fixture
+		var givenCreateProductCategoryCommand1 = _fixture
 			.Build<CreateProductCategoryCommand>()
 			.With(x => x.Subcategories, [])
-			.Create());
+			.Create();
+		var givenProductCategoryId1 = await _bookStoreDriver.SeedProductCategory(givenCreateProductCategoryCommand1);
 
 		var givenCreateProductCategoryCommand2 = _fixture
 			.Build<CreateProductCategoryCommand>()
@@ -208,7 +210,7 @@ public class ProductCategoryApiTests : IntegrationTestsBase
 				Id = actualCreatedCategoryId!.Value,
 				Name = givenCreateProductCategoryCommand2.Name,
 				IsTopLevelCategory = givenCreateProductCategoryCommand2.IsTopLevelCategory!.Value,
-				Subcategories = [givenProductCategoryId1],
+				Subcategories = [givenCreateProductCategoryCommand1.Name],
 			});
 	}
 
@@ -287,7 +289,7 @@ public class ProductCategoryApiTests : IntegrationTestsBase
 				Id = givenProductCategoryId,
 				Name = givenUpdateProductCategoryCommand.Name,
 				IsTopLevelCategory = givenUpdateProductCategoryCommand.IsTopLevelCategory,
-				Subcategories = givenUpdateProductCategoryCommand.Subcategories.ToList(),
+				Subcategories = [],
 			});
 	}
 
@@ -296,10 +298,11 @@ public class ProductCategoryApiTests : IntegrationTestsBase
 	{
 		// Given
 		AuthenticateAdmin();
-		var givenProductCategoryId1 = await _bookStoreDriver.SeedProductCategory(_fixture
+		var givenCreateProductCategoryCommand = _fixture
 			.Build<CreateProductCategoryCommand>()
 			.With(x => x.Subcategories, [])
-			.Create());
+			.Create();
+		var givenProductCategoryId1 = await _bookStoreDriver.SeedProductCategory(givenCreateProductCategoryCommand);
 
 		var givenProductCategoryId2 = await _bookStoreDriver.SeedProductCategory(_fixture
 			.Build<CreateProductCategoryCommand>()
@@ -323,7 +326,7 @@ public class ProductCategoryApiTests : IntegrationTestsBase
 				Id = givenProductCategoryId2,
 				Name = givenUpdateProductCategoryCommand.Name,
 				IsTopLevelCategory = givenUpdateProductCategoryCommand.IsTopLevelCategory,
-				Subcategories = givenUpdateProductCategoryCommand.Subcategories.ToList(),
+				Subcategories = [givenCreateProductCategoryCommand.Name],
 			});
 	}
 
