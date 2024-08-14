@@ -1,5 +1,4 @@
-﻿using DevBook.API.Features.BookStore.Authors;
-using DevBook.API.Features.BookStore.ProductCategories;
+﻿using DevBook.API.Features.BookStore.ProductCategories;
 using DevBook.API.Features.BookStore.Products;
 using DevBook.API.Features.BookStore.Products.Books;
 using DevBook.API.Features.TimeTracking.Shared;
@@ -25,7 +24,6 @@ public sealed class DevBookDbContext(DbContextOptions<DevBookDbContext> options,
 
 	#region BookStore module
 
-	public DbSet<Author> Authors { get; set; }
 	public DbSet<Product> Products { get; set; }
 	public DbSet<ProductCategory> ProductCategories { get; set; }
 

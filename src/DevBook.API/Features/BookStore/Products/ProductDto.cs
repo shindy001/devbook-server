@@ -40,12 +40,12 @@ public static class ProductMappings
 			Book book => new BookDto
 			{
 				Id = product.Id,
-				AuthorId = book.AuthorId,
 				Name = product.Name,
 				ProductType = product.ProductType,
 				RetailPrice = product.RetailPrice,
 				Price = product.Price,
 				DiscountAmmount = product.DiscountAmmount,
+				Author = book.Author,
 				Description = product.Description,
 				CoverImageUrl = product.CoverImageUrl,
 				ProductCategoryIds = product.ProductCategoryIds,

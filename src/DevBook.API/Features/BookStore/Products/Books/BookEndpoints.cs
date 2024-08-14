@@ -35,10 +35,10 @@ internal static class BookEndpoints
 			new UpdateBookCommand(
 				Id: id,
 				Name: command.Name,
-				AuthorId: command.AuthorId,
 				RetailPrice: command.RetailPrice,
 				Price: command.Price,
 				DiscountAmmount: command.DiscountAmmount,
+				Author: command.Author,
 				Description: command.Description,
 				CoverImageUrl: command.CoverImageUrl,
 				ProductCategoryIds: command.ProductCategoryIds),
@@ -55,10 +55,10 @@ internal static class BookEndpoints
 			new PatchBookCommand(
 				Id: id,
 				Name: command.Name,
-				AuthorId: command.AuthorId,
 				RetailPrice: command.RetailPrice,
 				Price: command.Price,
 				DiscountAmmount: command.DiscountAmmount,
+				Author: command.Author,
 				Description: command.Description,
 				CoverImageUrl: command.CoverImageUrl,
 				ProductCategoryIds: command.ProductCategoryIds),

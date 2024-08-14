@@ -1,5 +1,4 @@
 ﻿using AutoFixture;
-using DevBook.API.Features.BookStore.Authors;
 using DevBook.API.Features.BookStore.Products;
 using DevBook.API.Features.BookStore.Products.Books;
 using DevBook.API.IntegrationTests.Extensions;
@@ -26,10 +25,8 @@ public class BookApiTests : IntegrationTestsBase
 	{
 		// Given
 		AuthenticateAdmin();
-		var givenAuthorId = await _bookStoreDriver.SeedAuthor(_fixture.Create<CreateAuthorCommand>());
 		var givenCreateBookCommand = _fixture
 			.Build<CreateBookCommand>()
-			.With(x => x.AuthorId, givenAuthorId)
 			.With(x => x.ProductCategoryIds, [])
 			.Create();
 
@@ -47,10 +44,10 @@ public class BookApiTests : IntegrationTestsBase
 				Id = actualBookId!.Value,
 				Name = givenCreateBookCommand.Name,
 				ProductType = ProductType.Book,
-				AuthorId = givenAuthorId,
 				RetailPrice = givenCreateBookCommand.RetailPrice,
 				Price = givenCreateBookCommand.Price,
 				DiscountAmmount = givenCreateBookCommand.DiscountAmmount,
+				Author = givenCreateBookCommand.Author,
 				Description = givenCreateBookCommand.Description,
 				CoverImageUrl = givenCreateBookCommand.CoverImageUrl,
 				ProductCategoryIds = givenCreateBookCommand.ProductCategoryIds ?? []
@@ -63,7 +60,6 @@ public class BookApiTests : IntegrationTestsBase
 		// Given
 		var givenCreateBookCommand = _fixture
 			.Build<CreateBookCommand>()
-			.With(x => x.AuthorId, Guid.NewGuid())
 			.With(x => x.ProductCategoryIds, [])
 			.Create();
 
@@ -81,7 +77,6 @@ public class BookApiTests : IntegrationTestsBase
 		AuthenticateUser();
 		var givenCreateBookCommand = _fixture
 			.Build<CreateBookCommand>()
-			.With(x => x.AuthorId, Guid.NewGuid())
 			.With(x => x.ProductCategoryIds, [])
 			.Create();
 
@@ -97,29 +92,9 @@ public class BookApiTests : IntegrationTestsBase
 	{
 		// Given
 		AuthenticateAdmin();
-		var givenAuthorId = await _bookStoreDriver.SeedAuthor(_fixture.Create<CreateAuthorCommand>());
 		var givenCreateBookCommand = _fixture
 			.Build<CreateBookCommand>()
 			.With(x => x.Name, string.Empty)
-			.With(x => x.AuthorId, givenAuthorId)
-			.With(x => x.ProductCategoryIds, [])
-			.Create();
-
-		// When
-		var response = await _bookStoreApi.CreateBook(givenCreateBookCommand);
-
-		// Then
-		response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-	}
-
-	[Fact]
-	public async Task CreateBook_should_return_400_badRequest_when_createBook_command_contains_AuthorId_that_does_not_exist()
-	{
-		// Given
-		AuthenticateAdmin();
-		var givenCreateBookCommand = _fixture
-			.Build<CreateBookCommand>()
-			.With(x => x.AuthorId, Guid.NewGuid())
 			.With(x => x.ProductCategoryIds, [])
 			.Create();
 
@@ -135,10 +110,8 @@ public class BookApiTests : IntegrationTestsBase
 	{
 		// Given
 		AuthenticateAdmin();
-		var givenAuthorId = await _bookStoreDriver.SeedAuthor(_fixture.Create<CreateAuthorCommand>());
 		var givenCreateBookCommand = _fixture
 			.Build<CreateBookCommand>()
-			.With(x => x.AuthorId, givenAuthorId)
 			.With(x => x.ProductCategoryIds, [Guid.NewGuid()])
 			.Create();
 
@@ -158,17 +131,13 @@ public class BookApiTests : IntegrationTestsBase
 	{
 		// Given
 		AuthenticateAdmin();
-		var givenAuthorId1 = await _bookStoreDriver.SeedAuthor(_fixture.Create<CreateAuthorCommand>());
-		var givenAuthorId2 = await _bookStoreDriver.SeedAuthor(_fixture.Create<CreateAuthorCommand>());
 		var givenCreateBookSeedCommand = _fixture
 			.Build<CreateBookCommand>()
-			.With(x => x.AuthorId, givenAuthorId1)
 			.With(x => x.ProductCategoryIds, [])
 			.Create();
 		var givenBookId = await _bookStoreDriver.SeedBook(givenCreateBookSeedCommand);
 		var givenUpdateBookCommand = _fixture
 			.Build<UpdateBookCommandDto>()
-			.With(x => x.AuthorId, givenAuthorId2)
 			.With(x => x.ProductCategoryIds, [])
 			.Create();
 
@@ -184,10 +153,10 @@ public class BookApiTests : IntegrationTestsBase
 				Id = givenBookId,
 				Name = givenUpdateBookCommand.Name,
 				ProductType = ProductType.Book,
-				AuthorId = givenAuthorId2,
 				RetailPrice = givenUpdateBookCommand.RetailPrice,
 				Price = givenUpdateBookCommand.Price,
 				DiscountAmmount = givenUpdateBookCommand.DiscountAmmount,
+				Author = givenUpdateBookCommand.Author,
 				Description = givenUpdateBookCommand.Description,
 				CoverImageUrl = givenUpdateBookCommand.CoverImageUrl,
 				ProductCategoryIds = givenUpdateBookCommand.ProductCategoryIds ?? []
@@ -227,17 +196,13 @@ public class BookApiTests : IntegrationTestsBase
 	{
 		// Given
 		AuthenticateAdmin();
-		var givenAuthorId1 = await _bookStoreDriver.SeedAuthor(_fixture.Create<CreateAuthorCommand>());
-		var givenAuthorId2 = await _bookStoreDriver.SeedAuthor(_fixture.Create<CreateAuthorCommand>());
 		var givenCreateBookSeedCommand = _fixture
 			.Build<CreateBookCommand>()
-			.With(x => x.AuthorId, givenAuthorId1)
 			.With(x => x.ProductCategoryIds, [])
 			.Create();
 		var givenBookId = await _bookStoreDriver.SeedBook(givenCreateBookSeedCommand);
 		var givenPatchBookCommand = _fixture
 			.Build<PatchBookCommandDto>()
-			.With(x => x.AuthorId, givenAuthorId2)
 			.With(x => x.ProductCategoryIds, [])
 			.Create();
 
@@ -253,10 +218,10 @@ public class BookApiTests : IntegrationTestsBase
 				Id = givenBookId,
 				Name = givenPatchBookCommand.Name!,
 				ProductType = ProductType.Book,
-				AuthorId = givenAuthorId2,
 				RetailPrice = givenPatchBookCommand.RetailPrice!.Value,
 				Price = givenPatchBookCommand.Price!.Value,
 				DiscountAmmount = givenPatchBookCommand.DiscountAmmount!.Value,
+				Author = givenPatchBookCommand.Author,
 				Description = givenPatchBookCommand.Description,
 				CoverImageUrl = givenPatchBookCommand.CoverImageUrl,
 				ProductCategoryIds = givenPatchBookCommand.ProductCategoryIds ?? []
@@ -268,10 +233,8 @@ public class BookApiTests : IntegrationTestsBase
 	{
 		// Given
 		AuthenticateAdmin();
-		var givenAuthorId = await _bookStoreDriver.SeedAuthor(_fixture.Create<CreateAuthorCommand>());
 		var givenCreateBookSeedCommand = _fixture
 			.Build<CreateBookCommand>()
-			.With(x => x.AuthorId, givenAuthorId)
 			.With(x => x.ProductCategoryIds, [])
 			.Create();
 		var givenBookId = await _bookStoreDriver.SeedBook(givenCreateBookSeedCommand);
@@ -289,10 +252,10 @@ public class BookApiTests : IntegrationTestsBase
 				Id = givenBookId,
 				Name = givenCreateBookSeedCommand.Name,
 				ProductType = ProductType.Book,
-				AuthorId = givenAuthorId,
 				RetailPrice = givenCreateBookSeedCommand.RetailPrice,
 				Price = givenCreateBookSeedCommand.Price,
 				DiscountAmmount = givenCreateBookSeedCommand.DiscountAmmount,
+				Author = givenCreateBookSeedCommand.Author,
 				Description = givenPatchBookCommand.Description,
 				CoverImageUrl = givenCreateBookSeedCommand.CoverImageUrl,
 				ProductCategoryIds = givenCreateBookSeedCommand.ProductCategoryIds ?? []

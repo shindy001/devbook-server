@@ -2,6 +2,5 @@
 
 public sealed record BookDto : ProductDto
 {
-	[Required]
-	public required Guid AuthorId { get; set; }
+	public string? Author { get; init; }
 }

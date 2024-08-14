@@ -84,126 +84,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AccessTokenResponse'
-  /bookstore/authors:
-    get:
-      tags:
-        - BookStoreModule_AuthorEndpoints
-      operationId: Authors.GetAll
-      parameters:
-        - name: PageSize
-          in: query
-          schema:
-            type: integer
-            format: int32
-        - name: Offset
-          in: query
-          schema:
-            type: integer
-            format: int32
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/AuthorDto'
-    post:
-      tags:
-        - BookStoreModule_AuthorEndpoints
-      operationId: Authors.Create
-      requestBody:
-        content:
-          application/json:
-            schema:
-              allOf:
-                - $ref: '#/components/schemas/CreateAuthorCommand'
-        required: true
-      responses:
-        '201':
-          description: Created
-  '/bookstore/authors/{id}':
-    get:
-      tags:
-        - BookStoreModule_AuthorEndpoints
-      operationId: Authors.GetById
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AuthorDto'
-        '404':
-          description: Not Found
-    put:
-      tags:
-        - BookStoreModule_AuthorEndpoints
-      operationId: Authors.Update
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-      requestBody:
-        content:
-          application/json:
-            schema:
-              allOf:
-                - $ref: '#/components/schemas/UpdateAuthorCommandDto'
-        required: true
-      responses:
-        '204':
-          description: No Content
-        '404':
-          description: Not Found
-    patch:
-      tags:
-        - BookStoreModule_AuthorEndpoints
-      operationId: Authors.Patch
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-      requestBody:
-        content:
-          application/json:
-            schema:
-              allOf:
-                - $ref: '#/components/schemas/PatchAuthorCommandDto'
-        required: true
-      responses:
-        '204':
-          description: No Content
-        '404':
-          description: Not Found
-    delete:
-      tags:
-        - BookStoreModule_AuthorEndpoints
-      operationId: Authors.Delete
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-      responses:
-        '204':
-          description: No Content
   /bookstore/books:
     post:
       tags:
@@ -696,22 +576,6 @@ components:
           type: string
           nullable: true
       additionalProperties: false
-    AuthorDto:
-      required:
-        - id
-        - name
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        name:
-          minLength: 1
-          type: string
-        description:
-          type: string
-          nullable: true
-      additionalProperties: false
     BoardDataDto:
       required:
         - gridNumbers
@@ -736,29 +600,14 @@ components:
     BookDto:
       allOf:
         - $ref: '#/components/schemas/ProductDto'
-        - required:
-            - authorId
-          type: object
+        - type: object
           properties:
-            authorId:
+            author:
               type: string
-              format: uuid
+              nullable: true
           additionalProperties: false
-    CreateAuthorCommand:
-      required:
-        - name
-      type: object
-      properties:
-        name:
-          minLength: 1
-          type: string
-        description:
-          type: string
-          nullable: true
-      additionalProperties: false
     CreateBookCommand:
       required:
-        - authorId
         - discountAmmount
         - name
         - price
@@ -768,9 +617,6 @@ components:
         name:
           minLength: 1
           type: string
-        authorId:
-          type: string
-          format: uuid
         retailPrice:
           type: number
           format: double
@@ -780,6 +626,9 @@ components:
         discountAmmount:
           type: number
           format: double
+        author:
+          type: string
+          nullable: true
         description:
           type: string
           nullable: true
@@ -914,25 +763,11 @@ components:
           minLength: 1
           type: string
       additionalProperties: false
-    PatchAuthorCommandDto:
-      type: object
-      properties:
-        name:
-          type: string
-          nullable: true
-        description:
-          type: string
-          nullable: true
-      additionalProperties: false
     PatchBookCommandDto:
       type: object
       properties:
         name:
           type: string
-          nullable: true
-        authorId:
-          type: string
-          format: uuid
           nullable: true
         retailPrice:
           type: number
@@ -945,6 +780,9 @@ components:
         discountAmmount:
           type: number
           format: double
+          nullable: true
+        author:
+          type: string
           nullable: true
         description:
           type: string
@@ -1135,21 +973,8 @@ components:
           type: string
           format: time
       additionalProperties: false
-    UpdateAuthorCommandDto:
-      required:
-        - name
-      type: object
-      properties:
-        name:
-          minLength: 1
-          type: string
-        description:
-          type: string
-          nullable: true
-      additionalProperties: false
     UpdateBookCommandDto:
       required:
-        - authorId
         - discountAmmount
         - name
         - price
@@ -1159,9 +984,6 @@ components:
         name:
           minLength: 1
           type: string
-        authorId:
-          type: string
-          format: uuid
         retailPrice:
           type: number
           format: double
@@ -1171,6 +993,9 @@ components:
         discountAmmount:
           type: number
           format: double
+        author:
+          type: string
+          nullable: true
         description:
           type: string
           nullable: true

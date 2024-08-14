@@ -1,5 +1,4 @@
 ﻿using AutoFixture;
-using DevBook.API.Features.BookStore.Authors;
 using DevBook.API.Features.BookStore.ProductCategories;
 using DevBook.API.Features.BookStore.Products;
 using DevBook.API.Features.BookStore.Products.Books;
@@ -25,10 +24,8 @@ public class ProductApiTests : IntegrationTestsBase
 	public async Task GetProducts_should_return_Products()
 	{
 		// Given
-		var givenAuthorId = await _bookStoreDriver.SeedAuthor(_fixture.Create<CreateAuthorCommand>());
 		var givenCreateBookCommand = _fixture
 			.Build<CreateBookCommand>()
-			.With(x => x.AuthorId, givenAuthorId)
 			.With(x => x.ProductCategoryIds, [])
 			.Create();
 		var givenBookId = await _bookStoreDriver.SeedBook(givenCreateBookCommand);
@@ -46,10 +43,10 @@ public class ProductApiTests : IntegrationTestsBase
 				Id = givenBookId,
 				Name = givenCreateBookCommand.Name,
 				ProductType = ProductType.Book,
-				AuthorId = givenAuthorId,
 				RetailPrice = givenCreateBookCommand.RetailPrice,
 				Price = givenCreateBookCommand.Price,
 				DiscountAmmount = givenCreateBookCommand.DiscountAmmount,
+				Author = givenCreateBookCommand.Author,
 				Description = givenCreateBookCommand.Description,
 				CoverImageUrl = givenCreateBookCommand.CoverImageUrl,
 				ProductCategoryIds = givenCreateBookCommand.ProductCategoryIds ?? []
@@ -60,14 +57,12 @@ public class ProductApiTests : IntegrationTestsBase
 	public async Task GetProducts_should_return_Products_with_ProductCategory()
 	{
 		// Given
-		var givenAuthorId = await _bookStoreDriver.SeedAuthor(_fixture.Create<CreateAuthorCommand>());
 		var givenProductCategoryId = await _bookStoreDriver.SeedProductCategory(_fixture
 			.Build<CreateProductCategoryCommand>()
 			.With(x => x.Subcategories, [])
 			.Create());
 		var givenCreateBookCommand = _fixture
 			.Build<CreateBookCommand>()
-			.With(x => x.AuthorId, givenAuthorId)
 			.With(x => x.ProductCategoryIds, [givenProductCategoryId])
 			.Create();
 		var givenBookId = await _bookStoreDriver.SeedBook(givenCreateBookCommand);
@@ -86,10 +81,10 @@ public class ProductApiTests : IntegrationTestsBase
 				Id = givenBookId,
 				Name = givenCreateBookCommand.Name,
 				ProductType = ProductType.Book,
-				AuthorId = givenAuthorId,
 				RetailPrice = givenCreateBookCommand.RetailPrice,
 				Price = givenCreateBookCommand.Price,
 				DiscountAmmount = givenCreateBookCommand.DiscountAmmount,
+				Author = givenCreateBookCommand.Author,
 				Description = givenCreateBookCommand.Description,
 				CoverImageUrl = givenCreateBookCommand.CoverImageUrl,
 				ProductCategoryIds = [givenProductCategoryId]
@@ -116,10 +111,8 @@ public class ProductApiTests : IntegrationTestsBase
 	public async Task GetProductById_should_return_Product()
 	{
 		// Given
-		var givenAuthorId = await _bookStoreDriver.SeedAuthor(_fixture.Create<CreateAuthorCommand>());
 		var givenCreateBookCommand = _fixture
 			.Build<CreateBookCommand>()
-			.With(x => x.AuthorId, givenAuthorId)
 			.With(x => x.ProductCategoryIds, [])
 			.Create();
 		var givenBookId = await _bookStoreDriver.SeedBook(givenCreateBookCommand);
@@ -135,10 +128,10 @@ public class ProductApiTests : IntegrationTestsBase
 				Id = givenBookId,
 				Name = givenCreateBookCommand.Name,
 				ProductType = ProductType.Book,
-				AuthorId = givenAuthorId,
 				RetailPrice = givenCreateBookCommand.RetailPrice,
 				Price = givenCreateBookCommand.Price,
 				DiscountAmmount = givenCreateBookCommand.DiscountAmmount,
+				Author = givenCreateBookCommand.Author,
 				Description = givenCreateBookCommand.Description,
 				CoverImageUrl = givenCreateBookCommand.CoverImageUrl,
 				ProductCategoryIds = givenCreateBookCommand.ProductCategoryIds ?? []
@@ -166,10 +159,8 @@ public class ProductApiTests : IntegrationTestsBase
 	{
 		// Given
 		AuthenticateAdmin();
-		var givenAuthorId = await _bookStoreDriver.SeedAuthor(_fixture.Create<CreateAuthorCommand>());
 		var givenCreateBookCommand = _fixture
 			.Build<CreateBookCommand>()
-			.With(x => x.AuthorId, givenAuthorId)
 			.With(x => x.ProductCategoryIds, [])
 			.Create();
 		var givenBookId = await _bookStoreDriver.SeedBook(givenCreateBookCommand);

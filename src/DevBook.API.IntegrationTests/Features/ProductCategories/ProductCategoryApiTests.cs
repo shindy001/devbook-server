@@ -1,5 +1,4 @@
 ﻿using AutoFixture;
-using DevBook.API.Features.BookStore.Authors;
 using DevBook.API.Features.BookStore.ProductCategories;
 using DevBook.API.Features.BookStore.Products.Books;
 using DevBook.API.IntegrationTests.Extensions;
@@ -416,14 +415,12 @@ public class ProductCategoryApiTests : IntegrationTestsBase
 	{
 		// Given
 		AuthenticateAdmin();
-		var givenAuthorId = await _bookStoreDriver.SeedAuthor(_fixture.Create<CreateAuthorCommand>());
 		var givenProductCategoryId = await _bookStoreDriver.SeedProductCategory(_fixture
 			.Build<CreateProductCategoryCommand>()
 			.With(x => x.Subcategories, [])
 			.Create());
 		var givenCreateBookCommand = _fixture
 			.Build<CreateBookCommand>()
-			.With(x => x.AuthorId, givenAuthorId)
 			.With(x => x.ProductCategoryIds, [givenProductCategoryId])
 			.Create();
 		var givenBookId = await _bookStoreDriver.SeedBook(givenCreateBookCommand);

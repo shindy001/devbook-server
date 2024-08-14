@@ -6,14 +6,14 @@ public sealed record CreateBookCommand : ICommand<Book>
 {
 	[Required]
 	public required string Name { get; init; }
-	public required Guid AuthorId { get; set; }
 	public required decimal RetailPrice { get; init; }
 	public required decimal Price { get; init; }
 	public required decimal DiscountAmmount { get; init; }
 
+	public string? Author { get; init; }
 	public string? Description { get; init; }
 	public string? CoverImageUrl { get; init; }
-	public IList<Guid>? ProductCategoryIds { get; set; }
+	public IList<Guid>? ProductCategoryIds { get; init; }
 }
 
 public sealed class CreateBookCommandValidator : AbstractValidator<CreateBookCommand>
@@ -21,7 +21,6 @@ public sealed class CreateBookCommandValidator : AbstractValidator<CreateBookCom
 	public CreateBookCommandValidator()
 	{
 		RuleFor(x => x.Name).NotEmpty();
-		RuleFor(x => x.AuthorId).NotEqual(Guid.Empty);
 		RuleFor(x => x.RetailPrice).GreaterThan(decimal.Zero);
 		RuleFor(x => x.Price).GreaterThan(decimal.Zero);
 		RuleFor(x => x.DiscountAmmount).GreaterThanOrEqualTo(decimal.Zero);
@@ -32,12 +31,6 @@ internal sealed class CreateBookCommandHandler(DevBookDbContext dbContext) : ICo
 {
 	public async Task<Book> Handle(CreateBookCommand command, CancellationToken cancellationToken)
 	{
-		var author = await dbContext.Authors.FindAsync([command.AuthorId], cancellationToken: cancellationToken);
-		if (author is null)
-		{
-			throw new DevBookValidationException(nameof(command.AuthorId), $"AuthorId '{command.AuthorId}' not found.");
-		}
-
 		if (command.ProductCategoryIds?.Any() == true)
 		{
 			await ProductCategoryHelper.EnsureProductCategoriesExist(command.ProductCategoryIds, dbContext, cancellationToken);
@@ -47,10 +40,10 @@ internal sealed class CreateBookCommandHandler(DevBookDbContext dbContext) : ICo
 		{
 			Name = command.Name,
 			ProductType = ProductType.Book,
-			AuthorId = command.AuthorId,
 			RetailPrice = command.RetailPrice,
 			Price = command.Price,
 			DiscountAmmount = command.DiscountAmmount,
+			Author = command.Author,
 			Description = command.Description,
 			CoverImageUrl = command.CoverImageUrl,
 			ProductCategoryIds = command.ProductCategoryIds ?? [],

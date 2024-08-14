@@ -2,5 +2,5 @@
 
 public sealed record Book : Product
 {
-	public required Guid AuthorId { get; set; }
+	public string? Author { get; init; }
 }
