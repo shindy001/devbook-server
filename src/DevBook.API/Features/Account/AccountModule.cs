@@ -1,4 +1,5 @@
 ﻿
+
 namespace DevBook.API.Features.Account;
 
 internal sealed class AccountModule : IFeatureModule
@@ -17,5 +18,10 @@ internal sealed class AccountModule : IFeatureModule
 			.RequireAuthorization();
 
 		return endpointsBuilder;
+	}
+
+	public Task InitializeModule(AsyncServiceScope serviceScope)
+	{
+		return Task.CompletedTask;
 	}
 }

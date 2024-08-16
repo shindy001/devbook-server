@@ -7,13 +7,13 @@ var authTokenTTLInMinutes = builder.Configuration.GetSection("AuthTokenTTLInMinu
 var graphQLIntrospectionAllowed = builder.Configuration.GetSection("GraphQLIntrospectionAllowed").Get<bool>()!;
 var defaultUsers = builder.Configuration.GetSection("DefaultUsers").Get<UserDbSeed[]>();
 var devBookCorsPolicyName = "DevBookCorsPolicy";
-var featureModuleRegister = new FeatureModuleRegister();
+var featureModuleManager = new FeatureModuleManager();
 
 builder.AddServiceDefaults();
 builder.Services.RegisterDevBookDbContext();
 builder.Services.RegisterRequestPipelines();
 builder.Services.RegisterAuth(tokenTTLinMinutes: authTokenTTLInMinutes, requireConfirmedAccountOnSignIn: false);
-featureModuleRegister.RegisterFeatureModules(builder.Services, [typeof(Program).Assembly]);
+featureModuleManager.RegisterFeatureModules(builder.Services, [typeof(Program).Assembly]);
 
 builder.Services.AddSwaggerGen(SwaggerOptions.WithDevBookOptions());
 builder.Services.AddEndpointsApiExplorer()
@@ -49,6 +49,8 @@ var app = builder.Build();
 // Create DB if not exist or migrate if not up to date
 app.InitializeDb(applyMigrations: true);
 
+await featureModuleManager.InitializeModules(app);
+
 // Seed roles to DB if not defined
 await app.SeedRoles(
 	DevBookUserRoles.Admin,
@@ -83,7 +85,7 @@ app.UseAuthorization();
 // Health check + Alive
 app.MapDefaultEndpoints();
 
-featureModuleRegister.MapFeatureModulesEndpoints(app);
+featureModuleManager.MapFeatureModulesEndpoints(app);
 
 app.MapGraphQLHttp("/graphql")
 	.RequireCors(devBookCorsPolicyName);

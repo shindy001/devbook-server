@@ -31,4 +31,9 @@ internal sealed class BookStoreModule : IFeatureModule
 
 		return endpointsBuilder;
 	}
+
+	public Task InitializeModule(AsyncServiceScope serviceScope)
+	{
+		return Task.CompletedTask;
+	}
 }

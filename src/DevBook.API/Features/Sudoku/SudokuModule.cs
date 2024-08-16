@@ -22,4 +22,9 @@ internal sealed class SudokuModule : IFeatureModule
 
 		return endpointsBuilder;
 	}
+
+	public Task InitializeModule(AsyncServiceScope serviceScope)
+	{
+		return Task.CompletedTask;
+	}
 }
