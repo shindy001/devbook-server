@@ -5,7 +5,6 @@ var builder = WebApplication.CreateBuilder(args);
 var devBookClientOrigin = builder.Configuration.GetSection("DevBookClientOrigins").Get<string[]>()!;
 var authTokenTTLInMinutes = builder.Configuration.GetSection("AuthTokenTTLInMinutes").Get<int>()!;
 var graphQLIntrospectionAllowed = builder.Configuration.GetSection("GraphQLIntrospectionAllowed").Get<bool>()!;
-var defaultUsers = builder.Configuration.GetSection("DefaultUsers").Get<UserDbSeed[]>();
 var devBookCorsPolicyName = "DevBookCorsPolicy";
 var featureModuleManager = new FeatureModuleManager();
 
@@ -50,17 +49,6 @@ var app = builder.Build();
 app.InitializeDb(applyMigrations: true);
 
 await featureModuleManager.InitializeModules(app);
-
-// Seed roles to DB if not defined
-await app.SeedRoles(
-	DevBookUserRoles.Admin,
-	DevBookUserRoles.User);
-
-// Seed default users from appsettings to DB
-if (defaultUsers is not null && defaultUsers.Any())
-{
-	await app.SeedUsers(defaultUsers);
-}
 
 if (app.Environment.IsDevelopment())
 {

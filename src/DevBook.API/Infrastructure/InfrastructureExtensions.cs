@@ -48,46 +48,6 @@ internal static class InfrastructureExtensions
 		return builder;
 	}
 
-	internal static async Task<IApplicationBuilder> SeedRoles(this IApplicationBuilder builder, params string[] roles)
-	{
-		using var scope = builder.ApplicationServices.CreateScope();
-		var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-
-		foreach (var role in roles)
-		{
-			if (!await roleManager.RoleExistsAsync(role))
-			{
-				await roleManager.CreateAsync(new IdentityRole(role));
-			}
-		}
-
-		return builder;
-	}
-
-	internal static async Task<IApplicationBuilder> SeedUsers(this IApplicationBuilder builder, params UserDbSeed[] userDbSeeds)
-	{
-		using var scope = builder.ApplicationServices.CreateScope();
-		var userManager = scope.ServiceProvider.GetRequiredService<UserManager<DevBookUser>>();
-
-		foreach (var userSeed in userDbSeeds)
-		{
-			if (await userManager.FindByEmailAsync(userSeed.Email) is null)
-			{
-				var user = new DevBookUser
-				{
-					Email = userSeed.Email,
-					UserName = userSeed.Email,
-					EmailConfirmed = userSeed.EmailConfirmed,
-				};
-
-				await userManager.CreateAsync(user, userSeed.Password);
-				await userManager.AddToRoleAsync(user, userSeed.UserRole);
-			}
-		}
-
-		return builder;
-	}
-
 	private static string GetSqliteConnectionString()
 	{
 		var dbPath = System.IO.Path.Combine(AppContext.BaseDirectory, "data", $"DevBook.db");
