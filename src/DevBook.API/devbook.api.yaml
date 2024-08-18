@@ -259,6 +259,11 @@ paths:
           schema:
             type: integer
             format: int32
+        - name: ProductType
+          in: query
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/ProductType'
         - name: ProductCategoryId
           in: query
           schema:
@@ -880,6 +885,9 @@ components:
           minLength: 1
           type: string
         productType:
+          enum:
+            - Book
+          type: string
           allOf:
             - $ref: '#/components/schemas/ProductType'
         retailPrice:
@@ -906,9 +914,8 @@ components:
       additionalProperties: false
     ProductType:
       enum:
-        - 0
-      type: integer
-      format: int32
+        - Book
+      type: string
     ProjectDto:
       required:
         - id

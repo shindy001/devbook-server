@@ -54,6 +54,39 @@ public class ProductApiTests : IntegrationTestsBase
 	}
 
 	[Fact]
+	public async Task GetProducts_should_return_Products_with_specified_ProductType()
+	{
+		// Given
+		var givenCreateBookCommand = _fixture
+			.Build<CreateBookCommand>()
+			.With(x => x.ProductCategoryIds, [])
+			.Create();
+		var givenBookId = await _bookStoreDriver.SeedBook(givenCreateBookCommand);
+
+		// When
+		var response = await _bookStoreApi.GetProducts<BookDto>(new GetProductsQuery(ProductType: ProductType.Book));
+
+		// Then
+		response.Should().NotBeNull();
+		response.Should().NotBeEmpty();
+		response.Count.Should().Be(1);
+		response.First().Should().BeEquivalentTo(
+			new BookDto
+			{
+				Id = givenBookId,
+				Name = givenCreateBookCommand.Name,
+				ProductType = ProductType.Book,
+				RetailPrice = givenCreateBookCommand.RetailPrice,
+				Price = givenCreateBookCommand.Price,
+				DiscountAmmount = givenCreateBookCommand.DiscountAmmount,
+				Author = givenCreateBookCommand.Author,
+				Description = givenCreateBookCommand.Description,
+				CoverImageUrl = givenCreateBookCommand.CoverImageUrl,
+				ProductCategoryIds = givenCreateBookCommand.ProductCategoryIds ?? []
+			});
+	}
+
+	[Fact]
 	public async Task GetProducts_should_return_Products_with_ProductCategory()
 	{
 		// Given
@@ -70,6 +103,44 @@ public class ProductApiTests : IntegrationTestsBase
 
 		// When
 		var response = await _bookStoreApi.GetProducts<BookDto>(new GetProductsQuery(ProductCategoryId: givenProductCategoryId));
+
+		// Then
+		response.Should().NotBeNull();
+		response.Should().NotBeEmpty();
+		response.Count.Should().Be(1);
+		response.First().Should().BeEquivalentTo(
+			new BookDto
+			{
+				Id = givenBookId,
+				Name = givenCreateBookCommand.Name,
+				ProductType = ProductType.Book,
+				RetailPrice = givenCreateBookCommand.RetailPrice,
+				Price = givenCreateBookCommand.Price,
+				DiscountAmmount = givenCreateBookCommand.DiscountAmmount,
+				Author = givenCreateBookCommand.Author,
+				Description = givenCreateBookCommand.Description,
+				CoverImageUrl = givenCreateBookCommand.CoverImageUrl,
+				ProductCategoryIds = [givenProductCategoryId]
+			});
+	}
+
+	[Fact]
+	public async Task GetProducts_should_return_Products_with_ProductCategory_and_ProductType()
+	{
+		// Given
+		var givenProductCategoryId = await _bookStoreDriver.SeedProductCategory(_fixture
+			.Build<CreateProductCategoryCommand>()
+			.With(x => x.Subcategories, [])
+			.Create());
+		var givenCreateBookCommand = _fixture
+			.Build<CreateBookCommand>()
+			.With(x => x.ProductCategoryIds, [givenProductCategoryId])
+			.Create();
+		var givenBookId = await _bookStoreDriver.SeedBook(givenCreateBookCommand);
+		await _bookStoreDriver.SeedBook(givenCreateBookCommand with { ProductCategoryIds = [] });
+
+		// When
+		var response = await _bookStoreApi.GetProducts<BookDto>(new GetProductsQuery(ProductCategoryId: givenProductCategoryId, ProductType: ProductType.Book));
 
 		// Then
 		response.Should().NotBeNull();
