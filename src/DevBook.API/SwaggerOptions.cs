@@ -1,4 +1,6 @@
-﻿namespace DevBook.API;
+﻿using Microsoft.OpenApi.Any;
+
+namespace DevBook.API;
 
 public static class SwaggerOptions
 {
@@ -9,6 +11,10 @@ public static class SwaggerOptions
 			// Support inheritance and polymorphism
 			opt.UseOneOfForPolymorphism();
 			opt.EnableAnnotations(enableAnnotationsForInheritance: true, enableAnnotationsForPolymorphism: true);
+
+			opt.UseAllOfToExtendReferenceSchemas();
+
+			opt.SchemaFilter<EnumSchemaFilter>();
 
 			// Swagger Bearer auth
 			opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -33,8 +39,28 @@ public static class SwaggerOptions
 					new List<string>()
 				}
 			});
-
-			opt.UseAllOfToExtendReferenceSchemas();
 		};
+	}
+
+	/// <summary>
+	/// Converts enum int values in swagger UI parameters to string values
+	/// </summary>
+	public class EnumSchemaFilter : ISchemaFilter
+	{
+		public void Apply(OpenApiSchema model, SchemaFilterContext context)
+		{
+			if (context.Type.IsEnum)
+			{
+				model.Enum.Clear();
+				Enum.GetNames(context.Type)
+					.ToList()
+					.ForEach(n =>
+					{
+						model.Enum.Add(new OpenApiString(n));
+						model.Type = "string";
+						model.Format = null;
+					});
+			}
+		}
 	}
 }
