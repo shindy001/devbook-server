@@ -1,4 +1,5 @@
-﻿using DevBook.API.Infrastructure;
+﻿using DevBook.API.Features.BookStore;
+using DevBook.API.Infrastructure;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server;
@@ -81,6 +82,13 @@ public sealed class DevBookApiTestFixture<TProgram> : IDisposable where TProgram
 						services.AddSingleton<ILoggerFactory>(LoggerFactory);
 
 						ReplaceDbWithTestDb(services);
+
+						// Remove data seeder svc as default data should not be used in tests
+						var bookStoreSeederSvc = services.SingleOrDefault(d => d.ServiceType == typeof(BookStoreDataSeeder));
+						if (bookStoreSeederSvc is not null)
+						{
+							services.Remove(bookStoreSeederSvc);
+						}
 
 						// Mock Authentication setup https://learn.microsoft.com/en-us/aspnet/core/test/integration-tests?view=aspnetcore-6.0#mock-authentication
 						services.AddSingleton<TestAuthInterceptor>();
