@@ -61,7 +61,8 @@ internal sealed class BookStoreDataSeeder
 			}
 		];
 
-		await dbContext.AddRangeAsync(subcategories, newReleases, bestSellers, preOrders);
+		await dbContext.AddRangeAsync(subcategories);
+		await dbContext.AddRangeAsync(newReleases, bestSellers, preOrders);
 		await dbContext.AddRangeAsync(topLevelCategories);
 
 		return [.. subcategories, .. topLevelCategories];
