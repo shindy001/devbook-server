@@ -159,7 +159,32 @@ public class ProductCategoryApiTests : IntegrationTestsBase
 		var givenProductCategoryId = await _bookStoreDriver.SeedProductCategory(givenCreateProductCategoryCommand);
 
 		// When
-		var response = await _bookStoreApi.GetProductCategoryByName(givenCreateProductCategoryCommand.Name);
+		var response = await _bookStoreApi.GetProductCategoryByName(givenCreateProductCategoryCommand.Name.ToUpper());
+
+		// Then
+		response.Should().NotBeNull();
+		response.Should().BeEquivalentTo(
+			new ProductCategoryDto
+			{
+				Id = givenProductCategoryId,
+				Name = givenCreateProductCategoryCommand.Name,
+				IsTopLevelCategory = givenCreateProductCategoryCommand.IsTopLevelCategory!.Value,
+				Subcategories = []
+			});
+	}
+
+	[Fact]
+	public async Task GetProductCategoryByName_should_return_category_even_with_different_casing()
+	{
+		// Given
+		var givenCreateProductCategoryCommand = _fixture
+			.Build<CreateProductCategoryCommand>()
+			.With(x => x.Subcategories, [])
+			.Create();
+		var givenProductCategoryId = await _bookStoreDriver.SeedProductCategory(givenCreateProductCategoryCommand);
+
+		// When
+		var response = await _bookStoreApi.GetProductCategoryByName(givenCreateProductCategoryCommand.Name.ToUpper());
 
 		// Then
 		response.Should().NotBeNull();

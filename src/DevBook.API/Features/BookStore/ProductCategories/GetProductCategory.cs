@@ -24,9 +24,12 @@ public class GetProductCategoryQueryHandler(DevBookDbContext dbContext) : IQuery
 		{
 			productCategory = await dbContext.ProductCategories.FindAsync([query.Id], cancellationToken);
 		}
-		else
+		else if (query.Name != null)
 		{
-			productCategory = await dbContext.ProductCategories.FirstOrDefaultAsync(x => x.Name == query.Name, cancellationToken);
+			// FYI - EFCore does not support equals with StringComparison operator, collation or lower is inefficient but work
+			// For better performance consider to setup DB collation on the property 
+			productCategory = await dbContext.ProductCategories.FirstOrDefaultAsync(
+				x => x.Name.ToLower() == query.Name.ToLower(), cancellationToken);
 		}
 
 		IEnumerable<ProductCategory> subcategories = [];
