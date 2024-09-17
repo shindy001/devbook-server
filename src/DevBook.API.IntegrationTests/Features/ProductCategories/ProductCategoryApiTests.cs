@@ -146,6 +146,90 @@ public class ProductCategoryApiTests : IntegrationTestsBase
 
 	#endregion
 
+	#region GetProductCategoryByName
+
+	[Fact]
+	public async Task GetProductCategoryByName_should_return_category()
+	{
+		// Given
+		var givenCreateProductCategoryCommand = _fixture
+			.Build<CreateProductCategoryCommand>()
+			.With(x => x.Subcategories, [])
+			.Create();
+		var givenProductCategoryId = await _bookStoreDriver.SeedProductCategory(givenCreateProductCategoryCommand);
+
+		// When
+		var response = await _bookStoreApi.GetProductCategoryByName(givenCreateProductCategoryCommand.Name);
+
+		// Then
+		response.Should().NotBeNull();
+		response.Should().BeEquivalentTo(
+			new ProductCategoryDto
+			{
+				Id = givenProductCategoryId,
+				Name = givenCreateProductCategoryCommand.Name,
+				IsTopLevelCategory = givenCreateProductCategoryCommand.IsTopLevelCategory!.Value,
+				Subcategories = []
+			});
+	}
+
+	[Fact]
+	public async Task GetProductCategoryByName_should_return_category_with_subcategory()
+	{
+		// Given
+		var givenCreateProductCategoryCommand1 = _fixture
+			.Build<CreateProductCategoryCommand>()
+			.With(x => x.Subcategories, [])
+			.Create();
+		var givenProductCategoryId1 = await _bookStoreDriver.SeedProductCategory(givenCreateProductCategoryCommand1);
+
+		var givenCreateProductCategoryCommand2 = _fixture
+			.Build<CreateProductCategoryCommand>()
+			.With(x => x.Subcategories, [givenProductCategoryId1])
+			.Create();
+		var givenProductCategoryId2 = await _bookStoreDriver.SeedProductCategory(givenCreateProductCategoryCommand2);
+
+		// When
+		var response = await _bookStoreApi.GetProductCategoryByName(givenCreateProductCategoryCommand2.Name);
+
+		// Then
+		response.Should().NotBeNull();
+		response.Should().BeEquivalentTo(
+			new ProductCategoryDto
+			{
+				Id = givenProductCategoryId2,
+				Name = givenCreateProductCategoryCommand2.Name,
+				IsTopLevelCategory = false,
+				Subcategories = [givenCreateProductCategoryCommand1.Name],
+			});
+	}
+
+	[Fact]
+	public async Task GetProductCategoryByName_should_throw_404_NotFound_ApiException_when_category_does_not_exist()
+	{
+		// Given
+		// When
+		Func<Task> act = async () => await _bookStoreApi.GetProductCategoryByName("fff");
+
+		// Then
+		var exception = await act.Should().ThrowAsync<ApiException>();
+		exception.Which.StatusCode.Should().Be(HttpStatusCode.NotFound);
+	}
+
+	[Fact]
+	public async Task GetProductCategoryByName_should_throw_400_BadRequest_ApiException_when_category_name_is_only_whitespace()
+	{
+		// Given
+		// When
+		Func<Task> act = async () => await _bookStoreApi.GetProductCategoryByName("   ");
+
+		// Then
+		var exception = await act.Should().ThrowAsync<ApiException>();
+		exception.Which.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+	}
+
+	#endregion
+
 	#region CreateProductCategory
 
 	[Fact]

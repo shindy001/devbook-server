@@ -27,6 +27,9 @@ public interface IBookStoreApi
 	[Get("/bookstore/productCategories/{id}")]
 	Task<ProductCategoryDto> GetProductCategoryById(Guid id);
 
+	[Get("/bookstore/productCategories/{name}")]
+	Task<ProductCategoryDto> GetProductCategoryByName(string name);
+
 	[Post("/bookstore/productCategories")]
 	Task<HttpResponseMessage> CreateProductCategory(CreateProductCategoryCommand command);
 

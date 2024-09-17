@@ -197,6 +197,10 @@ paths:
           schema:
             type: string
             format: uuid
+        - name: Name
+          in: query
+          schema:
+            type: string
       responses:
         '200':
           description: OK
@@ -243,6 +247,31 @@ paths:
       responses:
         '204':
           description: No Content
+  '/bookstore/productCategories/{name}':
+    get:
+      tags:
+        - BookStoreModule_ProductCategoryEndpoints
+      operationId: ProductCategories.GetByName
+      parameters:
+        - name: Id
+          in: query
+          schema:
+            type: string
+            format: uuid
+        - name: name
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductCategoryDto'
+        '404':
+          description: Not Found
   /bookstore/products:
     get:
       tags:
