@@ -2,6 +2,7 @@
 using DevBook.API.Features.BookStore.ProductCategories;
 using DevBook.API.Features.BookStore.Products;
 using DevBook.API.Features.BookStore.Products.Books;
+using Microsoft.EntityFrameworkCore;
 
 namespace DevBook.API.Features.BookStore;
 
@@ -10,12 +11,7 @@ internal sealed class BookStoreDataSeeder
 	private readonly Random random = new();
 	private const int MaxBookDataCound = 50;
 
-	public async Task<ProductCategory[]> SeedCategories(DevBookDbContext dbContext)
-	{
-		//Set the randomizer seed to generate repeatable data sets.
-		Randomizer.Seed = random;
-
-		ProductCategory[] subcategories = [
+	private readonly ProductCategory[] subcategories = [
 			new ProductCategory
 			{
 				Name = "Sci-fi",
@@ -30,6 +26,32 @@ internal sealed class BookStoreDataSeeder
 			},
 		];
 
+	private readonly ProductCategory newReleases = new ProductCategory
+	{
+		Name = "New Releases",
+		IsTopLevelCategory = false,
+		Subcategories = [],
+	};
+
+	private readonly ProductCategory bestSellers = new ProductCategory
+	{
+		Name = "Bestsellers",
+		IsTopLevelCategory = false,
+		Subcategories = [],
+	};
+
+	private readonly ProductCategory preOrders = new ProductCategory
+	{
+		Name = "Pre-orders",
+		IsTopLevelCategory = false,
+		Subcategories = [],
+	};
+
+	public async Task<ProductCategory[]> SeedCategories(DevBookDbContext dbContext)
+	{
+		//Set the randomizer seed to generate repeatable data sets.
+		Randomizer.Seed = random;
+
 		List<ProductCategory> topLevelCategories = [
 			new ProductCategory
 			{
@@ -39,7 +61,7 @@ internal sealed class BookStoreDataSeeder
 			}
 		];
 
-		await dbContext.AddRangeAsync(subcategories);
+		await dbContext.AddRangeAsync(subcategories, newReleases, bestSellers, preOrders);
 		await dbContext.AddRangeAsync(topLevelCategories);
 
 		return [.. subcategories, .. topLevelCategories];
@@ -54,8 +76,8 @@ internal sealed class BookStoreDataSeeder
 		var books = new Faker<Book>()
 			.RuleFor(x => x.Name, () => GetBookData(bookFakerIndex).name)
 			.RuleFor(x => x.ProductType, ProductType.Book)
-			.RuleFor(x => x.RetailPrice, f => f.Random.Number(1, 100))
-			.RuleFor(x => x.Price, f => f.Random.Number(50, 150))
+			.RuleFor(x => x.RetailPrice, f => f.Random.Number(20, 35))
+			.RuleFor(x => x.Price, f => f.Random.Number(5, 19))
 			.RuleFor(x => x.DiscountAmmount, f => f.Random.Number(0, 1))
 
 			.RuleFor(x => x.Author, () => GetBookData(bookFakerIndex).author)
@@ -66,10 +88,38 @@ internal sealed class BookStoreDataSeeder
 				.Take(f.Random.Number(0, productCategories.Length - 1))
 				.Select(x => x.Id)
 				.ToList())
-			.FinishWith((f, x) => bookFakerIndex += 1)
+			.FinishWith((f, x) =>
+			{
+				var additionalCategory = GetAdditionalProductCategory(bookFakerIndex);
+				if (additionalCategory != null)
+				{
+					x.ProductCategoryIds.Add(additionalCategory.Id);
+				}
+				bookFakerIndex += 1;
+			})
 			.Generate(MaxBookDataCound);
 
 		await dbContext.AddRangeAsync(books);
+	}
+
+	private ProductCategory? GetAdditionalProductCategory(int bookIndex)
+	{
+		if (bookIndex <= 0 || bookIndex <= 11)
+		{
+			return newReleases;
+		}
+		else if (bookIndex <= 23)
+		{
+			return bestSellers;
+		}
+		else if (bookIndex <= 35)
+		{
+			return preOrders;
+		}
+		else
+		{
+			return null;
+		}
 	}
 
 	private (string name, string author, string coverImageUrl, string description) GetBookData(int bookIndex)
