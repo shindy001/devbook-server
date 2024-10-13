@@ -47,6 +47,13 @@ internal sealed class BookStoreDataSeeder
 		Subcategories = [],
 	};
 
+	private readonly ProductCategory justForTheSummer = new ProductCategory
+	{
+		Name = "Just For The Summer",
+		IsTopLevelCategory = false,
+		Subcategories = [],
+	};
+
 	public async Task<ProductCategory[]> SeedCategories(DevBookDbContext dbContext)
 	{
 		//Set the randomizer seed to generate repeatable data sets.
@@ -62,7 +69,7 @@ internal sealed class BookStoreDataSeeder
 		];
 
 		await dbContext.AddRangeAsync(subcategories);
-		await dbContext.AddRangeAsync(newReleases, bestSellers, preOrders);
+		await dbContext.AddRangeAsync(newReleases, bestSellers, preOrders, justForTheSummer);
 		await dbContext.AddRangeAsync(topLevelCategories);
 
 		return [.. subcategories, .. topLevelCategories];
@@ -116,6 +123,10 @@ internal sealed class BookStoreDataSeeder
 		else if (bookIndex <= 35)
 		{
 			return preOrders;
+		}
+		else if (bookIndex > 35)
+		{
+			return justForTheSummer;
 		}
 		else
 		{
