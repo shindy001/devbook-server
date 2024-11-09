@@ -43,8 +43,7 @@ internal sealed class BookStoreModule : IFeatureModule
 			var dbContext = serviceScope.ServiceProvider.GetRequiredService<DevBookDbContext>();
 			if (!dbContext.Products.Any() && !dbContext.ProductCategories.Any())
 			{
-				var categories = await seeder.SeedCategories(dbContext);
-				await seeder.SeedBooks(dbContext, categories);
+				await seeder.Seed(dbContext);
 				await dbContext.SaveChangesAsync();
 			}
 		}
