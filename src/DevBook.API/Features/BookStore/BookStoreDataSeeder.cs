@@ -38,9 +38,9 @@ internal sealed class BookStoreDataSeeder
 		Subcategories = [],
 	};
 
-	private static readonly ProductCategory preOrdersCategory = new()
+	private static readonly ProductCategory commingSoonCategory = new()
 	{
-		Name = "Pre-orders",
+		Name = "Comming Soon",
 		IsTopLevelCategory = false,
 		Subcategories = [],
 	};
@@ -76,7 +76,7 @@ internal sealed class BookStoreDataSeeder
 			romanceCategory,
 			newReleasesCategory,
 			bestSellersCategory,
-			preOrdersCategory,
+			commingSoonCategory,
 			justForTheSummerCategory);
 	}
 
@@ -133,7 +133,7 @@ internal sealed class BookStoreDataSeeder
 		}
 		else if (bookIndex <= 35)
 		{
-			return preOrdersCategory;
+			return commingSoonCategory;
 		}
 		else
 		{
