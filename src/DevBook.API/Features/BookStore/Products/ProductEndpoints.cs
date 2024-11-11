@@ -9,6 +9,11 @@ internal static class ProductEndpoints
 			.Produces<IList<ProductDto>>()
 			.AllowAnonymous();
 
+		groupBuilder.MapGet("/search={term}", SearchProducts)
+			.WithName($"{ApiConstants.ProductsOperationIdPrefix}Search")
+			.Produces<IList<ProductDto>>()
+			.AllowAnonymous();
+
 		groupBuilder.MapGet("/{id:guid}", GetProductById)
 			.WithName($"{ApiConstants.ProductsOperationIdPrefix}{ApiConstants.GetByIdRoute}")
 			.Produces<ProductDto>()
@@ -25,6 +30,13 @@ internal static class ProductEndpoints
 	private static async Task<IResult> GetProducts([AsParameters] GetProductsQuery query, IExecutor executor, CancellationToken cancellationToken)
 	{
 		var result = await executor.ExecuteQuery(query, cancellationToken);
+		var dtos = result.Select(x => x.ToDto());
+		return TypedResults.Ok(dtos);
+	}
+
+	private static async Task<IResult> SearchProducts([FromQuery(Name = "search")] string searchTerm, IExecutor executor, CancellationToken cancellationToken)
+	{
+		var result = await executor.ExecuteQuery(new SearchProductsQuery(searchTerm), cancellationToken);
 		var dtos = result.Select(x => x.ToDto());
 		return TypedResults.Ok(dtos);
 	}

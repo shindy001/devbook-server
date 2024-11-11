@@ -308,6 +308,27 @@ paths:
                 items:
                   oneOf:
                     - $ref: '#/components/schemas/BookDto'
+  '/bookstore/products/search={term}':
+    get:
+      tags:
+        - BookStoreModule_ProductEndpoints
+      operationId: Products.Search
+      parameters:
+        - name: search
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  oneOf:
+                    - $ref: '#/components/schemas/BookDto'
   '/bookstore/products/{id}':
     get:
       tags:
