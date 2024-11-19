@@ -3,9 +3,9 @@ using System.Text.Json.Serialization;
 var builder = WebApplication.CreateBuilder(args);
 
 var devBookClientOrigin = builder.Configuration.GetSection("DevBookClientOrigins").Get<string[]>()!;
-var authTokenTTLInMinutes = builder.Configuration.GetSection("AuthTokenTTLInMinutes").Get<int>()!;
-var graphQLIntrospectionAllowed = builder.Configuration.GetSection("GraphQLIntrospectionAllowed").Get<bool>()!;
-var devBookCorsPolicyName = "DevBookCorsPolicy";
+var authTokenTTLInMinutes = builder.Configuration.GetSection("AuthTokenTTLInMinutes").Get<int>();
+var graphQLIntrospectionAllowed = builder.Configuration.GetSection("GraphQLIntrospectionAllowed").Get<bool>();
+const string devBookCorsPolicyName = "DevBookCorsPolicy";
 var featureModuleManager = new FeatureModuleManager();
 
 builder.AddServiceDefaults();
@@ -28,7 +28,7 @@ builder.Services.AddCors(options =>
 		devBookCorsPolicyName,
 		p => p.WithOrigins(devBookClientOrigin)
 			.AllowAnyMethod()
-			.SetIsOriginAllowed(isAllowed => true)
+			.SetIsOriginAllowed(_ => true)
 			.AllowAnyHeader()
 			.AllowCredentials());
 });
@@ -75,7 +75,7 @@ app.MapDefaultEndpoints();
 
 featureModuleManager.MapFeatureModulesEndpoints(app);
 
-app.MapGraphQLHttp("/graphql")
+app.MapGraphQLHttp()
 	.RequireCors(devBookCorsPolicyName);
 
 app.MapGraphQLSchema("/graphql/schema")
@@ -84,7 +84,7 @@ app.MapGraphQLSchema("/graphql/schema")
 
 if (app.Environment.IsDevelopment())
 {
-	app.MapBananaCakePop("/graphql/ui");
+	app.MapBananaCakePop();
 }
 
 app.Run();
