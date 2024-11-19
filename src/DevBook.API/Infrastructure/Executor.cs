@@ -14,16 +14,16 @@ public interface IExecutor
 	Task ExecuteCommand(ICommand command, CancellationToken cancellationToken = default);
 }
 
-public sealed class Executor(ISender _mediator) : IExecutor
+public sealed class Executor(ISender mediator) : IExecutor
 {
 	public async Task<TResult> ExecuteQuery<TResult>(IQuery<TResult> query, CancellationToken cancellationToken = default)
-		=> await _mediator.Send(query, cancellationToken);
+		=> await mediator.Send(query, cancellationToken);
 
 	public async Task<TResult> ExecuteCommand<TResult>(ICommand<TResult> command, CancellationToken cancellationToken = default)
-		=> await _mediator.Send(command, cancellationToken);
+		=> await mediator.Send(command, cancellationToken);
 
 	public async Task ExecuteCommand(ICommand command, CancellationToken cancellationToken = default)
-		=> await _mediator.Send(command, cancellationToken);
+		=> await mediator.Send(command, cancellationToken);
 }
 
 public static class ExecutorExtensions
@@ -43,7 +43,7 @@ public static class ExecutorExtensions
 	}
 
 	/// <summary>
-	/// Registeres passed behavior as generic scoped pipeline behavior <see cref="IPipelineBehavior{TRequest, TResponse}"/>
+	/// Registers passed behavior as generic scoped pipeline behavior <see cref="IPipelineBehavior{TRequest, TResponse}"/>
 	/// </summary>
 	/// <param name="services"></param>
 	/// <param name="pipelineBehavior"></param>

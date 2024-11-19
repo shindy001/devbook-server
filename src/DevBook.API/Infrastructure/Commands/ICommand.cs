@@ -9,4 +9,4 @@ public interface ICommand : IRequest;
 /// Represents Command action that returns a result
 /// </summary>
 /// <typeparam name="TResult"></typeparam>
-public interface ICommand<TResult> : IRequest<TResult>;
+public interface ICommand<out TResult> : IRequest<TResult>;

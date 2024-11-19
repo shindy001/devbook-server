@@ -4,7 +4,7 @@ namespace DevBook.API.Infrastructure;
 
 internal static class InfrastructureExtensions
 {
-	private readonly static Assembly Assembly = typeof(Program).Assembly;
+	private static readonly Assembly Assembly = typeof(Program).Assembly;
 
 	internal static IServiceCollection RegisterRequestPipelines(this IServiceCollection services)
 	{

@@ -6,6 +6,6 @@
 /// </summary>
 /// <typeparam name="TQuery"></typeparam>
 /// <typeparam name="TResult"></typeparam>
-public interface IQueryPipelineBehavior<TQuery, TResult>
+public interface IQueryPipelineBehavior<in TQuery, TResult>
 	: IPipelineBehavior<TQuery, TResult>
 	where TQuery : IQuery<TResult>;

@@ -35,7 +35,7 @@ public sealed class FeatureModuleManager
 	private readonly List<IFeatureModule> registeredModules = [];
 
 	/// <summary>
-	/// Registeres modules that implement <see cref="IFeatureModule"/> contract
+	/// Registers modules that implement <see cref="IFeatureModule"/> contract
 	/// </summary>
 	/// <param name="services"></param>
 	/// <param name="commandAndQueriesAssemblies"></param>
@@ -74,7 +74,7 @@ public sealed class FeatureModuleManager
 	{
 		foreach (var module in this.registeredModules)
 		{
-			using var scope = appBuilder.ApplicationServices.CreateAsyncScope();
+			await using var scope = appBuilder.ApplicationServices.CreateAsyncScope();
 			await module.InitializeModule(scope);
 		}
 	}

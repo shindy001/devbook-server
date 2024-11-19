@@ -8,6 +8,6 @@ namespace DevBook.API.Infrastructure.Commands;
 /// </summary>
 /// <typeparam name="TCommand"></typeparam>
 /// <typeparam name="TResult"></typeparam>
-public interface ICommandPipelineBehavior<TCommand, TResult>
+public interface ICommandPipelineBehavior<in TCommand, TResult>
 	: IPipelineBehavior<TCommand, TResult>
 	where TCommand : ICommand<TResult>;

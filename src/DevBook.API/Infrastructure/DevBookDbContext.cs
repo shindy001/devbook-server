@@ -17,15 +17,15 @@ public sealed class DevBookDbContext(DbContextOptions<DevBookDbContext> options,
 {
 	#region TimeTracking module
 
-	public DbSet<Project> Projects { get; set; }
-	public DbSet<WorkTask> Tasks { get; set; }
+	public DbSet<Project> Projects { get; init; }
+	public DbSet<WorkTask> Tasks { get; init; }
 
 	#endregion
 
 	#region BookStore module
 
-	public DbSet<Product> Products { get; set; }
-	public DbSet<ProductCategory> ProductCategories { get; set; }
+	public DbSet<Product> Products { get; init; }
+	public DbSet<ProductCategory> ProductCategories { get; init; }
 
 	#endregion
 

@@ -6,7 +6,7 @@ namespace DevBook.API.Mapping;
 
 internal sealed class DevBookMappingProfile : Profile
 {
-	private readonly string MappingMethodName = nameof(IMappebleTo<object>.Mapping);
+	private readonly string mappingMethodName = nameof(IMappableTo<object>.Mapping);
 
 	public DevBookMappingProfile()
 	{
@@ -16,7 +16,7 @@ internal sealed class DevBookMappingProfile : Profile
 	private void ApplyMappingsFromAssembly(Assembly assembly)
 	{
 		var types = assembly.GetExportedTypes()
-			.Where(t => t.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IMappebleTo<>)));
+			.Where(t => t.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IMappableTo<>)));
 
 		foreach (var type in types)
 		{
@@ -24,8 +24,8 @@ internal sealed class DevBookMappingProfile : Profile
 			var instance = RuntimeHelpers.GetUninitializedObject(type);
 
 			// Get method with custom mappings first if there is one, otherwise use the default one on the Interface
-			var methodInfo = type.GetMethod(MappingMethodName)
-				?? type.GetInterface($"{nameof(IMappebleTo<object>)}`1")!.GetMethod(MappingMethodName);
+			var methodInfo = type.GetMethod(mappingMethodName)
+				?? type.GetInterface($"{nameof(IMappableTo<object>)}`1")!.GetMethod(mappingMethodName);
 
 			methodInfo?.Invoke(instance, [this]);
 		}

@@ -45,7 +45,7 @@ public static class SwaggerOptions
 	/// <summary>
 	/// Converts enum int values in swagger UI parameters to string values
 	/// </summary>
-	public class EnumSchemaFilter : ISchemaFilter
+	private class EnumSchemaFilter : ISchemaFilter
 	{
 		public void Apply(OpenApiSchema model, SchemaFilterContext context)
 		{

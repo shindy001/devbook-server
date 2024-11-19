@@ -4,7 +4,7 @@
 /// Defines a handler for a command with void result
 /// </summary>
 /// <typeparam name="TCommand"></typeparam>
-public interface ICommandHandler<TCommand> : IRequestHandler<TCommand>
+public interface ICommandHandler<in TCommand> : IRequestHandler<TCommand>
 	where TCommand : ICommand;
 
 /// <summary>
@@ -12,5 +12,5 @@ public interface ICommandHandler<TCommand> : IRequestHandler<TCommand>
 /// </summary>
 /// <typeparam name="TCommand"></typeparam>
 /// <typeparam name="TResult"></typeparam>
-public interface ICommandHandler<TCommand, TResult> : IRequestHandler<TCommand, TResult>
+public interface ICommandHandler<in TCommand, TResult> : IRequestHandler<TCommand, TResult>
 	where TCommand : ICommand<TResult>;

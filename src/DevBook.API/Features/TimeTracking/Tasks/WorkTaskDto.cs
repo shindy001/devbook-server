@@ -3,7 +3,7 @@
 namespace DevBook.API.Features.TimeTracking.Tasks;
 
 [Authorize]
-public sealed record WorkTaskDto : IMappebleTo<WorkTask>
+public sealed record WorkTaskDto : IMappableTo<WorkTask>
 {
 	[Required]
 	public Guid Id { get; init; }

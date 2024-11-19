@@ -1,7 +1,7 @@
 ﻿namespace DevBook.API.Features.TimeTracking.Shared;
 
 [Authorize]
-public sealed record ProjectDto : IMappebleTo<Project>
+public sealed record ProjectDto : IMappableTo<Project>
 {
 	[Required]
 	public required Guid Id { get; init; }
