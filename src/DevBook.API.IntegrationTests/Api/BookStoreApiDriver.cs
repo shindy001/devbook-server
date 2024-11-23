@@ -60,7 +60,7 @@ internal sealed class BookStoreApiDriver
 		_testAuthInterceptor.OnAuthenticate = currentAuthentication;
 	}
 
-	private Guid ExtractCreatedLocationGuid(HttpResponseMessage response)
+	private static Guid ExtractCreatedLocationGuid(HttpResponseMessage response)
 	{
 		response.StatusCode.Should().Be(HttpStatusCode.Created);
 		var id = response.Headers.Location?.Segments[^1];

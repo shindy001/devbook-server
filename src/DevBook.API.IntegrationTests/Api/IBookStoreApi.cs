@@ -10,6 +10,9 @@ public interface IBookStoreApi
 
 	[Get("/bookstore/products")]
 	Task<IList<T>> GetProducts<T>(GetProductsQuery? query = null);
+	
+	[Get("/bookstore/products/search")]
+	Task<IList<T>> SearchProducts<T>([Query] string searchTerm);
 
 	[Get("/bookstore/products/{id}")]
 	Task<T> GetProductById<T>(Guid id);

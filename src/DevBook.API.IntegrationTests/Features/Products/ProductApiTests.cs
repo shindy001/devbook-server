@@ -175,6 +175,86 @@ public class ProductApiTests : IntegrationTestsBase
 	}
 
 	#endregion
+	
+	#region SearchProducts
+	
+	[Fact]
+	public async Task SearchProducts_should_return_matching_Products()
+	{
+		// Given
+		var givenCreateBookCommand1 = _fixture
+			.Build<CreateBookCommand>()
+			.With(x => x.Name, "Sample Book With Long name")
+			.With(x => x.ProductCategoryIds, [])
+			.Create();
+		var givenCreateBookCommand2 = _fixture
+			.Build<CreateBookCommand>()
+			.With(x => x.Name, "Other book")
+			.With(x => x.ProductCategoryIds, [])
+			.Create();
+		var givenBook1Id = await _bookStoreDriver.SeedBook(givenCreateBookCommand1);
+		await _bookStoreDriver.SeedBook(givenCreateBookCommand2);
+
+		// When
+		var response = await _bookStoreApi.SearchProducts<BookDto>("sample book with");
+
+		// Then
+		response.Should().NotBeNull();
+		response.Should().NotBeEmpty();
+		response.Count.Should().Be(1);
+		response.First().Id.Should().Be(givenBook1Id);
+		response.First().Name.Should().Be(givenCreateBookCommand1.Name);
+	}
+	
+	[Fact]
+	public async Task SearchProducts_should_return_multiple_matching_Products()
+	{
+		// Given
+		var givenCreateBookCommand1 = _fixture
+			.Build<CreateBookCommand>()
+			.With(x => x.Name, "Sample Book With Long name")
+			.With(x => x.ProductCategoryIds, [])
+			.Create();
+		var givenCreateBookCommand2 = _fixture
+			.Build<CreateBookCommand>()
+			.With(x => x.Name, "Other BOOK")
+			.With(x => x.ProductCategoryIds, [])
+			.Create();
+		var givenBook1Id = await _bookStoreDriver.SeedBook(givenCreateBookCommand1);
+		var givenBook2Id = await _bookStoreDriver.SeedBook(givenCreateBookCommand2);
+
+		// When
+		var response = await _bookStoreApi.SearchProducts<BookDto>("book");
+
+		// Then
+		response.Should().NotBeNull();
+		response.Should().NotBeEmpty();
+		response.Count.Should().Be(2);
+		response.Should().ContainSingle(x => x.Id == givenBook1Id && x.Name == givenCreateBookCommand1.Name);
+		response.Should().ContainSingle(x => x.Id == givenBook2Id && x.Name == givenCreateBookCommand2.Name);
+	}
+	
+	[Fact]
+	public async Task SearchProducts_should_return_empty_response_when_search_term_does_not_match_any_products()
+	{
+		// Given
+		await _bookStoreDriver.SeedBook(
+			_fixture
+				.Build<CreateBookCommand>()
+				.With(x => x.Name, "Sample Book With Long name")
+				.With(x => x.ProductCategoryIds, [])
+				.Create());
+
+		// When
+		var response = await _bookStoreApi.SearchProducts<BookDto>("this book does not exist");
+
+		// Then
+		response.Should().NotBeNull();
+		response.Should().BeEmpty();
+		response.Count.Should().Be(0);
+	}
+	
+	#endregion
 
 	#region GetProductById
 
