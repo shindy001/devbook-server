@@ -29,7 +29,7 @@ internal static class InfrastructureExtensions
 		services.AddDbContextPool<DevBookDbContext>(
 			opt => opt.UseSqlite(
 				GetSqliteConnectionString(),
-				opt => opt.MigrationsAssembly(Assembly.GetName().Name)));
+				sqliteOpt => sqliteOpt.MigrationsAssembly(Assembly.GetName().Name)));
 
 		return services;
 	}

@@ -32,7 +32,7 @@ public interface IFeatureModule
 
 public sealed class FeatureModuleManager
 {
-	private readonly List<IFeatureModule> registeredModules = [];
+	private readonly List<IFeatureModule> _registeredModules = [];
 
 	/// <summary>
 	/// Registers modules that implement <see cref="IFeatureModule"/> contract
@@ -57,7 +57,7 @@ public sealed class FeatureModuleManager
 	/// <returns></returns>
 	public WebApplication MapFeatureModulesEndpoints(WebApplication app)
 	{
-		foreach (var module in this.registeredModules)
+		foreach (var module in this._registeredModules)
 		{
 			module.MapEndpoints(app);
 		}
@@ -72,7 +72,7 @@ public sealed class FeatureModuleManager
 	/// <returns></returns>
 	public async Task InitializeModules(IApplicationBuilder appBuilder)
 	{
-		foreach (var module in this.registeredModules)
+		foreach (var module in this._registeredModules)
 		{
 			await using var scope = appBuilder.ApplicationServices.CreateAsyncScope();
 			await module.InitializeModule(scope);
@@ -85,7 +85,7 @@ public sealed class FeatureModuleManager
 		foreach (var module in modules)
 		{
 			module.RegisterModule(services);
-			this.registeredModules.Add(module);
+			this._registeredModules.Add(module);
 		}
 	}
 

@@ -6,7 +6,7 @@ namespace DevBook.API.Mapping;
 
 internal sealed class DevBookMappingProfile : Profile
 {
-	private readonly string mappingMethodName = nameof(IMappableTo<object>.Mapping);
+	private const string MappingMethodName = nameof(IMappableTo<object>.Mapping);
 
 	public DevBookMappingProfile()
 	{
@@ -24,8 +24,8 @@ internal sealed class DevBookMappingProfile : Profile
 			var instance = RuntimeHelpers.GetUninitializedObject(type);
 
 			// Get method with custom mappings first if there is one, otherwise use the default one on the Interface
-			var methodInfo = type.GetMethod(mappingMethodName)
-				?? type.GetInterface($"{nameof(IMappableTo<object>)}`1")!.GetMethod(mappingMethodName);
+			var methodInfo = type.GetMethod(MappingMethodName)
+				?? type.GetInterface($"{nameof(IMappableTo<object>)}`1")!.GetMethod(MappingMethodName);
 
 			methodInfo?.Invoke(instance, [this]);
 		}

@@ -11,7 +11,7 @@ internal static class IdentityEndpoints
 	private const string OperationIdPrefix = "Identity.";
 
 	// Validate the email address using DataAnnotations like the UserValidator does when RequireUniqueEmail = true.
-	private static readonly EmailAddressAttribute _emailAddressAttribute = new();
+	private static readonly EmailAddressAttribute EmailAddressAttribute = new();
 
 	public static RouteGroupBuilder MapIdentityEndpoints(this RouteGroupBuilder groupBuilder)
 	{
@@ -50,7 +50,7 @@ internal static class IdentityEndpoints
 		var emailStore = (IUserEmailStore<DevBookUser>)userStore;
 		var email = registration.Email;
 
-		if (string.IsNullOrEmpty(email) || !_emailAddressAttribute.IsValid(email))
+		if (string.IsNullOrEmpty(email) || !EmailAddressAttribute.IsValid(email))
 		{
 			return CreateValidationProblem(IdentityResult.Failed(userManager.ErrorDescriber.InvalidEmail(email)));
 		}
@@ -154,7 +154,7 @@ internal static class IdentityEndpoints
 	private static async Task<InfoResponse> CreateInfoResponseAsync<TUser>(TUser user, UserManager<TUser> userManager)
 		where TUser : class
 	{
-		return new()
+		return new InfoResponse
 		{
 			Email = await userManager.GetEmailAsync(user) ?? throw new NotSupportedException("Users must have an email."),
 			Roles = await userManager.GetRolesAsync(user),

@@ -1,7 +1,8 @@
-﻿using DevBook.API.Features.BookStore;
-using DevBook.API.Features.BookStore.ProductCategories;
+﻿using DevBook.API.Features.BookStore.ProductCategories;
 using DevBook.API.Features.BookStore.Products;
 using DevBook.API.Features.BookStore.Products.Books;
+
+namespace DevBook.API.Features.BookStore;
 
 internal sealed class BookStoreModule : IFeatureModule
 {

@@ -36,7 +36,7 @@ public static class ServiceDefaults
 	private static ILoggingBuilder AddDevBookLogging(this ILoggingBuilder builder, string logFileName = "devbook_log_.txt")
 	{
 		var appDir = AppDomain.CurrentDomain.BaseDirectory;
-		var outputTemplate = "[{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} {CorrelationId} {Level:u3}] {Message:lj}{NewLine}{Exception}";
+		const string outputTemplate = "[{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} {CorrelationId} {Level:u3}] {Message:lj}{NewLine}{Exception}";
 
 		Log.Logger = new LoggerConfiguration()
 			.WriteTo.Console(outputTemplate: outputTemplate)

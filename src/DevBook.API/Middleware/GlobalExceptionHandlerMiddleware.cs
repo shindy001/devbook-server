@@ -5,25 +5,25 @@
 /// </summary>
 internal sealed class GlobalExceptionHandlerMiddleware
 {
-	private readonly RequestDelegate next;
-	private readonly IHostEnvironment env;
-	private readonly ILogger<GlobalExceptionHandlerMiddleware> logger;
+	private readonly RequestDelegate _next;
+	private readonly IHostEnvironment _env;
+	private readonly ILogger<GlobalExceptionHandlerMiddleware> _logger;
 
 	public GlobalExceptionHandlerMiddleware(
 		RequestDelegate next,
 		IHostEnvironment env,
 		ILogger<GlobalExceptionHandlerMiddleware> logger)
 	{
-		this.next = next;
-		this.env = env;
-		this.logger = logger;
+		this._next = next;
+		this._env = env;
+		this._logger = logger;
 	}
 
 	public async Task InvokeAsync(HttpContext httpContext)
 	{
 		try
 		{
-			await next(httpContext);
+			await _next(httpContext);
 		}
 		catch (DevBookValidationException ex)
 		{
@@ -45,7 +45,7 @@ internal sealed class GlobalExceptionHandlerMiddleware
 			Status = StatusCodes.Status500InternalServerError,
 			Title = "An error occurred while processing your request.",
 			Type = "https://tools.ietf.org/html/rfc7231#section-6.6.1",
-			Detail = env.IsDevelopment() ? ex.ToString() : string.Empty
+			Detail = _env.IsDevelopment() ? ex.ToString() : string.Empty
 		};
 
 		var jsonOptions = context.RequestServices.GetService(typeof(IOptions<JsonOptions>)) as IOptions<JsonOptions>;
@@ -58,7 +58,7 @@ internal sealed class GlobalExceptionHandlerMiddleware
 		context.Response.ContentType = "application/json";
 		context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
 
-		logger.LogDebug("API {RequestMethod} {RequestPath} Validation errors: {Errors}",
+		_logger.LogDebug("API {RequestMethod} {RequestPath} Validation errors: {Errors}",
 			context.Request.Method,
 			context.Request.Path,
 			validationException.Errors);

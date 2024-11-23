@@ -6,7 +6,7 @@ internal sealed class UnitOfWorkCommandPipelineBehavior<TCommand, TResult>
 {
 	private readonly IUnitOfWork _unitOfWork;
 
-	public UnitOfWorkCommandPipelineBehavior(IUnitOfWork unitOfWork) => _unitOfWork = unitOfWork;
+	public UnitOfWorkCommandPipelineBehavior(IUnitOfWork unitOfWork) => this._unitOfWork = unitOfWork;
 
 	public async Task<TResult> Handle(TCommand request, RequestHandlerDelegate<TResult> next, CancellationToken cancellationToken)
 	{

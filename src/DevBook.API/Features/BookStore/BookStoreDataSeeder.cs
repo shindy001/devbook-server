@@ -7,56 +7,56 @@ namespace DevBook.API.Features.BookStore;
 
 internal sealed class BookStoreDataSeeder
 {
-	private readonly Random random = new();
-	private const int MaxBookDataCound = 50;
+	private readonly Random _random = new();
+	private const int MaxBookDataCount = 50;
 
-	private static readonly ProductCategory scifyCategory = new()
+	private static readonly ProductCategory ScifyCategory = new()
 	{
 		Name = "Sci-fi",
 		IsTopLevelCategory = false,
 		Subcategories = [],
 	};
 
-	private static readonly ProductCategory romanceCategory = new()
+	private static readonly ProductCategory RomanceCategory = new()
 	{
 		Name = "Romance",
 		IsTopLevelCategory = false,
 		Subcategories = [],
 	};
 
-	private static readonly ProductCategory bestSellersCategory = new()
+	private static readonly ProductCategory BestSellersCategory = new()
 	{
 		Name = "Bestsellers",
 		IsTopLevelCategory = false,
 		Subcategories = [],
 	};
 
-	private static readonly ProductCategory newReleasesCategory = new()
+	private static readonly ProductCategory NewReleasesCategory = new()
 	{
 		Name = "New Releases",
 		IsTopLevelCategory = false,
 		Subcategories = [],
 	};
 
-	private static readonly ProductCategory commingSoonCategory = new()
+	private static readonly ProductCategory ComingSoonCategory = new()
 	{
-		Name = "Comming Soon",
+		Name = "Coming Soon",
 		IsTopLevelCategory = false,
 		Subcategories = [],
 	};
 
-	private static readonly ProductCategory justForTheSummerCategory = new()
+	private static readonly ProductCategory JustForTheSummerCategory = new()
 	{
 		Name = "Just For The Summer",
 		IsTopLevelCategory = false,
 		Subcategories = [],
 	};
 
-	private static readonly ProductCategory booksCategory = new()
+	private static readonly ProductCategory BooksCategory = new()
 	{
 		Name = "Books",
 		IsTopLevelCategory = true,
-		Subcategories = [scifyCategory.Id, romanceCategory.Id],
+		Subcategories = [ScifyCategory.Id, RomanceCategory.Id],
 	};
 
 	public async Task Seed(DevBookDbContext dbContext)
@@ -68,22 +68,22 @@ internal sealed class BookStoreDataSeeder
 	private async Task SeedCategories(DevBookDbContext dbContext)
 	{
 		//Set the randomizer seed to generate repeatable data sets.
-		Randomizer.Seed = random;
+		Randomizer.Seed = _random;
 
-		await dbContext.AddRangeAsync(booksCategory);
+		await dbContext.AddRangeAsync(BooksCategory);
 		await dbContext.AddRangeAsync(
-			scifyCategory,
-			romanceCategory,
-			newReleasesCategory,
-			bestSellersCategory,
-			commingSoonCategory,
-			justForTheSummerCategory);
+			ScifyCategory,
+			RomanceCategory,
+			NewReleasesCategory,
+			BestSellersCategory,
+			ComingSoonCategory,
+			JustForTheSummerCategory);
 	}
 
 	private async Task SeedBooks(DevBookDbContext dbContext)
 	{
 		//Set the randomizer seed to generate repeatable data sets.
-		Randomizer.Seed = random;
+		Randomizer.Seed = _random;
 		int bookFakerIndex = 0;
 
 		var books = new Faker<Book>()
@@ -91,67 +91,55 @@ internal sealed class BookStoreDataSeeder
 			.RuleFor(x => x.ProductType, ProductType.Book)
 			.RuleFor(x => x.RetailPrice, f => f.Random.Number(20, 35))
 			.RuleFor(x => x.Price, f => f.Random.Number(5, 19))
-			.RuleFor(x => x.DiscountAmmount, f => f.Random.Number(0, 1))
+			.RuleFor(x => x.DiscountAmmount, f => f.Random.Number(max: 1))
 
 			.RuleFor(x => x.Author, () => GetBookData(bookFakerIndex).author)
 			.RuleFor(x => x.Description, () => GetBookData(bookFakerIndex).description)
 			.RuleFor(x => x.CoverImageUrl, () => GetBookData(bookFakerIndex).coverImageUrl)
 			.RuleFor(x => x.ProductCategoryIds, f =>
 			{
-				Guid[] subCategories = [scifyCategory.Id, romanceCategory.Id];
+				Guid[] subCategories = [ScifyCategory.Id, RomanceCategory.Id];
 				var randomSubcategories = subCategories
 								.Skip(f.Random.Number(0, subCategories.Length - 1))
 								.Take(f.Random.Number(0, subCategories.Length - 1))
 								.Select(x => x)
 								.ToList();
 				var additionalCategory = GetAdditionalProductCategory(bookFakerIndex);
-				return [booksCategory.Id, additionalCategory.Id, .. randomSubcategories];
+				return [BooksCategory.Id, additionalCategory.Id, .. randomSubcategories];
 			})
-			.FinishWith((f, x) =>
+			.FinishWith((_, x) =>
 			{
 				var additionalCategory = GetAdditionalProductCategory(bookFakerIndex);
-				if (additionalCategory != null)
-				{
-					x.ProductCategoryIds.Add(additionalCategory.Id);
-				}
+				x.ProductCategoryIds.Add(additionalCategory.Id);
 				bookFakerIndex += 1;
 			})
-			.Generate(MaxBookDataCound);
+			.Generate(MaxBookDataCount);
 
 		await dbContext.AddRangeAsync(books);
 	}
 
-	private ProductCategory GetAdditionalProductCategory(int bookIndex)
+	private static ProductCategory GetAdditionalProductCategory(int bookIndex)
 	{
-		if (bookIndex <= 0 || bookIndex <= 11)
+		return bookIndex switch
 		{
-			return newReleasesCategory;
-		}
-		else if (bookIndex <= 23)
-		{
-			return bestSellersCategory;
-		}
-		else if (bookIndex <= 35)
-		{
-			return commingSoonCategory;
-		}
-		else
-		{
-			return justForTheSummerCategory;
-		}
+			<= 0 or <= 11 => NewReleasesCategory,
+			<= 23 => BestSellersCategory,
+			<= 35 => ComingSoonCategory,
+			_ => JustForTheSummerCategory
+		};
 	}
 
 	private (string name, string author, string coverImageUrl, string description) GetBookData(int bookIndex)
 	{
-		if (bookIndex < 0 || bookIndex > BookData.Length)
+		if (bookIndex < 0 || bookIndex > _bookData.Length)
 		{
-			throw new IndexOutOfRangeException($"Invalid bookIndex value '{bookIndex}', only indexes between 0 and {BookData.Length} are allowed.");
+			throw new IndexOutOfRangeException($"Invalid bookIndex value '{bookIndex}', only indexes between 0 and {_bookData.Length} are allowed.");
 		}
 
-		return BookData[bookIndex];
+		return _bookData[bookIndex];
 	}
 
-	private readonly (string name, string author, string coverImageUrl, string description)[] BookData = [
+	private readonly (string name, string author, string coverImageUrl, string description)[] _bookData = [
 		new ("Don Quixote", "Miguel de Cervantes", "https://books.google.com/books/content?id=3qxaBAAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api", "A novel that follows the adventures of a delusional nobleman who believes he is a knight. Along with his loyal squire, Sancho Panza, he embarks on a series of absurd yet heroic exploits."),
 		new ("Alice's Adventures in Wonderland", "Lewis Carroll", "https://books.google.com/books/content?id=9I5yDwAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api", "Alice falls through a rabbit hole into a fantasy world where she encounters bizarre creatures and whimsical adventures. A classic of children's literature."),
 		new ("The Adventures of Huckleberry Finn", "Mark Twain", "https://books.google.com/books/content?id=ClcOEAAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api", "Huckleberry Finn travels down the Mississippi River with a runaway slave, Jim. The novel explores themes of freedom, race, and morality."),

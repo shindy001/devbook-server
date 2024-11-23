@@ -36,7 +36,7 @@ public static class IdentityExtensions
 	{
 		var user = accessor.HttpContext?.User;
 
-		if (user is null || user.Identity is null || user.Identity?.IsAuthenticated == false)
+		if (user?.Identity is null || user.Identity?.IsAuthenticated == false)
 		{
 			throw new UnauthorizedAccessException();
 		}
